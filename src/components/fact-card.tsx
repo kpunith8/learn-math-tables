@@ -21,14 +21,19 @@ function FactCardInner({ groupCount, currentTable, isRevealed, isActive, onRevea
   }, [currentTable, groupCount, isActive, isRevealed]);
 
   return (
-    <div className="fact-card-wrapper">
+    <div className="fact-card-wrapper w-full">
       <div
         onClick={() => onReveal(cardKey)}
         tabIndex={0}
         role="button"
         aria-label={`${currentTable} times ${groupCount}${isRevealed ? ` equals ${answer}` : ', tap to reveal'}`}
-        className={`fact-card-row bg-white rounded-xl border-2 border-[#E2E8F0] cursor-pointer transition-colors duration-150 min-h-[52px] flex items-center justify-between px-4 py-3
-          ${isActive ? 'bg-[#EEF2FF] border-[#6366F1] border-[2.5px]' : isRevealed ? 'bg-[#F8F8F8] border-[#DDD]' : ''}
+        className={`fact-card-row w-full rounded-xl border-2 cursor-pointer transition-all duration-150 min-h-[52px] flex items-center justify-between px-5 py-3.5
+          ${isActive
+            ? 'bg-[#EEF2FF] border-[#6366F1]'
+            : isRevealed
+              ? 'bg-[#F8F8F8] border-[#E2E8F0]'
+              : 'bg-white border-[#E2E8F0]'
+          }
           hover:border-[#6366F1] hover:bg-[#FAFAFA] active:scale-[0.97]`}
       >
         <span className="fact-equation font-display text-[clamp(15px,4vw,17px)] text-[#C2410C]">

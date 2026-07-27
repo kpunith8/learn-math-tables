@@ -23,13 +23,13 @@ export function ConfirmDialog({ isOpen, title, message, onConfirm, onCancel }: C
         <div className="confirm-actions flex gap-3 justify-center">
           <button
             onClick={onConfirm}
-            className="confirm-yes font-display text-base py-2.5 px-7 rounded-full border-none bg-[#4F46E5] text-white cursor-pointer transition-all duration-150 shadow-[0_4px_12px_rgba(79,70,229,0.3)] hover:scale-105 active:scale-95"
+            className="confirm-yes font-display text-sm py-2 px-5 rounded-full border-none bg-[#B91C1C] text-white cursor-pointer transition-all duration-150 shadow-[0_4px_12px_rgba(185,28,28,0.3)] hover:scale-105 active:scale-95"
           >
             Yes, sure!
           </button>
           <button
             onClick={onCancel}
-            className="confirm-no font-display text-base py-2.5 px-7 rounded-full border-none bg-[#E5E5E5] text-[#555] cursor-pointer transition-all duration-150 hover:scale-105 active:scale-95"
+            className="confirm-no font-display text-sm py-2 px-5 rounded-full border-none bg-[#E5E5E5] text-[#555] cursor-pointer transition-all duration-150 hover:scale-105 active:scale-95"
           >
             No, go back
           </button>

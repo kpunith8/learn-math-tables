@@ -1,8 +1,8 @@
 'use client';
 
-import { useMemo, memo } from 'react';
+import { memo } from 'react';
 import { CHARACTERS } from '@/lib/constants';
-import { generateMultiplicationSVG, generateStoryText } from '@/lib/utils';
+import { generateStoryText } from '@/lib/utils';
 
 interface IllustrationPanelProps {
   currentTable: number;
@@ -19,20 +19,13 @@ function IllustrationPanelInner({
 }: IllustrationPanelProps) {
   const character = CHARACTERS[currentTable] || { name: `Table of ${currentTable}`, emoji: '✨' };
 
-  const svgHtml = useMemo(() => {
-    if (!activeCard) return null;
-    const cardParts = activeCard.split('x');
-    const groupCount = parseInt(cardParts[1], 10);
-    return generateMultiplicationSVG(currentTable, groupCount);
-  }, [currentTable, activeCard]);
-
   const btnClass = `border-none bg-[#0D9488] cursor-pointer text-white py-2 px-4 rounded-full flex items-center gap-1.5 font-display text-[13px]`;
 
   if (!activeCard) {
     return (
-      <aside className="illustration-panel w-full md:w-[320px] shrink-0 flex flex-col items-center gap-3 sticky top-5">
+      <aside className="illustration-panel w-full md:w-[320px] shrink-0 flex flex-col items-center gap-3 md:sticky md:top-5">
         <div className="illustration-placeholder w-full max-w-[320px]">
-          <div className="placeholder-emoji flex items-center justify-center h-[160px] bg-[#F5F5F5] rounded-[20px] text-[72px]">
+          <div className="placeholder-emoji flex items-center justify-center h-[100px] md:h-[160px] bg-[#F5F5F5] rounded-[20px] text-[50px] md:text-[72px]">
             {character.emoji}
           </div>
         </div>
@@ -42,7 +35,7 @@ function IllustrationPanelInner({
         <p className="character-name font-display text-sm text-[#334155] text-center">
           {character.name}
         </p>
-        <div className="story-placeholder text-sm leading-[1.75] text-[#555] bg-white rounded-[14px] p-[14px_16px] border-2 border-[#E5E5E5] shadow-[0_4px_12px_rgba(0,0,0,0.08)] w-full max-w-[460px]">
+        <div className="story-placeholder hidden md:block text-sm leading-[1.75] text-[#555] bg-white rounded-[14px] p-[14px_16px] border-2 border-[#E5E5E5] shadow-[0_4px_12px_rgba(0,0,0,0.08)] w-full max-w-[460px]">
           👆 Tap any card above to reveal its illustration and story!
         </div>
       </aside>
@@ -52,13 +45,7 @@ function IllustrationPanelInner({
   const groupCount = parseInt(activeCard.split('x')[1], 10);
 
   return (
-    <aside className="illustration-panel w-full md:w-[320px] shrink-0 flex flex-col items-center gap-3 sticky top-5">
-      <div
-        className="illustration-svg w-full max-w-[320px]"
-        dangerouslySetInnerHTML={{ __html: svgHtml || '' }}
-        role="img"
-        aria-label="Multiplication visual showing groups of items"
-      />
+    <aside className="illustration-panel w-full md:w-[320px] shrink-0 flex flex-col items-center gap-3 md:sticky md:top-5">
       <div className="equation-badge font-display text-[clamp(22px,5vw,30px)] text-[#C2410C] text-center py-2 px-10 bg-[#FAFAFA] rounded-full border-[2.5px] border-[#E2E8F0]">
         {currentTable} × {groupCount} = {currentTable * groupCount}
       </div>

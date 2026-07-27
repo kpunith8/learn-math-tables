@@ -273,7 +273,7 @@ export default function Home() {
   if (!isLoaded) return null;
 
   return (
-    <div className="app-root font-body min-h-screen">
+    <div className="app-root font-body h-screen flex flex-col">
       {showLanding && <LandingScreen onStart={handleStartLearning} />}
 
       <h2 className="sr-only">
@@ -306,12 +306,19 @@ export default function Home() {
         timerDisplay={formatDisplay}
       />
 
-      <main className="main-content flex gap-6 p-5 items-start justify-center flex-col md:flex-row">
-        <section className="cards-column flex-1 min-w-0 max-w-[400px]">
+      <main className="main-content flex gap-6 p-5 overflow-hidden flex-col md:flex-row-reverse flex-1 min-h-0 md:items-start md:justify-center">
+        <IllustrationPanel
+          currentTable={state.currentTable}
+          activeCard={state.activeCard}
+          onToggleSpeak={handleSpeak}
+          isSpeaking={isSpeaking}
+        />
+
+        <section className="cards-column flex-1 min-w-0 min-h-0 overflow-y-auto md:max-w-[400px] md:self-stretch">
           <p className="cards-hint font-display text-[13px] text-[#777] text-center mb-2">
             Tap a card to reveal the answer!
           </p>
-          <div className="cards-grid grid grid-cols-1 gap-2.5">
+          <div className="cards-grid grid grid-cols-1 gap-2.5 w-full">
             {Array.from({ length: 10 }, (_, i) => i + 1).map((groupCount) => {
               const cardKey = `${state.currentTable}x${groupCount}`;
               const isRevealed = state.revealedCards.has(cardKey);
@@ -319,7 +326,7 @@ export default function Home() {
               return (
                 <div
                   key={groupCount}
-                  className={`fact-card-keyboard ${isActive ? 'active-card-kb' : ''}`}
+                  className={`fact-card-keyboard w-full ${isActive ? 'active-card-kb' : ''}`}
                 >
                   <FactCard
                     groupCount={groupCount}
@@ -333,13 +340,6 @@ export default function Home() {
             })}
           </div>
         </section>
-
-        <IllustrationPanel
-          currentTable={state.currentTable}
-          activeCard={state.activeCard}
-          onToggleSpeak={handleSpeak}
-          isSpeaking={isSpeaking}
-        />
       </main>
 
       {/* Overlays */}
