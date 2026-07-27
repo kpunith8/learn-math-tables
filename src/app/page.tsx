@@ -314,11 +314,11 @@ export default function Home() {
           isSpeaking={isSpeaking}
         />
 
-        <section className="cards-column flex-1 min-w-0 min-h-0 overflow-y-auto md:max-w-[400px] md:self-stretch">
+        <section className="cards-column flex-1 min-w-0 min-h-0 overflow-y-auto md:max-w-[400px] md:self-stretch pb-10">
           <p className="cards-hint font-display text-[13px] text-[#777] text-center mb-2">
             Tap a card to reveal the answer!
           </p>
-          <div className="cards-grid grid grid-cols-1 gap-2.5 w-full pb-4">
+          <div className="cards-grid grid grid-cols-1 gap-2.5 w-full">
             {Array.from({ length: 10 }, (_, i) => i + 1).map((groupCount) => {
               const cardKey = `${state.currentTable}x${groupCount}`;
               const isRevealed = state.revealedCards.has(cardKey);
