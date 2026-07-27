@@ -318,7 +318,7 @@ export default function Home() {
           <p className="cards-hint font-display text-[13px] text-[#777] text-center mb-2">
             Tap a card to reveal the answer!
           </p>
-          <div className="cards-grid grid grid-cols-1 gap-2.5 w-full">
+          <div className="cards-grid grid grid-cols-1 gap-2.5 w-full pb-4">
             {Array.from({ length: 10 }, (_, i) => i + 1).map((groupCount) => {
               const cardKey = `${state.currentTable}x${groupCount}`;
               const isRevealed = state.revealedCards.has(cardKey);
