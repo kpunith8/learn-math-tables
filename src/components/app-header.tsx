@@ -10,12 +10,14 @@ interface AppHeaderProps {
   difficulty: Difficulty;
   practiceMode: boolean;
   playerName: string;
+  isMuted: boolean;
   onSelectTable: (table: number) => void;
   onSetDifficulty: (level: Difficulty) => void;
   onTogglePractice: () => void;
   onShowLeaderboard: () => void;
   onShowPlayerName: () => void;
   onReset: () => void;
+  onToggleMute: () => void;
 }
 
 const btnBase = 'font-display text-xs py-1.5 px-3.5 rounded-full border-2 cursor-pointer transition-all duration-150 min-h-[44px]';
@@ -26,12 +28,14 @@ export function AppHeader({
   difficulty,
   practiceMode,
   playerName,
+  isMuted,
   onSelectTable,
   onSetDifficulty,
   onTogglePractice,
   onShowLeaderboard,
   onShowPlayerName,
   onReset,
+  onToggleMute,
 }: AppHeaderProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -84,6 +88,13 @@ export function AppHeader({
             className={`${btnBase} px-2.5 md:px-3.5 border-[#B45309] bg-[#B45309] text-white hover:bg-[#92400E] active:scale-95`}
           >
             🏆 Scores
+          </button>
+          <button
+            onClick={onToggleMute}
+            className={`${btnBase} px-2.5 md:px-3.5 border-[#64748B] bg-[#64748B] text-white hover:bg-[#475569] active:scale-95`}
+            aria-label={isMuted ? 'Unmute sounds' : 'Mute sounds'}
+          >
+            {isMuted ? '🔇' : '🔊'}
           </button>
           <button
             onClick={onShowPlayerName}
@@ -199,6 +210,12 @@ export function AppHeader({
               className={`drawer-reset ${btnBase} w-full text-center flex items-center justify-center gap-1 bg-[#475569] text-white hover:bg-[#64748B]`}
             >
               <span aria-hidden="true">↻</span> Reset
+            </button>
+            <button
+              onClick={() => { onToggleMute(); closeMenu(); }}
+              className={`drawer-mute ${btnBase} w-full text-center flex items-center justify-center gap-1 bg-[#64748B] text-white hover:bg-[#475569]`}
+            >
+              {isMuted ? '🔇 Unmute' : '🔊 Mute'}
             </button>
           </aside>
       </div>

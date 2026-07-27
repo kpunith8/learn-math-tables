@@ -38,7 +38,7 @@ export default function Home() {
     saveLeaderboardEntry,
   } = useAppContext();
 
-  const { playSound, playConfettiSound, stopSong } = useAudio();
+  const { playSound, playConfettiSound, stopSong, isMuted, toggleMute } = useAudio();
   const { formatDisplay } = useTimer(state.tableStartTime);
 
   // UI state
@@ -174,8 +174,16 @@ export default function Home() {
       if (cardKey !== state.activeCard) {
         stopSpeaking();
       }
+      if (!isMuted) {
+        const parts = cardKey.split('x');
+        const table = parseInt(parts[0], 10);
+        const group = parseInt(parts[1], 10);
+        const answer = table * group;
+        speakStoryText(`${table} times ${group} equals ${answer}`, () => setIsSpeaking(false));
+        setIsSpeaking(true);
+      }
     },
-    [revealCard, playSound, stopSpeaking, state.activeCard]
+    [revealCard, playSound, stopSpeaking, state.activeCard, isMuted]
   );
 
   const handleCelebrationProceed = useCallback(() => {
@@ -288,6 +296,7 @@ export default function Home() {
         difficulty={state.difficulty}
         practiceMode={state.practiceMode}
         playerName={state.playerName}
+        isMuted={isMuted}
         onSelectTable={(table) => {
           switchToTable(table);
           window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -297,6 +306,7 @@ export default function Home() {
         onShowLeaderboard={() => setShowLeaderboard(true)}
         onShowPlayerName={() => setShowNameModal(true)}
         onReset={handleReset}
+        onToggleMute={toggleMute}
       />
 
       <ProgressBar

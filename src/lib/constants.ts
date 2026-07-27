@@ -40,6 +40,16 @@ export const CHARACTERS: Record<number, Character> = {
   8: { name: "Otto the Octopus", item: "arms", emoji: "\u{1F419}", color: "#1565C0" },
   9: { name: "Nora the Ninja Cat", item: "lives", emoji: "\u{1F431}", color: "#880E4F" },
   10: { name: "Abby the Apple", item: "seeds", emoji: "\u{1F34E}", color: "#A32D2D" },
+  11: { name: "Daisy the Dolphin", item: "leaps", emoji: "\u{1F42C}", color: "#0277BD" },
+  12: { name: "Percy the Penguin", item: "waddles", emoji: "\u{1F427}", color: "#37474F" },
+  13: { name: "Wally the Walrus", item: "tusks", emoji: "\u{1F9DC}", color: "#8D6E63" },
+  14: { name: "Hazel the Hedgehog", item: "spikes", emoji: "\u{1F994}", color: "#A1887F" },
+  15: { name: "Finn the Fox", item: "tricks", emoji: "\u{1F98A}", color: "#E65100" },
+  16: { name: "Pippa the Panda", item: "bamboo stalks", emoji: "\u{1F43C}", color: "#424242" },
+  17: { name: "Rusty the Rooster", item: "crows", emoji: "\u{1F413}", color: "#BF360C" },
+  18: { name: "Shelly the Sheep", item: "woolly puffs", emoji: "\u{1F411}", color: "#78909C" },
+  19: { name: "Monty the Moose", item: "antlers", emoji: "\u{1F98C}", color: "#4E342E" },
+  20: { name: "Zara the Zebra", item: "stripes", emoji: "\u{1F993}", color: "#212121" },
 };
 
 export const SPARKLE_EMOJIS = ['\u2728', '\u{1F31F}', '\u2B50', '\u{1F389}', '\u{1F38A}', '\u{1F4AB}', '\u{1F308}', '\u{1F4A5}'];

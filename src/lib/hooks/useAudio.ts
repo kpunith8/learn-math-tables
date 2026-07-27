@@ -9,6 +9,9 @@ export function useAudio() {
   const [isSongPlaying, setIsSongPlaying] = useState(false);
   const oscillatorNodesRef = useRef<OscillatorNode[]>([]);
   const songTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const [isMuted, setIsMuted] = useState(false);
+
+  const toggleMute = useCallback(() => setIsMuted((prev) => !prev), []);
 
   const getAudioContext = useCallback((): AudioContext | null => {
     if (typeof window === 'undefined') return null;
@@ -42,6 +45,7 @@ export function useAudio() {
 
   const playSound = useCallback(
     (soundType: string) => {
+      if (isMuted) return;
       try {
         const context = getAudioContext();
         if (!context) return;
@@ -128,10 +132,11 @@ export function useAudio() {
         console.warn('Sound playback failed:', error);
       }
     },
-    [getAudioContext]
+    [getAudioContext, isMuted]
   );
 
   const playConfettiSound = useCallback(() => {
+    if (isMuted) return;
     try {
       const context = getAudioContext();
       if (!context) return;
@@ -152,7 +157,7 @@ export function useAudio() {
     } catch (error) {
       console.warn('Confetti sound failed:', error);
     }
-  }, [getAudioContext]);
+  }, [getAudioContext, isMuted]);
 
   const playSong = useCallback(
     (tableNumber: number, onEnd?: () => void) => {
@@ -232,5 +237,5 @@ export function useAudio() {
     [getAudioContext, stopSong]
   );
 
-  return { playSound, playConfettiSound, playSong, stopSong, isSongPlaying };
+  return { playSound, playConfettiSound, playSong, stopSong, isSongPlaying, isMuted, toggleMute };
 }

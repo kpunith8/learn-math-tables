@@ -2,7 +2,6 @@
 
 import { memo } from 'react';
 import { CHARACTERS } from '@/lib/constants';
-import { generateStoryText } from '@/lib/utils';
 
 interface IllustrationPanelProps {
   currentTable: number;
@@ -54,12 +53,9 @@ function IllustrationPanelInner({
       </p>
       <div className="audio-controls flex gap-2 items-center">
         <button
-          onClick={() => {
-            const story = generateStoryText(currentTable, groupCount);
-            onToggleSpeak(story.replace(/<[^>]+>/g, ''));
-          }}
+          onClick={() => onToggleSpeak(`${currentTable} times ${groupCount} equals ${currentTable * groupCount}`)}
           className={`listen-btn ${btnClass}`}
-          aria-label={isSpeaking ? 'Stop reading aloud' : 'Read story aloud'}
+          aria-label={isSpeaking ? 'Stop reading aloud' : 'Read equation aloud'}
         >
           <span className="btn-icon text-base">{isSpeaking ? '🔇' : '🔊'}</span>
           <span className="btn-label text-xs">{isSpeaking ? 'Stop' : 'Listen'}</span>

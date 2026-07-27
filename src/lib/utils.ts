@@ -20,7 +20,7 @@ export const isPlainObject = (value: unknown): value is Record<string, unknown> 
 
 export const isValidCardKeyForTable = (cardKey: unknown, tableNumber: number): boolean => {
   if (typeof cardKey !== 'string') return false;
-  const match = cardKey.match(/^([1-9]|10)x([1-9]|10)$/);
+  const match = cardKey.match(/^(1[0-9]|20|[1-9])x([1-9]|10)$/);
   return !!match && Number(match[1]) === tableNumber;
 };
 
@@ -46,7 +46,7 @@ export const sanitizeCompletedTables = (tableValues: unknown): number[] => {
   if (!Array.isArray(tableValues)) return [];
   const seen = new Set<number>();
   const uniqueTables = tableValues
-    .map((table) => clampInteger(table, 1, 10, 0))
+    .map((table) => clampInteger(table, 1, 20, 0))
     .filter((table) => table && !seen.has(table) && (seen.add(table), true))
     .sort((a, b) => a - b);
 
@@ -64,7 +64,7 @@ export const sanitizeCompletedTables = (tableValues: unknown): number[] => {
 export const sanitizeTableStars = (starValues: unknown): Record<number, number> => {
   if (!isPlainObject(starValues)) return {};
   const sanitized: Record<number, number> = {};
-  for (let tableIndex = 1; tableIndex <= 10; tableIndex++) {
+  for (let tableIndex = 1; tableIndex <= 20; tableIndex++) {
     const starCount = clampInteger(starValues[tableIndex], 1, 3, 0);
     if (starCount) sanitized[tableIndex] = starCount;
   }
@@ -74,7 +74,7 @@ export const sanitizeTableStars = (starValues: unknown): Record<number, number> 
 export const sanitizeQuizResults = (resultValues: unknown): Record<number, { correct: number; total: number }> => {
   if (!isPlainObject(resultValues)) return {};
   const sanitized: Record<number, { correct: number; total: number }> = {};
-  for (let tableIndex = 1; tableIndex <= 10; tableIndex++) {
+  for (let tableIndex = 1; tableIndex <= 20; tableIndex++) {
     const result = resultValues[tableIndex] as Record<string, unknown> | undefined;
     if (!isPlainObject(result)) continue;
     const totalQuestions = clampInteger(result.total, 1, 5, 5);
@@ -92,7 +92,7 @@ export interface TableState {
 export const sanitizeTableStates = (stateValues: unknown): Record<number, TableState> => {
   if (!isPlainObject(stateValues)) return {};
   const sanitized: Record<number, TableState> = {};
-  for (let tableIndex = 1; tableIndex <= 10; tableIndex++) {
+  for (let tableIndex = 1; tableIndex <= 20; tableIndex++) {
     const tableState = stateValues[tableIndex] as Record<string, unknown> | undefined;
     if (!isPlainObject(tableState)) continue;
     const safeRevealed = sanitizeCardList(tableIndex, tableState.revealed);
@@ -106,10 +106,10 @@ export const sanitizeTableStates = (stateValues: unknown): Record<number, TableS
 // ── Table Management ───────────────────────────────────────
 
 export const getMaxAllowedTable = (practiceMode: boolean, difficulty: Difficulty): number => {
-  if (practiceMode) return 10;
-  if (difficulty === 'easy') return 5;
-  if (difficulty === 'hard') return 10;
-  return 7;
+  if (practiceMode) return 20;
+  if (difficulty === 'easy') return 10;
+  if (difficulty === 'hard') return 20;
+  return 15;
 };
 
 export const isTableUnlocked = (
@@ -298,13 +298,13 @@ export const calculateLeaderboardStats = (
   let estimatedTime = 0;
   let completedCount = 0;
 
-  for (let tableIndex = 1; tableIndex <= 10; tableIndex++) {
+  for (let tableIndex = 1; tableIndex <= 20; tableIndex++) {
     if (tableStarRatings[tableIndex]) {
       totalStars += tableStarRatings[tableIndex];
       completedCount++;
     }
   }
-  for (let tableIndex = 1; tableIndex <= 10; tableIndex++) {
+  for (let tableIndex = 1; tableIndex <= 20; tableIndex++) {
     if (tableStarRatings[tableIndex] === 3) estimatedTime += 60;
     else if (tableStarRatings[tableIndex] === 2) estimatedTime += 135;
     else if (tableStarRatings[tableIndex] === 1) estimatedTime += 200;

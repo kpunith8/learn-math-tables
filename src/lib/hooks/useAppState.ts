@@ -16,8 +16,9 @@ import {
   sanitizeQuizResults,
   sanitizeTableStates,
   isPlainObject,
-  TableState,
+  getMaxAllowedTable,
   LeaderboardData,
+  TableState,
 } from '../utils';
 
 export interface AppState {
@@ -77,7 +78,7 @@ const loadAppStateFromStorage = (): AppState | null => {
     if (!isPlainObject(state)) return null;
 
     const completedTables = new Set(sanitizeCompletedTables(state.completedTables));
-    const currentTable = clampInteger(state.currentTable, 1, 10, 1);
+    const currentTable = clampInteger(state.currentTable, 1, 20, 1);
     const difficulty: Difficulty = (['easy', 'normal', 'hard'] as string[]).includes(state.difficulty as string)
       ? (state.difficulty as Difficulty)
       : 'normal';
@@ -87,7 +88,7 @@ const loadAppStateFromStorage = (): AppState | null => {
     if (practiceMode) {
       // In practice mode all tables are unlocked
     } else {
-      const maxAllowed = difficulty === 'easy' ? 5 : difficulty === 'hard' ? 10 : 7;
+      const maxAllowed = getMaxAllowedTable(practiceMode, difficulty);
       if (currentTable > maxAllowed) effectiveCurrentTable = 1;
       if (currentTable > 1 && !completedTables.has(currentTable - 1)) effectiveCurrentTable = 1;
     }
