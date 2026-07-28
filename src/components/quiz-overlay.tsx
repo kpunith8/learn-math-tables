@@ -1,41 +1,28 @@
 'use client';
 
-import { useState, useEffect, useCallback, useMemo } from 'react';
-import { generateQuizQuestions } from '@/lib/utils';
+import { useState, useCallback, useEffect } from 'react';
+
+export interface QuizQuestion {
+  label: string;
+  correctAnswer: number;
+  options: number[];
+  hint: string;
+}
 
 interface QuizOverlayProps {
-  isOpen: boolean;
-  tableNumber: number;
+  questions: QuizQuestion[];
   onComplete: (correct: number, total: number) => void;
   onSkip: () => void;
   onPlaySound: (type: string) => void;
 }
 
-export function QuizOverlay({ isOpen, tableNumber, onComplete, onSkip, onPlaySound }: QuizOverlayProps) {
-  const questions = useMemo(() => {
-    if (isOpen && tableNumber > 0) {
-      return generateQuizQuestions(tableNumber);
-    }
-    return [];
-  }, [isOpen, tableNumber]);
-
+export function QuizOverlay({ questions, onComplete, onSkip, onPlaySound }: QuizOverlayProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [correctAnswers, setCorrectAnswers] = useState(0);
   const [hasAnswered, setHasAnswered] = useState(false);
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
   const [isFinished, setIsFinished] = useState(false);
   const [showHint, setShowHint] = useState(false);
-
-  useEffect(() => {
-    if (isOpen) {
-      setCurrentIndex(0); // eslint-disable-line react-hooks/set-state-in-effect
-      setCorrectAnswers(0);  
-      setHasAnswered(false);  
-      setSelectedAnswer(null);  
-      setIsFinished(false);  
-      setShowHint(false);  
-    }
-  }, [isOpen]);
 
   const handleAnswer = useCallback(
     (option: string) => {
@@ -76,21 +63,21 @@ export function QuizOverlay({ isOpen, tableNumber, onComplete, onSkip, onPlaySou
     }
   }, [isFinished, onPlaySound]);
 
-  if (!isOpen) return null;
+  if (!questions.length) return null;
 
   const currentQuestion = questions[currentIndex];
 
   return (
     <div className="quiz-overlay fixed inset-0 z-[1100] bg-black/50 flex items-center justify-center p-5 opacity-100 pointer-events-auto transition-opacity duration-300">
-      <div className="quiz-dialog bg-white rounded-3xl p-7 md:p-8 max-w-[420px] w-full shadow-[0_12px_40px_rgba(0,0,0,0.2)] text-center animate-[pop-in_0.35s_cubic-bezier(0.175,0.885,0.32,1.275)]">
-        <div className="quiz-progress font-display text-sm text-[#aaa] mb-1">
-          {isFinished ? 'Quiz Complete!' : `Question ${currentIndex + 1} of ${questions.length}`}
-        </div>
+        <div className="quiz-dialog bg-white rounded-3xl p-7 md:p-8 max-w-[420px] w-full shadow-[0_12px_40px_rgba(0,0,0,0.2)] text-center animate-[pop-in_0.35s_cubic-bezier(0.175,0.885,0.32,1.275)]">
+          <div className="quiz-progress-header font-display text-sm text-[#aaa] mb-1">
+            {isFinished ? 'Quiz Complete!' : `Question ${currentIndex + 1} of ${questions.length}`}
+          </div>
 
         {!isFinished && currentQuestion && (
           <div className="min-h-[280px] flex flex-col">
             <div className="quiz-question font-display text-[clamp(26px,6vw,34px)] text-[#C2410C] my-3 mb-5">
-              {tableNumber} × {currentQuestion.multiplier} = ?
+              {currentQuestion.label}
             </div>
             <div className="quiz-options grid grid-cols-2 gap-2.5">
               {currentQuestion.options.map((option) => {
@@ -120,7 +107,7 @@ export function QuizOverlay({ isOpen, tableNumber, onComplete, onSkip, onPlaySou
             <div className="min-h-[40px] mt-3 flex items-start">
               {showHint && (
                 <div className="quiz-hint font-body text-sm text-[#C2410C] bg-[#FFF7ED] rounded-[10px] py-2 px-3.5 border-[1.5px] border-[#FED7AA] text-center w-full animate-[popup-in_0.25s_ease-out]">
-                  The answer is {currentQuestion.correctAnswer} — {tableNumber} × {currentQuestion.multiplier} = {currentQuestion.correctAnswer}
+                  {currentQuestion.hint}
                 </div>
               )}
             </div>

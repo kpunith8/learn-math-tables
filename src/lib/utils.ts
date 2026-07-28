@@ -200,15 +200,15 @@ export const generateStoryText = (tableNumber: number, groupCount: number): stri
 
 // ── Quiz Generation ────────────────────────────────────────
 
-export interface QuizQuestion {
+export interface QuizQuestionLegacy {
   multiplier: number;
   correctAnswer: number;
   options: number[];
 }
 
-export const generateQuizQuestions = (tableNumber: number): QuizQuestion[] => {
+export const generateQuizQuestions = (tableNumber: number): QuizQuestionLegacy[] => {
   const usedMultipliers = new Set<number>();
-  const questions: QuizQuestion[] = [];
+  const questions: QuizQuestionLegacy[] = [];
   const maxAttempts = 100;
 
   for (let questionIndex = 0; questionIndex < 5; questionIndex++) {
@@ -237,6 +237,18 @@ export const generateQuizQuestions = (tableNumber: number): QuizQuestion[] => {
   }
   return questions;
 };
+
+export function toQuizQuestions(
+  legacy: QuizQuestionLegacy[],
+  tableNumber: number
+): { label: string; correctAnswer: number; options: number[]; hint: string }[] {
+  return legacy.map((q) => ({
+    label: `${tableNumber} × ${q.multiplier} = ?`,
+    correctAnswer: q.correctAnswer,
+    options: q.options,
+    hint: `The answer is ${q.correctAnswer} — ${tableNumber} × ${q.multiplier} = ${q.correctAnswer}`,
+  }));
+}
 
 // ── Speech Synthesis ───────────────────────────────────────
 

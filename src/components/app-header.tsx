@@ -18,6 +18,7 @@ interface AppHeaderProps {
   onShowPlayerName: () => void;
   onReset: () => void;
   onToggleMute: () => void;
+  onHome?: () => void;
 }
 
 const btnBase = 'font-display text-xs py-1.5 px-3.5 rounded-full border-2 cursor-pointer transition-all duration-150 min-h-[44px]';
@@ -36,6 +37,7 @@ export function AppHeader({
   onShowPlayerName,
   onReset,
   onToggleMute,
+  onHome,
 }: AppHeaderProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -52,11 +54,18 @@ export function AppHeader({
 
   return (
     <header className="app-header bg-[#1E293B] px-3 py-2 md:p-4">
-      {/* Mobile top row: title + hamburger */}
+      {/* Mobile top row: title + home + hamburger */}
       <div className="flex md:hidden items-center gap-2 mb-2">
         <h1 className="font-display text-lg text-white font-normal flex-1 leading-tight">
-          📖 Multiplication Adventure!
+          🔢 Tables
         </h1>
+        <button
+          onClick={onHome}
+          className="text-white/80 text-xl p-1.5 min-w-[44px] min-h-[44px] flex items-center justify-center hover:text-white"
+          aria-label="Home"
+        >
+          🏠
+        </button>
         <button
           onClick={() => setIsMenuOpen(true)}
           className="text-white text-2xl p-1.5 min-w-[44px] min-h-[44px] flex items-center justify-center"
@@ -68,9 +77,18 @@ export function AppHeader({
 
       {/* Desktop top row */}
       <div className="hidden md:flex items-center justify-between flex-wrap gap-1.5 mb-3">
-        <h1 className="font-display text-xl text-white font-normal">
-          📖 Multiplication Tables Adventure!
-        </h1>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={onHome}
+            className="text-white/70 text-xl p-1.5 min-w-[44px] min-h-[44px] flex items-center justify-center hover:text-white transition-colors"
+            aria-label="Home"
+          >
+            🏠
+          </button>
+          <h1 className="font-display text-xl text-white font-normal">
+            🔢 Tables
+          </h1>
+        </div>
         <div className="flex gap-1.5 items-center flex-wrap">
           <button
             onClick={onTogglePractice}
@@ -154,7 +172,14 @@ export function AppHeader({
         <aside
           className={`drawer-panel absolute top-0 right-0 h-full w-[280px] bg-[#1E293B] shadow-2xl p-5 flex flex-col gap-4 overflow-y-auto transition-transform duration-300 ease-in-out ${isMenuOpen ? 'translate-x-0' : 'translate-x-full'}`}
         >
-            <div className="drawer-header flex justify-end">
+            <div className="drawer-header flex justify-between items-center">
+              <button
+                onClick={() => { onHome?.(); closeMenu(); }}
+                className="text-white/70 text-xl p-1.5 min-w-[44px] min-h-[44px] flex items-center justify-center hover:text-white transition-colors"
+                aria-label="Home"
+              >
+                🏠
+              </button>
               <button
                 onClick={closeMenu}
                 className="drawer-close text-white/70 text-2xl p-1 hover:text-white"
