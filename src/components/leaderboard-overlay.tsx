@@ -11,7 +11,7 @@ interface LeaderboardOverlayProps {
 }
 
 export function LeaderboardOverlay({ isOpen, onClose }: LeaderboardOverlayProps) {
-  const { state, leaderboardData } = useAppContext();
+  const { leaderboardData } = useAppContext();
 
   const data = leaderboardData();
   const sortedEntries = Object.entries(data)

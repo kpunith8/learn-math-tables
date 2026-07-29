@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useCallback, useState, useRef, useMemo } from 'react';
+import { useEffect, useCallback, useState, useRef, useMemo, startTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAppContext } from '@/lib/contexts/AppContext';
 import { useAudio } from '@/lib/hooks/useAudio';
@@ -27,14 +27,12 @@ export default function TablesPage() {
     saveCurrentTableState,
     setDifficulty,
     togglePracticeMode,
-    setPlayerName,
     resetProgress,
     playAgain,
     revealCard,
     clearActiveCard,
     completeTable,
     saveQuizResult,
-    leaderboardData,
     saveLeaderboardEntry,
   } = useAppContext();
 
@@ -64,9 +62,15 @@ export default function TablesPage() {
   const completedCheckRef = useRef(new Set<string>());
   const prevTableRef = useRef(state.currentTable);
   const activeCardRef = useRef(state.activeCard);
-  activeCardRef.current = state.activeCard;
   const confirmDataRef = useRef(confirmData);
-  confirmDataRef.current = confirmData;
+
+  useEffect(() => {
+    activeCardRef.current = state.activeCard;
+  }, [state.activeCard]);
+
+  useEffect(() => {
+    confirmDataRef.current = confirmData;
+  }, [confirmData]);
 
   // Show pattern discovery when entering a new table
   useEffect(() => {
@@ -75,7 +79,7 @@ export default function TablesPage() {
     prevTableRef.current = state.currentTable;
 
     if (!engine.engineState.discoveredPatterns.includes(state.currentTable)) {
-      setShowPatternDiscovery(true);
+      startTransition(() => setShowPatternDiscovery(true));
     }
   }, [state.currentTable, engine.isEngineLoaded, isLoaded, engine.engineState.discoveredPatterns]);
 
@@ -96,8 +100,10 @@ export default function TablesPage() {
     completeTable(state.currentTable, starRating);
     stopSong();
     playSound('complete');
-    setCelebrationData({ elapsed: elapsedSeconds, stars: starRating });
-    setShowCelebration(true);
+    startTransition(() => {
+      setCelebrationData({ elapsed: elapsedSeconds, stars: starRating });
+      setShowCelebration(true);
+    });
   }, [state.revealedCards, state.currentTable, state.completedTables, state.tableStartTime, isLoaded, completeTable, stopSong, playSound]);
 
   // Reset completed check when table changes
@@ -315,14 +321,14 @@ export default function TablesPage() {
     }
   }, [isSpeaking, stopSpeaking]);
 
-  if (!isLoaded) return null;
-
   const quizQuestions = useMemo(
     () => showQuiz && quizTableNumber > 0
       ? toQuizQuestions(generateQuizQuestions(quizTableNumber), quizTableNumber)
       : [],
     [showQuiz, quizTableNumber]
   );
+
+  if (!isLoaded) return null;
 
   return (
     <div className="app-root font-body h-screen flex flex-col">

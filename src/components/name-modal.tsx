@@ -18,8 +18,12 @@ export function NameModal({ isOpen, initialName, onSave, onCancel }: NameModalPr
 
   useEffect(() => {
     if (isOpen) {
-      setName(initialName);
-      setTimeout(() => inputRef.current?.focus(), 300);
+      const initTimer = setTimeout(() => setName(initialName), 0);
+      const focusTimer = setTimeout(() => inputRef.current?.focus(), 300);
+      return () => {
+        clearTimeout(initTimer);
+        clearTimeout(focusTimer);
+      };
     }
   }, [isOpen, initialName]);
 

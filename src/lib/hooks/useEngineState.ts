@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useCallback, useSyncExternalStore, useState, useEffect } from 'react';
 import { ENGINE_STORAGE_KEY } from '@/lib/constants';
 import {
   FactMastery,
@@ -91,22 +91,64 @@ function recomputeStars(ms: Record<string, number>): number {
   return computeTotalStars(ms);
 }
 
+let _storeState: EngineState = getInitialEngineState();
+const _storeListeners: Set<() => void> = new Set();
+let _storeInitialized = false;
+
+function _initStore(): void {
+  if (_storeInitialized || typeof window === 'undefined') return;
+  _storeInitialized = true;
+  let loaded = loadEngineState();
+
+  const today = new Date().toISOString().split('T')[0];
+  if (loaded.lastActiveDate !== today) {
+    const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0];
+    const newStreak = loaded.lastActiveDate === yesterday ? loaded.streak + 1 : 1;
+    loaded = { ...loaded, streak: newStreak, lastActiveDate: today };
+  }
+
+  if (!loaded.dailyMission || isMissionExpired(loaded.dailyMission)) {
+    loaded = { ...loaded, dailyMission: generateDailyMission() };
+  }
+
+  _storeState = loaded;
+  saveEngineState(loaded);
+}
+
+function _getSnapshot(): EngineState {
+  _initStore();
+  return _storeState;
+}
+
+const _initialState = getInitialEngineState();
+
+function _getServerSnapshot(): EngineState {
+  return _initialState;
+}
+
+function _subscribe(callback: () => void): () => void {
+  _initStore();
+  _storeListeners.add(callback);
+  return () => _storeListeners.delete(callback);
+}
+
+function _updateStore(updater: (prev: EngineState) => EngineState): void {
+  _storeState = updater(_storeState);
+  saveEngineState(_storeState);
+  _storeListeners.forEach((l) => l());
+}
+
 export function useEngineState() {
-  const [engineState, setEngineState] = useState<EngineState>(getInitialEngineState);
+  const engineState = useSyncExternalStore(_subscribe, _getSnapshot, _getServerSnapshot);
   const [isEngineLoaded, setIsEngineLoaded] = useState(false);
 
   useEffect(() => {
-    const loaded = loadEngineState();
-    setEngineState(loaded);
-    setIsEngineLoaded(true);
+    const id = setTimeout(() => setIsEngineLoaded(true), 0);
+    return () => clearTimeout(id);
   }, []);
 
   const persist = useCallback((updater: (prev: EngineState) => EngineState) => {
-    setEngineState((prev) => {
-      const next = updater(prev);
-      saveEngineState(next);
-      return next;
-    });
+    _updateStore(updater);
   }, []);
 
   const checkStreak = useCallback(() => {
@@ -226,19 +268,6 @@ export function useEngineState() {
     },
     [persist]
   );
-
-  const ensureDailyMission = useCallback(() => {
-    persist((prev) => {
-      if (prev.dailyMission && !isMissionExpired(prev.dailyMission)) return prev;
-      return { ...prev, dailyMission: generateDailyMission('Explorer') };
-    });
-  }, [persist]);
-
-  useEffect(() => {
-    if (isEngineLoaded) {
-      ensureDailyMission();
-    }
-  }, [isEngineLoaded, ensureDailyMission]);
 
   const updateMission = useCallback(
     (type: 'practice' | 'review' | 'challenge', increment = 1) => {

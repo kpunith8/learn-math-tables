@@ -157,7 +157,7 @@ export function PracticeProblemView({ problem, index, total, onComplete }: Pract
         )}
         {status === 'revealed' && (
           <div className="font-body text-sm text-text-secondary bg-[#F8F8F8] rounded-xl p-3 text-center leading-[1.6]">
-            <p className="font-display text-base text-orange mb-2">Here's how we solve it! Let's look together 👀</p>
+            <p className="font-display text-base text-orange mb-2">Here&apos;s how we solve it! Let&apos;s look together 👀</p>
             <p>{explanation}</p>
           </div>
         )}

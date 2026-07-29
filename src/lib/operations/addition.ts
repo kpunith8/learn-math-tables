@@ -19,7 +19,7 @@ function emojiLine(a: number, b: number, result: number, emoji: string): string 
   return `${groupA} + ${groupB} = ${emoji.repeat(result)}`;
 }
 
-function getHint(operation: string): string {
+function getHint(): string {
   return 'Try counting all the items together, starting from the first number!';
 }
 
@@ -98,7 +98,7 @@ export function generatePracticeProblems(difficulty: DifficultyLevel): PracticeP
       emojiSafe: safe,
       explanation: `${a} + ${b} = ${result}. ${safe ? emojiLine(a, b, result, emoji) : ''}`,
       emoji,
-      tip: getHint('addition'),
+      tip: getHint(),
     });
   }
 

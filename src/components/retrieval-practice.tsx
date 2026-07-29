@@ -1,8 +1,7 @@
 'use client';
 
-import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
+import { useState, useEffect, useCallback, useMemo, useRef, startTransition } from 'react';
 import { Button } from '@/components/ui/button';
-import { MascotMessage } from '@/components/mascot-message';
 import { getWrongAnswerMessage } from '@/components/celebration-message';
 import { CelebrationMessage } from '@/components/celebration-message';
 
@@ -24,7 +23,10 @@ export function RetrievalPractice({ tableNumber, weakFacts, onComplete }: Retrie
   const [results, setResults] = useState<Array<{ fact: string; correct: boolean }>>([]);
   const [answerStatus, setAnswerStatus] = useState<'correct' | 'wrong' | null>(null);
   const resultsRef = useRef(results);
-  resultsRef.current = results;
+
+  useEffect(() => {
+    resultsRef.current = results;
+  }, [results]);
 
   const questions = useMemo(() => {
     const multipliers = weakFacts && weakFacts.length > 0
@@ -34,18 +36,20 @@ export function RetrievalPractice({ tableNumber, weakFacts, onComplete }: Retrie
     const uniqueMultipliers = [...new Set(multipliers)];
     const selected = shuffleArray(uniqueMultipliers).slice(0, 5);
     return selected.map((m) => ({ multiplier: m, revealed: false }));
-  }, [tableNumber, weakFacts]);
+  }, [weakFacts]);
 
   const currentQuestion = questions[currentIndex];
 
   useEffect(() => {
     if (!currentQuestion) return;
     if (phase === 'show') {
-      setShowAnswer(true);
+      startTransition(() => setShowAnswer(true));
       const timer = setTimeout(() => {
-        setShowAnswer(false);
-        setPhase('recall');
-        setInputValue('');
+        startTransition(() => {
+          setShowAnswer(false);
+          setPhase('recall');
+          setInputValue('');
+        });
       }, 3000);
       return () => clearTimeout(timer);
     }

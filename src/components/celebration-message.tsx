@@ -1,5 +1,7 @@
 'use client';
 
+import { useState } from 'react';
+
 interface CelebrationMessageProps {
   size: 'small' | 'medium' | 'large';
   label?: string;
@@ -25,7 +27,7 @@ const CELEBRATIONS = {
 
 export function CelebrationMessage({ size, label }: CelebrationMessageProps) {
   const config = CELEBRATIONS[size];
-  const message = label ?? config.messages[Math.floor(Math.random() * config.messages.length)];
+  const [message] = useState(() => label ?? config.messages[Math.floor(Math.random() * config.messages.length)]);
 
   return (
     <div

@@ -69,7 +69,7 @@ export function ProblemSummaryList({ problems, correctCount, onContinue }: Probl
         onClick={onContinue}
         className="w-full mt-5 font-display text-base py-3 rounded-xl border-none bg-indigo text-white cursor-pointer transition-colors duration-150 shadow-[0_4px_12px_rgba(79,70,229,0.3)] hover:bg-indigo-hover active:bg-indigo-active"
       >
-        Let's do the quiz! 🎉
+        Let&apos;s do the quiz! 🎉
       </button>
     </div>
   );

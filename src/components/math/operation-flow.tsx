@@ -1,7 +1,7 @@
 'use client';
 
 import dynamic from 'next/dynamic';
-import { useState, useCallback, useRef, useEffect } from 'react';
+import { useState, useCallback, useEffect, useMemo } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { Toast } from '@base-ui/react/toast';
 import { useAppContext } from '@/lib/contexts/AppContext';
@@ -84,56 +84,51 @@ export function OperationFlow({
 
   const meta = OPERATION_META[operation];
 
-  const [learnExamples, setLearnExamples] = useState<Example[]>([]);
-  const [practiceProblems, setPracticeProblems] = useState<PracticeProblem[]>([]);
-  const [quizQuestions, setQuizQuestions] = useState<QuizQuestion[]>([]);
+  const generatedContent = useMemo(() => {
+    if (!urlDifficulty) return null;
+    resetEmojiPool();
+    const examples = genExamples(urlDifficulty);
+    const problems = genPractice(urlDifficulty);
+    const quizzes = genQuiz(urlDifficulty);
+    const intro = getConceptIntro(urlDifficulty);
+    return { examples, problems, quizzes, intro };
+  }, [urlDifficulty, genExamples, genPractice, genQuiz, getConceptIntro]);
+
+  const learnExamples: Example[] = generatedContent?.examples ?? [];
+  const practiceProblems: PracticeProblem[] = generatedContent?.problems ?? [];
+  const quizQuestions: QuizQuestion[] = generatedContent?.quizzes ?? [];
+  const conceptIntro: ConceptIntro | null = generatedContent?.intro ?? null;
+
   const [currentExampleIndex, setCurrentExampleIndex] = useState(0);
   const [currentProblemIndex, setCurrentProblemIndex] = useState(0);
   const [practiceCorrectCount, setPracticeCorrectCount] = useState(0);
   const [showSummary, setShowSummary] = useState(false);
-  const [conceptIntro, setConceptIntro] = useState<ConceptIntro | null>(null);
-  const [showConcept, setShowConcept] = useState(false);
   const [fadeOut, setFadeOut] = useState(false);
-
-  const prevStageRef = useRef(urlStage);
+  const [conceptDismissed, setConceptDismissed] = useState(false);
+  const showConcept = conceptIntro != null && !conceptDismissed;
 
   useEffect(() => {
-    if (!urlDifficulty) return;
-
-    resetEmojiPool();
-    setLearnExamples(genExamples(urlDifficulty));
-    setPracticeProblems(genPractice(urlDifficulty));
-    setQuizQuestions(genQuiz(urlDifficulty));
-    setCurrentExampleIndex(0);
-    setCurrentProblemIndex(0);
-    setPracticeCorrectCount(0);
-    setShowSummary(false);
-    setFadeOut(false);
-
-    const intro = getConceptIntro(urlDifficulty);
-    if (intro) {
-      setConceptIntro(intro);
-      setShowConcept(true);
-    } else {
-      setShowConcept(false);
+    if (urlDifficulty) {
+      const id = setTimeout(() => {
+        setCurrentExampleIndex(0);
+        setCurrentProblemIndex(0);
+        setPracticeCorrectCount(0);
+        setShowSummary(false);
+        setFadeOut(false);
+        setConceptDismissed(false);
+      }, 0);
+      return () => clearTimeout(id);
     }
-  }, [urlDifficulty, genExamples, genPractice, genQuiz, getConceptIntro]);
+  }, [urlDifficulty]);
 
   useEffect(() => {
-    if (prevStageRef.current !== urlStage) {
+    const id = setTimeout(() => {
       if (urlStage === 'practice' || urlStage === 'learn') {
         setShowSummary(false);
       }
-    }
-    prevStageRef.current = urlStage;
+    }, 0);
+    return () => clearTimeout(id);
   }, [urlStage]);
-
-  useEffect(() => {
-    if (engine.isEngineLoaded && state.playerName) {
-      engine.checkStreak();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [engine.isEngineLoaded, state.playerName]);
 
   const handleSelectDifficulty = useCallback(
     (d: DifficultyLevel) => {
@@ -143,7 +138,7 @@ export function OperationFlow({
   );
 
   const handleConceptDone = useCallback(() => {
-    setShowConcept(false);
+    setConceptDismissed(true);
   }, []);
 
   const handleNextExample = useCallback(() => {
@@ -324,7 +319,7 @@ export function OperationFlow({
         <div className="flex flex-col items-center p-6">
           <div className="flex items-center gap-3 mb-4">
             <h2 className="font-display text-[20px] text-orange">
-              Let's Learn {meta.name} {meta.emoji}
+              Let&apos;s Learn {meta.name} {meta.emoji}
             </h2>
           </div>
           <MascotMessage message={getMascotHint(operation)} mood="happy" className="mb-4" />
@@ -337,7 +332,7 @@ export function OperationFlow({
             size="xl"
             className="mt-5"
           >
-            {currentExampleIndex < learnExamples.length - 1 ? 'Next →' : 'Let\'s Practice! 💪'}
+            {currentExampleIndex < learnExamples.length - 1 ? 'Next →' : "Let\u2019s Practice! 💪"}
           </Button>
 
           {currentExampleIndex < learnExamples.length - 1 && (

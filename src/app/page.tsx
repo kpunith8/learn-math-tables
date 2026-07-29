@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAppContext } from '@/lib/contexts/AppContext';
 import { useEngineState } from '@/lib/hooks/useEngineState';
@@ -19,20 +19,15 @@ const WORLDS = [
 export default function LandingPage() {
   const router = useRouter();
   const { state, isLoaded, setPlayerName } = useAppContext();
-  const { engineState, isEngineLoaded, checkStreak, updateMission, getNewBadges } = useEngineState();
+  const { engineState, isEngineLoaded, getNewBadges } = useEngineState();
   const [showNameModal, setShowNameModal] = useState(false);
 
   useEffect(() => {
     if (isLoaded && !state.playerName) {
-      setShowNameModal(true);
+      const id = setTimeout(() => setShowNameModal(true), 0);
+      return () => clearTimeout(id);
     }
   }, [isLoaded, state.playerName]);
-
-  useEffect(() => {
-    if (isEngineLoaded && isLoaded) {
-      checkStreak();
-    }
-  }, [isEngineLoaded, isLoaded, checkStreak]);
 
   const mission = isEngineLoaded ? engineState.dailyMission : null;
   const starProgress = isEngineLoaded ? getStarsToNextMilestone(engineState.stars) : 0;
@@ -75,7 +70,7 @@ export default function LandingPage() {
             <section className="mb-4">
               <div className="bg-white rounded-2xl border-2 border-border-card p-4">
                 <div className="flex items-center justify-between mb-2">
-                  <h2 className="font-display text-sm font-bold text-text-primary">Today's Mission</h2>
+                    <h2 className="font-display text-sm font-bold text-text-primary">Today&apos;s Mission</h2>
                   {mission.completed ? (
                     <span className="font-display text-xs text-green font-semibold">✅ Complete!</span>
                   ) : (
