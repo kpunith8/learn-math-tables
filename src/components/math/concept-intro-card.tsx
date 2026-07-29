@@ -22,13 +22,13 @@ export function ConceptIntroCard({ copy, onDone }: ConceptIntroCardProps) {
   if (!visible) return null;
 
   return (
-    <div className={`concept-intro-card w-full max-w-[400px] bg-[#FFF7ED] rounded-2xl border-2 border-[#FED7AA] p-6 text-center transition-opacity duration-300 ${fading ? 'opacity-0' : 'opacity-100'}`}>
-      <p className="concept-intro-copy font-display text-[17px] leading-[1.6] text-[#C2410C] mb-4">
+    <div className={`w-full max-w-[400px] bg-warm-bg rounded-2xl border-2 border-warm-border p-6 text-center transition-opacity duration-300 ${fading ? 'opacity-0' : 'opacity-100'}`}>
+      <p className="font-display text-[17px] leading-[1.6] text-orange mb-4">
         {copy}
       </p>
       <button
         onClick={handleDone}
-        className="concept-intro-btn font-display text-base py-2.5 px-8 rounded-full border-none bg-[#4F46E5] text-white cursor-pointer transition-colors duration-150 shadow-[0_4px_12px_rgba(79,70,229,0.3)] hover:bg-[#4338CA] active:bg-[#3730A3]"
+        className="font-display text-base py-2.5 px-8 rounded-full border-none bg-indigo text-white cursor-pointer transition-colors duration-150 shadow-[0_4px_12px_rgba(79,70,229,0.3)] hover:bg-indigo-hover active:bg-indigo-active"
       >
         Got it! 👍
       </button>

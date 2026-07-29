@@ -1,5 +1,6 @@
 'use client';
 
+import dynamic from 'next/dynamic';
 import { useState, useCallback, useRef, useEffect } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { useAppContext } from '@/lib/contexts/AppContext';
@@ -14,7 +15,8 @@ import { ConceptIntroCard } from './concept-intro-card';
 import { WorkedExample } from './worked-example';
 import { PracticeProblemView } from './practice-problem';
 import { ProblemSummaryList } from './problem-summary';
-import { QuizOverlay } from '@/components/quiz-overlay';
+
+const QuizOverlay = dynamic(() => import('@/components/quiz-overlay').then((m) => m.QuizOverlay), { ssr: false });
 
 interface OperationFlowProps {
   operation: Operation;
@@ -161,64 +163,66 @@ export function OperationFlow({
   const currentProblem = practiceProblems[currentProblemIndex];
 
   return (
-    <div className="operation-flow font-body min-h-screen bg-[#F5F5F5]">
-      {/* Top bar */}
-      <div className="operation-header bg-[#1E293B] text-white px-4 py-3 flex items-center justify-between">
-        <div className="operation-left flex items-center gap-2">
+    <div className="font-body min-h-screen bg-surface">
+      <div className="bg-header text-white px-4 py-3 flex items-center justify-between">
+        <div className="flex items-center gap-2">
           <button
             onClick={handleBackToMenu}
-            className="operation-home-btn text-white/70 text-xl p-1.5 min-w-[44px] min-h-[44px] flex items-center justify-center hover:text-white transition-colors cursor-pointer"
+            className="text-white/70 text-xl p-1.5 min-w-[44px] min-h-[44px] flex items-center justify-center hover:text-white transition-colors cursor-pointer"
             aria-label="Home"
           >
             🏠
           </button>
           <button
             onClick={() => router.push(`/${operation}`)}
-            className="operation-name-btn font-display text-base text-white p-1.5 min-h-[44px] flex items-center gap-1 hover:text-white/80 transition-colors cursor-pointer"
+            className="font-display text-base text-white p-1.5 min-h-[44px] flex items-center gap-1 hover:text-white/80 transition-colors cursor-pointer"
           >
-            <span className="operation-name-emoji" style={{ filter: 'brightness(0) invert(1)' }}>{meta.emoji}</span>
+            <span style={{ filter: 'brightness(0) invert(1)' }}>{meta.emoji}</span>
             {meta.name}
           </button>
         </div>
-        <div className="operation-header-right flex items-center gap-2">
+        <div className="flex items-center gap-2">
           {urlStage !== 'difficulty' && urlDifficulty && (
-            <span className="operation-difficulty-badge font-display text-sm text-white">
+            <span className="font-display text-sm text-white">
               {urlDifficulty === 'easy' ? '🌟 Easy' : urlDifficulty === 'medium' ? '⭐ Medium' : '🏆 Hard'}
             </span>
           )}
           <button
             onClick={() => router.push('/')}
-            className="operation-user-btn font-display text-xs bg-[#6366F1] text-white py-1.5 px-3 rounded-full border-none cursor-pointer hover:bg-[#4F46E5] transition-colors min-h-[44px] flex items-center"
+            className="font-display text-xs bg-indigo-light text-white py-1.5 px-3 rounded-full border-none cursor-pointer hover:bg-indigo transition-colors min-h-[44px] flex items-center"
           >
-            {state.playerName || '👤 Add Name'}
+            <span
+              className="max-w-[180px] overflow-hidden text-ellipsis whitespace-nowrap"
+              title={state.playerName}
+            >
+              {state.playerName || '👤 Add Name'}
+            </span>
           </button>
         </div>
       </div>
 
-      {/* Progress dots for learn/practice */}
       {(urlStage === 'learn' || (urlStage === 'practice' && !showSummary)) && (
-        <div className="operation-progress flex justify-center gap-2 py-3">
+        <div className="flex justify-center gap-2 py-3">
           {urlStage === 'learn'
             ? learnExamples.map((_, i) => (
                 <div
                   key={i}
-                  className={`operation-progress-dot w-2.5 h-2.5 rounded-full transition-colors duration-200 ${
-                    i === currentExampleIndex ? 'operation-progress-dot-active bg-[#4F46E5]' : i < currentExampleIndex ? 'operation-progress-dot-done bg-[#15803D]' : 'operation-progress-dot-pending bg-[#ddd]'
+                  className={`w-2.5 h-2.5 rounded-full transition-colors duration-200 ${
+                    i === currentExampleIndex ? 'bg-indigo' : i < currentExampleIndex ? 'bg-green' : 'bg-[#ddd]'
                   }`}
                 />
               ))
             : practiceProblems.map((_, i) => (
                 <div
                   key={i}
-                  className={`operation-progress-dot w-2.5 h-2.5 rounded-full transition-colors duration-200 ${
-                    i === currentProblemIndex ? 'operation-progress-dot-active bg-[#4F46E5]' : i < currentProblemIndex ? 'operation-progress-dot-done bg-[#15803D]' : 'operation-progress-dot-pending bg-[#ddd]'
+                  className={`w-2.5 h-2.5 rounded-full transition-colors duration-200 ${
+                    i === currentProblemIndex ? 'bg-indigo' : i < currentProblemIndex ? 'bg-green' : 'bg-[#ddd]'
                   }`}
                 />
               ))}
         </div>
       )}
 
-      {/* Stage: Difficulty Select */}
       {urlStage === 'difficulty' && !showConcept && (
         <DifficultySelector
           operationEmoji={meta.emoji}
@@ -228,44 +232,41 @@ export function OperationFlow({
         />
       )}
 
-      {/* Stage: Concept Intro */}
       {showConcept && conceptIntro && (
-        <div className="operation-concept-stage flex justify-center p-6">
+        <div className="flex justify-center p-6">
           <ConceptIntroCard copy={conceptIntro.copy} onDone={handleConceptDone} />
         </div>
       )}
 
-      {/* Stage: Learn */}
       {urlStage === 'learn' && !showConcept && currentExample && (
-        <div className="operation-learn-stage flex flex-col items-center p-6">
-          <h2 className="operation-learn-title font-display text-[20px] text-[#C2410C] mb-4">
+        <div className="flex flex-col items-center p-6">
+          <h2 className="font-display text-[20px] text-orange mb-4">
             Let's Learn {meta.name}! {meta.emoji}
           </h2>
-          <div className={`operation-learn-example transition-opacity duration-200 ${fadeOut ? 'opacity-0' : 'opacity-100'}`}>
+          <div className={`transition-opacity duration-200 ${fadeOut ? 'opacity-0' : 'opacity-100'}`}>
             <WorkedExample example={currentExample} />
           </div>
           <button
             onClick={handleNextExample}
-            className="operation-next-btn mt-5 font-display text-base py-2.5 px-8 rounded-full border-none bg-[#4F46E5] text-white cursor-pointer transition-colors duration-150 shadow-[0_4px_12px_rgba(79,70,229,0.3)] hover:bg-[#4338CA] active:bg-[#3730A3]"
+            className="mt-5 font-display text-base py-2.5 px-8 rounded-full border-none bg-indigo text-white cursor-pointer transition-colors duration-150 shadow-[0_4px_12px_rgba(79,70,229,0.3)] hover:bg-indigo-hover active:bg-indigo-active"
           >
             {currentExampleIndex < learnExamples.length - 1 ? 'Next →' : 'Let\'s Practice! 💪'}
           </button>
 
           {currentExampleIndex < learnExamples.length - 1 && (
-            <p className="operation-learn-hint font-body text-sm text-[#aaa] mt-3">
+            <p className="font-body text-sm text-text-dim mt-3">
               View all examples to unlock practice
             </p>
           )}
         </div>
       )}
 
-      {/* Stage: Practice */}
       {urlStage === 'practice' && !showSummary && currentProblem && (
-        <div className="operation-practice-stage flex flex-col items-center p-4 sm:p-6">
-          <h2 className="operation-practice-title font-display text-[20px] text-[#C2410C] mb-4">
+        <div className="flex flex-col items-center p-4 sm:p-6">
+          <h2 className="font-display text-[20px] text-orange mb-4">
             Time to Practice! 💪
           </h2>
-          <div className={`operation-practice-content w-full max-w-[420px] transition-opacity duration-200 ${fadeOut ? 'opacity-0' : 'opacity-100'}`}>
+          <div className={`w-full max-w-[420px] transition-opacity duration-200 ${fadeOut ? 'opacity-0' : 'opacity-100'}`}>
             <PracticeProblemView
               key={currentProblemIndex}
               problem={currentProblem}
@@ -277,9 +278,8 @@ export function OperationFlow({
         </div>
       )}
 
-      {/* Stage: Practice Summary */}
       {showSummary && (
-        <div className="operation-summary-stage p-6">
+        <div className="p-6">
           <ProblemSummaryList
             problems={practiceProblems}
             correctCount={practiceCorrectCount}
@@ -288,7 +288,6 @@ export function OperationFlow({
         </div>
       )}
 
-      {/* Stage: Quiz (via overlay) */}
       {urlStage === 'quiz' && (
         <QuizOverlay
           questions={quizQuestions}

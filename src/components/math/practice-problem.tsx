@@ -62,14 +62,14 @@ export function PracticeProblemView({ problem, index, total, onComplete }: Pract
   }, [answer, result, attempts, status, onComplete]);
 
   return (
-    <div className="practice-problem w-full max-w-[420px] bg-white rounded-2xl border-2 border-[#E2E8F0] p-5 animate-[fade-in_0.3s_ease-out]">
-      <div className="text-sm font-body text-[#aaa] text-center mb-2">
+    <div className="w-full max-w-[420px] bg-white rounded-2xl border-2 border-border-card p-5 animate-[fade-in_0.3s_ease-out]">
+      <div className="text-sm font-body text-text-dim text-center mb-2">
         Problem {index + 1} of {total}
       </div>
 
-      <div className="practice-problem-equation mb-4">
+      <div className="mb-4">
         {isHorizontal ? (
-          <div className="practice-problem-horizontal text-[clamp(22px,6vw,34px)] font-display text-[#C2410C] text-center leading-[1.4]">
+          <div className="text-[clamp(22px,6vw,34px)] font-display text-orange text-center leading-[1.4]">
             {operation === 'multiplication'
               ? `${padNumber(operand1)} × ${padNumber(operand2)} = `
               : `${padNumber(operand1)} ÷ ${padNumber(operand2)} = `}
@@ -82,8 +82,8 @@ export function PracticeProblemView({ problem, index, total, onComplete }: Pract
             />
           </div>
         ) : (
-          <div className="practice-problem-vertical font-display text-[#C2410C] text-center leading-[1.3]">
-            <div className="practice-problem-vertical-equation inline-block text-[clamp(22px,6vw,34px)] text-right font-mono">
+          <div className="font-display text-orange text-center leading-[1.3]">
+            <div className="inline-block text-[clamp(22px,6vw,34px)] text-right font-mono">
               {(() => {
                 const op1 = padNumber(operand1);
                 const op2 = padNumber(operand2);
@@ -91,9 +91,9 @@ export function PracticeProblemView({ problem, index, total, onComplete }: Pract
                 const maxW = Math.max(op1.length, op2.length, blank.length);
                 return (
                   <>
-                    <div className="practice-operand1 text-right">{op1.padStart(maxW)}</div>
-                    <div className="practice-operand2 text-right">{symbol} {op2.padStart(Math.max(0, maxW - 2))}</div>
-                    <div className="practice-result-row border-t-2 border-[#C2410C] mt-0.5 pt-0.5 text-right">
+                    <div className="text-right">{op1.padStart(maxW)}</div>
+                    <div className="text-right">{symbol} {op2.padStart(Math.max(0, maxW - 2))}</div>
+                    <div className="border-t-2 border-orange mt-0.5 pt-0.5 text-right">
                       <NumberBlank
                         value={answer}
                         onChange={setAnswer}
@@ -111,7 +111,7 @@ export function PracticeProblemView({ problem, index, total, onComplete }: Pract
       </div>
 
       {showEmoji && (
-        <div className="practice-problem-emoji text-center my-3 py-2 bg-[#FAFAFA] rounded-xl">
+        <div className="text-center my-3 py-2 bg-card-hover rounded-xl">
           {(operation === 'addition' || operation === 'subtraction') ? (
             <EmojiGroup
               emoji={emoji}
@@ -128,36 +128,36 @@ export function PracticeProblemView({ problem, index, total, onComplete }: Pract
         </div>
       )}
 
-      <div className="practice-problem-actions min-h-[36px] mt-2">
+      <div className="min-h-[36px] mt-2">
         {status === 'waiting' && (
           <button
             onClick={handleSubmit}
             disabled={answer === ''}
-            className="practice-submit-btn w-full font-display text-base py-2.5 rounded-xl border-none bg-[#4F46E5] text-white cursor-pointer transition-colors duration-150 hover:bg-[#4338CA] active:bg-[#3730A3] disabled:opacity-40 disabled:cursor-not-allowed"
+            className="w-full font-display text-base py-2.5 rounded-xl border-none bg-indigo text-white cursor-pointer transition-colors duration-150 hover:bg-indigo-hover active:bg-indigo-active disabled:opacity-40 disabled:cursor-not-allowed"
           >
             Check Answer ✅
           </button>
         )}
         {status === 'correct' && (
-          <div className="practice-correct-msg text-center font-display text-lg text-[#15803D] animate-[popup-in_0.25s_ease-out]">
+          <div className="text-center font-display text-lg text-green animate-[popup-in_0.25s_ease-out]" role="status">
             ✅ Yes! Great job! 🌟
           </div>
         )}
         {status === 'incorrect' && (
-          <div className="practice-incorrect-msg text-center font-display text-base text-[#C2410C] animate-[popup-in_0.25s_ease-out]">
+          <div className="text-center font-display text-base text-orange animate-[popup-in_0.25s_ease-out]" role="alert">
             Not quite — try again! 💡
           </div>
         )}
         {status === 'revealed' && (
-          <div className="practice-revealed-msg font-body text-sm text-[#555] bg-[#F8F8F8] rounded-xl p-3 text-center leading-[1.6]">
-            <p className="practice-explanation-title font-display text-base text-[#C2410C] mb-2">Here's how we solve it! Let's look together 👀</p>
-            <p className="practice-explanation-text">{explanation}</p>
+          <div className="font-body text-sm text-text-secondary bg-[#F8F8F8] rounded-xl p-3 text-center leading-[1.6]">
+            <p className="font-display text-base text-orange mb-2">Here's how we solve it! Let's look together 👀</p>
+            <p>{explanation}</p>
           </div>
         )}
       </div>
 
       {showTip && (
-        <div className="practice-tip text-center font-body text-sm text-[#C2410C] bg-[#FFF7ED] rounded-[10px] py-2 px-3.5 mt-2 border-[1.5px] border-[#FED7AA] animate-[popup-in_0.25s_ease-out]">
+        <div className="text-center font-body text-sm text-orange bg-warm-bg rounded-[10px] py-2 px-3.5 mt-2 border-[1.5px] border-warm-border animate-[popup-in_0.25s_ease-out]" role="status">
           💡 {tip}
         </div>
       )}

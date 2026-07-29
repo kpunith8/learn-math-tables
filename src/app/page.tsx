@@ -25,23 +25,28 @@ export default function LandingPage() {
   }, [isLoaded, state.playerName]);
 
   return (
-    <div className="landing-page font-body min-h-screen bg-gradient-to-br from-[#F8F8F8] to-[#EDEDED] flex flex-col">
-      <div className="landing-header bg-[#1E293B] text-white px-4 py-3 flex items-center justify-between">
-        <span className="landing-title font-display text-base">🌟 Math Adventure!</span>
+    <div className="font-body min-h-screen bg-gradient-to-br from-[#F8F8F8] to-[#EDEDED] flex flex-col">
+      <div className="bg-header text-white px-4 py-3 flex items-center justify-between">
+        <span className="font-display text-base">🌟 Math Adventure!</span>
         <button
           onClick={() => setShowNameModal(true)}
-          className="landing-user-btn font-display text-sm bg-[#6366F1] text-white py-1.5 px-4 rounded-full border-none cursor-pointer hover:bg-[#4F46E5] transition-colors min-h-[44px] flex items-center"
+          className="font-display text-sm bg-indigo-light text-white py-1.5 px-4 rounded-full border-none cursor-pointer hover:bg-indigo transition-colors min-h-[44px] flex items-center"
         >
-          {state.playerName || '👤 Add Name'}
+          <span
+            className="max-w-[180px] overflow-hidden text-ellipsis whitespace-nowrap"
+            title={state.playerName}
+          >
+            {state.playerName || '👤 Add Name'}
+          </span>
         </button>
       </div>
 
-      <div className="landing-body flex-1 flex flex-col items-center justify-center p-6">
-        <h1 className="landing-heading font-display text-[clamp(28px,7vw,42px)] text-[#C2410C] mb-1 text-center leading-tight">
-          <span className="landing-heading-emoji block text-[48px] mb-2">🌟</span>
+      <div className="flex-1 flex flex-col items-center justify-center p-6">
+        <h1 className="font-display text-[clamp(28px,7vw,42px)] text-orange mb-1 text-center leading-tight">
+          <span className="block text-[48px] mb-2">🌟</span>
           Math Adventure!
         </h1>
-        <p className="landing-subtitle font-body text-base text-[#777] mb-8 text-center max-w-[400px]">
+        <p className="font-body text-base text-text-tertiary mb-8 text-center max-w-[400px]">
           Pick a topic and start learning with fun examples, practice problems, and quizzes!
         </p>
 
@@ -52,22 +57,22 @@ export default function LandingPage() {
               <button
                 key={operation}
                 onClick={() => router.push(route)}
-                className="module-card font-display w-full rounded-2xl border-2 border-[#E2E8F0] bg-white p-5 text-left cursor-pointer transition-colors duration-150 hover:border-[#6366F1] hover:bg-[#FAFAFA] hover:shadow-[0_4px_16px_rgba(99,102,241,0.15)] active:bg-[#F0F0F0]"
+                className="font-display w-full rounded-2xl border-2 border-border-card bg-white p-5 text-left cursor-pointer transition-colors duration-150 hover:border-indigo-light hover:bg-card-hover hover:shadow-[0_4px_16px_rgba(99,102,241,0.15)] active:bg-card-active"
               >
-                <div className="module-card-emoji text-[36px] mb-1">{meta.emoji}</div>
-                <div className="module-card-name text-lg text-[#333] font-bold">{meta.name}</div>
-                <div className="module-card-tagline text-sm text-[#888] font-body mt-0.5">{meta.tagline}</div>
+                <div className="text-[36px] mb-1">{meta.emoji}</div>
+                <div className="text-lg text-text-primary font-bold">{meta.name}</div>
+                <div className="text-sm text-text-muted font-body mt-0.5">{meta.tagline}</div>
               </button>
             );
           })}
 
           <button
             onClick={() => router.push('/tables')}
-            className="module-card font-display w-full rounded-2xl border-2 border-[#E2E8F0] bg-white p-5 text-left cursor-pointer transition-colors duration-150 hover:border-[#6366F1] hover:bg-[#FAFAFA] hover:shadow-[0_4px_16px_rgba(99,102,241,0.15)] active:bg-[#F0F0F0] sm:col-span-2"
+            className="font-display w-full rounded-2xl border-2 border-border-card bg-white p-5 text-left cursor-pointer transition-colors duration-150 hover:border-indigo-light hover:bg-card-hover hover:shadow-[0_4px_16px_rgba(99,102,241,0.15)] active:bg-card-active sm:col-span-2"
           >
-            <div className="module-card-emoji text-[36px] mb-1">🔢</div>
-            <div className="module-card-name text-lg text-[#333] font-bold">Tables</div>
-            <div className="module-card-tagline text-sm text-[#888] font-body mt-0.5">Master your times tables!</div>
+            <div className="text-[36px] mb-1">🔢</div>
+            <div className="text-lg text-text-primary font-bold">Tables</div>
+            <div className="text-sm text-text-muted font-body mt-0.5">Master your times tables!</div>
           </button>
         </div>
       </div>

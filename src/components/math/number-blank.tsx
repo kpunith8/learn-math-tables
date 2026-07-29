@@ -32,14 +32,16 @@ export function NumberBlank({ value, onChange, onSubmit, disabled, placeholder }
   return (
     <div className="number-blank-container inline-flex items-center justify-center">
       <input
-        type="number"
+        type="text"
         value={value}
         onChange={handleChange}
         onKeyDown={handleKeyDown}
         disabled={disabled}
         placeholder={placeholder || '?'}
-        className="number-blank-input w-[clamp(90px,35vw,140px)] text-center font-display text-[clamp(24px,5vw,32px)] text-[#C2410C] bg-[#FFF7ED] border-2 border-[#FED7AA] rounded-xl py-2.5 px-3 outline-none focus:border-[#6366F1] focus:bg-white transition-colors duration-150 [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
         inputMode="numeric"
+        autoComplete="off"
+        aria-label="Answer"
+        className="number-blank-input w-[clamp(90px,35vw,140px)] text-center font-display text-[clamp(24px,5vw,32px)] text-orange bg-warm-bg border-2 border-warm-border rounded-xl py-2.5 px-3 outline-none focus:border-indigo-light focus:bg-white transition-colors duration-150 [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
       />
     </div>
   );

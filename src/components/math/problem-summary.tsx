@@ -18,30 +18,30 @@ const OP_SYMBOLS: Record<Operation, string> = {
 
 export function ProblemSummaryList({ problems, correctCount, onContinue }: ProblemSummaryListProps) {
   return (
-    <div className="problem-summary w-full max-w-[420px] mx-auto animate-[fade-in_0.3s_ease-out]">
-      <div className="problem-summary-header text-center mb-4">
-        <h3 className="problem-summary-title font-display text-[22px] text-[#C2410C] mb-1">
+    <div className="w-full max-w-[420px] mx-auto animate-[fade-in_0.3s_ease-out]">
+      <div className="text-center mb-4">
+        <h3 className="font-display text-[22px] text-orange mb-1">
           You finished practicing! 🌈
         </h3>
-        <p className="problem-summary-score font-body text-sm text-[#777]">
+        <p className="font-body text-sm text-text-tertiary">
           {correctCount} of {problems.length} correct
         </p>
       </div>
 
-      <div className="problem-summary-list flex flex-col gap-3">
+      <div className="flex flex-col gap-3">
         {problems.map((p, i) => {
           const symbol = OP_SYMBOLS[p.operation];
           const showEmoji = p.emojiSafe && p.operand1 > 0 && p.operand2 > 0 && p.result > 0;
           return (
             <div
               key={i}
-              className="problem-summary-item bg-white rounded-xl border-2 border-[#E2E8F0] p-4"
+              className="bg-white rounded-xl border-2 border-border-card p-4"
             >
-              <div className="problem-summary-equation font-display text-[17px] text-[#C2410C] mb-2">
+              <div className="font-display text-[17px] text-orange mb-2">
                 {p.operand1} {symbol} {p.operand2} = {p.result}
               </div>
               {showEmoji && (
-                <div className="problem-summary-emoji text-center py-1 mb-1">
+                <div className="text-center py-1 mb-1">
                   {(p.operation === 'addition' || p.operation === 'subtraction') ? (
                     <EmojiGroup
                       emoji={p.emoji}
@@ -57,7 +57,7 @@ export function ProblemSummaryList({ problems, correctCount, onContinue }: Probl
                   )}
                 </div>
               )}
-              <p className="font-body text-[13px] text-[#555] leading-[1.5]">
+              <p className="font-body text-[13px] text-text-secondary leading-[1.5]">
                 {p.explanation}
               </p>
             </div>
@@ -67,7 +67,7 @@ export function ProblemSummaryList({ problems, correctCount, onContinue }: Probl
 
       <button
         onClick={onContinue}
-        className="problem-summary-continue-btn w-full mt-5 font-display text-base py-3 rounded-xl border-none bg-[#4F46E5] text-white cursor-pointer transition-colors duration-150 shadow-[0_4px_12px_rgba(79,70,229,0.3)] hover:bg-[#4338CA] active:bg-[#3730A3]"
+        className="w-full mt-5 font-display text-base py-3 rounded-xl border-none bg-indigo text-white cursor-pointer transition-colors duration-150 shadow-[0_4px_12px_rgba(79,70,229,0.3)] hover:bg-indigo-hover active:bg-indigo-active"
       >
         Let's do the quiz! 🎉
       </button>

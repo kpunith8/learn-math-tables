@@ -14,19 +14,22 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Multiplication Tables Adventure - Free Times Table Learning for Kids Under 8",
-  description: "Free interactive multiplication tables adventure for kids under 8. Learn times tables 1 to 10 with fun stories, colourful illustrations, and progressive unlocking. Perfect for children aged 5-8 to master maths tables the fun way.",
-  keywords: "multiplication tables for kids, times tables for children, maths tables for kids, learn multiplication, repeated addition for kids, free math game for kids under 8, times tables practice, educational math game, learn times tables online",
+  title: "Math Adventure - Fun Math Learning for Kids",
+  description: "Free interactive math learning app for kids. Learn addition, subtraction, multiplication, and division with fun examples, practice problems, and quizzes. Perfect for children aged 5-8.",
+  keywords: "math for kids, addition, subtraction, multiplication, division, learn math, free math game for kids, educational math game, times tables",
+  icons: {
+    icon: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧮</text></svg>",
+  },
   openGraph: {
-    title: "Multiplication Tables Adventure - Free Times Table Learning for Kids Under 8",
-    description: "Free interactive multiplication tables adventure for kids under 8. Learn times tables 1 to 10 with fun stories, colourful illustrations, and progressive unlocking.",
+    title: "Math Adventure - Fun Math Learning for Kids",
+    description: "Free interactive math learning app for kids. Learn addition, subtraction, multiplication, and division with fun examples, practice problems, and quizzes.",
     url: "https://punithk.com/multiplication-tables-adventure/",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Multiplication Tables Adventure - Free Times Table Learning for Kids Under 8",
-    description: "Free interactive multiplication tables adventure for kids under 8. Learn times tables 1 to 10 with fun stories, colourful illustrations, and progressive unlocking.",
+    title: "Math Adventure - Fun Math Learning for Kids",
+    description: "Free interactive math learning app for kids. Learn addition, subtraction, multiplication, and division with fun examples, practice problems, and quizzes.",
   },
 };
 
