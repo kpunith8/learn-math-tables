@@ -1,6 +1,8 @@
 'use client';
 
-import { useState, useCallback, useRef, useEffect } from 'react';
+import { useState, useCallback } from 'react';
+import { Dialog, DialogContent } from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
 
 export interface QuizQuestion {
   label: string;
@@ -23,16 +25,6 @@ export function QuizOverlay({ questions, onComplete, onSkip, onPlaySound }: Quiz
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
   const [isFinished, setIsFinished] = useState(false);
   const [showHint, setShowHint] = useState(false);
-
-  const dialogRef = useRef<HTMLDivElement>(null);
-  const focusableRef = useRef<HTMLButtonElement>(null);
-
-  useEffect(() => {
-    if (dialogRef.current) {
-      const firstButton = dialogRef.current.querySelector('button');
-      firstButton?.focus();
-    }
-  }, [currentIndex, isFinished]);
 
   const handleAnswer = useCallback(
     (option: string) => {
@@ -73,23 +65,15 @@ export function QuizOverlay({ questions, onComplete, onSkip, onPlaySound }: Quiz
   const currentQuestion = questions[currentIndex];
 
   return (
-    <div
-      className="fixed inset-0 z-[1100] bg-black/50 flex items-center justify-center p-5"
-      role="dialog"
-      aria-modal="true"
-      aria-label="Quiz"
-    >
-      <div
-        ref={dialogRef}
-        className="bg-white rounded-3xl p-7 md:p-8 max-w-[420px] w-full shadow-[0_12px_40px_rgba(0,0,0,0.2)] text-center animate-[pop-in_0.35s_cubic-bezier(0.175,0.885,0.32,1.275)]"
-      >
+    <Dialog open onOpenChange={(open) => { if (!open) onSkip(); }}>
+      <DialogContent showCloseButton={false} className="max-w-[420px] p-7 md:p-8 text-center">
         <div className="font-display text-sm text-text-dim mb-1" aria-live="polite">
           {isFinished ? 'Quiz Complete!' : `Question ${currentIndex + 1} of ${questions.length}`}
         </div>
 
         {!isFinished && currentQuestion && (
           <div className="min-h-[280px] flex flex-col">
-            <div className="quiz-question font-display text-[clamp(26px,6vw,34px)] text-orange my-3 mb-5">
+            <div className="font-display text-[clamp(26px,6vw,34px)] text-orange my-3 mb-5">
               {currentQuestion.label}
             </div>
 
@@ -105,10 +89,10 @@ export function QuizOverlay({ questions, onComplete, onSkip, onPlaySound }: Quiz
 
                 if (revealed) {
                   if (isCorrect) {
-                    stateClass = 'correct bg-quiz-correct-bg border-quiz-correct-border text-quiz-correct-text';
+                    stateClass = 'bg-quiz-correct-bg border-quiz-correct-border text-quiz-correct-text';
                     stateText = '(Correct)';
                   } else {
-                    stateClass = 'wrong bg-quiz-wrong-bg border-quiz-wrong-border text-quiz-wrong-text';
+                    stateClass = 'bg-quiz-wrong-bg border-quiz-wrong-border text-quiz-wrong-text';
                     stateText = '(Wrong)';
                   }
                 }
@@ -116,7 +100,6 @@ export function QuizOverlay({ questions, onComplete, onSkip, onPlaySound }: Quiz
                 return (
                   <button
                     key={option}
-                    ref={!hasAnswered ? focusableRef : undefined}
                     onClick={() => handleAnswer(optionStr)}
                     disabled={hasAnswered}
                     role="radio"
@@ -125,9 +108,7 @@ export function QuizOverlay({ questions, onComplete, onSkip, onPlaySound }: Quiz
                     className={`font-display text-xl py-3.5 rounded-[14px] border-[2.5px] cursor-pointer transition-all duration-150 ${stateClass} ${hasAnswered ? 'cursor-default hover:scale-100' : 'active:scale-95'}`}
                   >
                     {option}
-                    {revealed && (
-                      <span className="sr-only">{stateText}</span>
-                    )}
+                    {revealed && <span className="sr-only">{stateText}</span>}
                   </button>
                 );
               })}
@@ -135,18 +116,20 @@ export function QuizOverlay({ questions, onComplete, onSkip, onPlaySound }: Quiz
 
             <div className="min-h-[40px] mt-3 flex items-start" aria-live="polite" aria-atomic="true">
               {showHint && (
-                <div className="font-body text-sm text-orange bg-warm-bg rounded-[10px] py-2 px-3.5 border-[1.5px] border-warm-border text-center w-full animate-[popup-in_0.25s_ease-out]">
+                <div className="font-body text-sm text-orange bg-warm-bg rounded-[10px] py-2 px-3.5 border-[1.5px] border-warm-border text-center w-full">
                   {currentQuestion.hint}
                 </div>
               )}
             </div>
 
-            <button
+            <Button
               onClick={onSkip}
-              className={`mt-4 font-body text-[13px] text-text-dim bg-transparent border-none cursor-pointer py-1.5 px-3 rounded-lg transition-colors duration-150 hover:text-orange ${hasAnswered ? 'invisible' : ''}`}
+              variant="ghost"
+              size="sm"
+              className={`mt-4 self-center text-text-dim hover:text-orange ${hasAnswered ? 'invisible' : ''}`}
             >
               Skip quiz →
-            </button>
+            </Button>
           </div>
         )}
 
@@ -162,15 +145,16 @@ export function QuizOverlay({ questions, onComplete, onSkip, onPlaySound }: Quiz
             <p className="sr-only">
               You got {correctAnswers} out of {questions.length} correct.
             </p>
-            <button
+            <Button
               onClick={() => onComplete(correctAnswers, questions.length)}
-              className="font-display text-base py-3 px-8 rounded-full border-none bg-indigo text-white cursor-pointer transition-all duration-150 shadow-[0_4px_12px_rgba(79,70,229,0.3)] hover:scale-105 active:scale-95"
+              variant="indigo"
+              size="xl"
             >
               Continue
-            </button>
+            </Button>
           </div>
         )}
-      </div>
-    </div>
+      </DialogContent>
+    </Dialog>
   );
 }

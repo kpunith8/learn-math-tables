@@ -9,6 +9,7 @@ import {
   Operation, DifficultyLevel, Example, PracticeProblem,
   QuizQuestion, ConceptIntro, OPERATION_META,
 } from '@/lib/operations/types';
+import { Button } from '@/components/ui/button';
 import { resetEmojiPool } from '@/lib/operations/emoji-pool';
 import { DifficultySelector } from './difficulty-selector';
 import { ConceptIntroCard } from './concept-intro-card';
@@ -187,9 +188,10 @@ export function OperationFlow({
               {urlDifficulty === 'easy' ? '🌟 Easy' : urlDifficulty === 'medium' ? '⭐ Medium' : '🏆 Hard'}
             </span>
           )}
-          <button
+          <Button
             onClick={() => router.push('/')}
-            className="font-display text-xs bg-indigo-light text-white py-1.5 px-3 rounded-full border-none cursor-pointer hover:bg-indigo transition-colors min-h-[44px] flex items-center"
+            variant="indigo"
+            size="sm"
           >
             <span
               className="max-w-[180px] overflow-hidden text-ellipsis whitespace-nowrap"
@@ -197,7 +199,7 @@ export function OperationFlow({
             >
               {state.playerName || '👤 Add Name'}
             </span>
-          </button>
+          </Button>
         </div>
       </div>
 
@@ -246,12 +248,14 @@ export function OperationFlow({
           <div className={`transition-opacity duration-200 ${fadeOut ? 'opacity-0' : 'opacity-100'}`}>
             <WorkedExample example={currentExample} />
           </div>
-          <button
+          <Button
             onClick={handleNextExample}
-            className="mt-5 font-display text-base py-2.5 px-8 rounded-full border-none bg-indigo text-white cursor-pointer transition-colors duration-150 shadow-[0_4px_12px_rgba(79,70,229,0.3)] hover:bg-indigo-hover active:bg-indigo-active"
+            variant="indigo"
+            size="xl"
+            className="mt-5"
           >
             {currentExampleIndex < learnExamples.length - 1 ? 'Next →' : 'Let\'s Practice! 💪'}
-          </button>
+          </Button>
 
           {currentExampleIndex < learnExamples.length - 1 && (
             <p className="font-body text-sm text-text-dim mt-3">

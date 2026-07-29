@@ -1,6 +1,9 @@
 'use client';
 
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useState } from 'react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
 
 interface NameModalProps {
   isOpen: boolean;
@@ -11,68 +14,63 @@ interface NameModalProps {
 
 export function NameModal({ isOpen, initialName, onSave, onCancel }: NameModalProps) {
   const inputRef = useRef<HTMLInputElement>(null);
-  const saveRef = useRef<HTMLButtonElement>(null);
+  const [name, setName] = useState(initialName);
 
   useEffect(() => {
     if (isOpen) {
+      setName(initialName);
       setTimeout(() => inputRef.current?.focus(), 300);
     }
-  }, [isOpen]);
+  }, [isOpen, initialName]);
 
   const handleSave = () => {
-    onSave(inputRef.current?.value || '');
+    onSave(name);
   };
-
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter') handleSave();
-    if (e.key === 'Escape') onCancel();
-  };
-
-  if (!isOpen) return null;
 
   return (
-    <div
-      className="fixed inset-0 z-[1400] bg-black/50 flex items-center justify-center p-5"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="modal-title"
-      aria-describedby="modal-desc"
-    >
-      <div className="bg-white rounded-[20px] p-7 md:p-6 max-w-[380px] w-full text-center shadow-[0_12px_40px_rgba(0,0,0,0.2)] animate-[pop-in_0.35s_cubic-bezier(0.175,0.885,0.32,1.275)]">
-        <h2 id="modal-title" className="font-display text-[24px] text-indigo mb-1.5">
-          What&apos;s your name?
-        </h2>
-        <p id="modal-desc" className="text-sm text-text-muted mb-4">
-          Enter your name so we can track your scores!
-        </p>
-        <label htmlFor="playerName" className="sr-only">Player name</label>
-        <input
-          id="playerName"
-          ref={inputRef}
-          type="text"
-          defaultValue={initialName}
-          onKeyDown={handleKeyDown}
-          placeholder="Type your name..."
-          maxLength={20}
-          autoComplete="off"
-          className="w-full font-display text-lg py-3 px-4 rounded-xl border-[2.5px] border-[#E5E5E5] bg-[#FAFAFA] text-text-secondary text-center outline-none transition-[border-color] duration-150 focus:border-indigo"
-        />
-        <div className="flex gap-3 justify-center mt-4">
-          <button
-            ref={saveRef}
+    <Dialog open={isOpen} onOpenChange={(open) => { if (!open) onCancel(); }}>
+      <DialogContent showCloseButton={false} className="max-w-[380px] text-center p-7 md:p-6">
+        <DialogHeader>
+          <DialogTitle className="font-display text-[24px] text-indigo">
+            What&apos;s your name?
+          </DialogTitle>
+          <DialogDescription className="text-sm text-text-muted">
+            Enter your name so we can track your scores!
+          </DialogDescription>
+        </DialogHeader>
+        <div className="my-2">
+          <label htmlFor="playerName" className="sr-only">Player name</label>
+          <Input
+            id="playerName"
+            ref={inputRef}
+            type="text"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="Type your name..."
+            maxLength={20}
+            autoComplete="off"
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') handleSave();
+            }}
+            className="font-display text-lg text-center h-11"
+          />
+        </div>
+        <DialogFooter className="flex-row justify-center gap-3 border-none bg-transparent p-0 -mb-2">
+          <Button
             onClick={handleSave}
-            className="font-display text-base py-2.5 px-7 rounded-full border-none bg-indigo text-white cursor-pointer shadow-[0_4px_12px_rgba(79,70,229,0.3)] transition-all duration-150 hover:scale-105 active:scale-95"
+            className="font-display text-base py-2.5 px-7 rounded-full bg-indigo text-white hover:bg-indigo-hover active:bg-indigo-active shadow-[0_4px_12px_rgba(79,70,229,0.3)]"
           >
             Let&apos;s Go!
-          </button>
-          <button
+          </Button>
+          <Button
             onClick={onCancel}
-            className="font-display text-base py-2.5 px-7 rounded-full border-none bg-[#E5E5E5] text-text-secondary cursor-pointer transition-all duration-150 hover:scale-105 active:scale-95"
+            variant="secondary"
+            className="font-display text-base py-2.5 px-7 rounded-full"
           >
             Skip
-          </button>
-        </div>
-      </div>
-    </div>
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 }
