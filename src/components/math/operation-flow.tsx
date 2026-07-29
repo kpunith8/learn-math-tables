@@ -3,6 +3,7 @@
 import dynamic from 'next/dynamic';
 import { useState, useCallback, useRef, useEffect } from 'react';
 import { useRouter, useParams } from 'next/navigation';
+import { Toast } from '@base-ui/react/toast';
 import { useAppContext } from '@/lib/contexts/AppContext';
 import { useEngineState } from '@/lib/hooks/useEngineState';
 import { useAudio } from '@/lib/hooks/useAudio';
@@ -17,10 +18,40 @@ import { ConceptIntroCard } from './concept-intro-card';
 import { WorkedExample } from './worked-example';
 import { PracticeProblemView } from './practice-problem';
 import { ProblemSummaryList } from './problem-summary';
-import { MascotMessage, getMascotHint, getMascotCelebration } from '@/components/mascot-message';
-import { CelebrationMessage, getWrongAnswerMessage, getEncouragementMessage } from '@/components/celebration-message';
+import { MascotMessage, getMascotHint } from '@/components/mascot-message';
 
 const QuizOverlay = dynamic(() => import('@/components/quiz-overlay').then((m) => m.QuizOverlay), { ssr: false });
+
+const practiceToastManager = Toast.createToastManager();
+
+const TOAST_MESSAGES = [
+  'You got it!',
+  'Super!',
+  'Awesome work!',
+  'Brilliant!',
+  'Nailed it!',
+];
+
+function getToastMessage(): string {
+  return TOAST_MESSAGES[Math.floor(Math.random() * TOAST_MESSAGES.length)];
+}
+
+function PracticeToastList() {
+  const { toasts } = Toast.useToastManager();
+  return toasts.map((toast) => (
+    <Toast.Root key={toast.id} toast={toast} swipeDirection="up" className="group">
+      <Toast.Content className="overflow-hidden">
+        <div className="bg-green/10 border-2 border-green/30 rounded-xl px-4 py-3 shadow-lg flex items-center gap-2.5">
+          <span className="text-lg shrink-0">✅</span>
+          <div>
+            <Toast.Title className="font-display text-sm font-bold text-green" />
+            <Toast.Description className="font-body text-xs text-text-secondary" />
+          </div>
+        </div>
+      </Toast.Content>
+    </Toast.Root>
+  ));
+}
 
 interface OperationFlowProps {
   operation: Operation;
@@ -63,16 +94,11 @@ export function OperationFlow({
   const [conceptIntro, setConceptIntro] = useState<ConceptIntro | null>(null);
   const [showConcept, setShowConcept] = useState(false);
   const [fadeOut, setFadeOut] = useState(false);
-  const [showCelebration, setShowCelebration] = useState<'success' | 'encourage' | null>(null);
-  const [mascotMessage, setMascotMessage] = useState<string | null>(null);
 
-  const generatedForRef = useRef<DifficultyLevel | null>(null);
   const prevStageRef = useRef(urlStage);
 
   useEffect(() => {
     if (!urlDifficulty) return;
-    if (generatedForRef.current === urlDifficulty) return;
-    generatedForRef.current = urlDifficulty;
 
     resetEmojiPool();
     setLearnExamples(genExamples(urlDifficulty));
@@ -83,8 +109,6 @@ export function OperationFlow({
     setPracticeCorrectCount(0);
     setShowSummary(false);
     setFadeOut(false);
-    setShowCelebration(null);
-    setMascotMessage(null);
 
     const intro = getConceptIntro(urlDifficulty);
     if (intro) {
@@ -131,51 +155,63 @@ export function OperationFlow({
         playSound('click');
       }, 200);
     } else {
-      engine.awardLessonComplete();
+      engine.awardLessonComplete(`${operation}:${urlDifficulty}`);
       router.push(`/${operation}/${urlDifficulty}/practice`);
     }
   }, [currentExampleIndex, learnExamples.length, playSound, router, operation, urlDifficulty, engine]);
 
   const handlePracticeComplete = useCallback(
     (correct: boolean) => {
+      const key = `${operation}:${urlDifficulty}`;
       engine.updateMission('practice', 1);
       if (correct) {
         setPracticeCorrectCount((c) => c + 1);
-        engine.awardCorrectAnswer();
-        setShowCelebration('success');
-        setMascotMessage(getMascotCelebration());
+        engine.awardCorrectAnswer(key);
+        practiceToastManager.add({
+          title: getToastMessage(),
+          description: 'Keep it up, Math Explorer!',
+          type: 'success',
+          timeout: 2000,
+        });
+        setTimeout(() => {
+          if (currentProblemIndex < practiceProblems.length - 1) {
+            setFadeOut(true);
+            setTimeout(() => {
+              setCurrentProblemIndex((i) => i + 1);
+              setFadeOut(false);
+            }, 200);
+          } else {
+            engine.awardPracticeComplete(key);
+            setShowSummary(true);
+          }
+        }, 800);
       } else {
-        setShowCelebration('encourage');
-        setMascotMessage(getMascotHint(operation));
+        setTimeout(() => {
+          if (currentProblemIndex < practiceProblems.length - 1) {
+            setFadeOut(true);
+            setTimeout(() => {
+              setCurrentProblemIndex((i) => i + 1);
+              setFadeOut(false);
+            }, 200);
+          } else {
+            engine.awardPracticeComplete(key);
+            setShowSummary(true);
+          }
+        }, 1500);
       }
-
-      setTimeout(() => {
-        setShowCelebration(null);
-        setMascotMessage(null);
-        if (currentProblemIndex < practiceProblems.length - 1) {
-          setFadeOut(true);
-          setTimeout(() => {
-            setCurrentProblemIndex((i) => i + 1);
-            setFadeOut(false);
-          }, 200);
-        } else {
-          engine.awardPracticeComplete();
-          setShowSummary(true);
-        }
-      }, correct ? 1200 : 2500);
     },
-    [currentProblemIndex, practiceProblems.length, engine, operation]
+    [currentProblemIndex, practiceProblems.length, engine, operation, urlDifficulty]
   );
 
   const handleSummaryContinue = useCallback(() => {
     setShowSummary(false);
-    engine.awardLessonComplete();
+    engine.awardLessonComplete(`${operation}:${urlDifficulty}`);
     router.push(`/${operation}/${urlDifficulty}/quiz`);
   }, [router, operation, urlDifficulty, engine]);
 
   const handleQuizComplete = useCallback(
     (correct: number, total: number) => {
-      engine.awardQuizComplete();
+      engine.awardQuizComplete(`${operation}:${urlDifficulty}`);
       engine.updateMission('challenge', 1);
       if (correct === total) {
         engine.unlockBadge('perfect-score');
@@ -189,7 +225,7 @@ export function OperationFlow({
       }
       router.push(`/${operation}`);
     },
-    [router, operation, engine]
+    [router, operation, urlDifficulty, engine]
   );
 
   const handleQuizSkip = useCallback(() => {
@@ -204,6 +240,7 @@ export function OperationFlow({
   const currentProblem = practiceProblems[currentProblemIndex];
 
   return (
+    <Toast.Provider toastManager={practiceToastManager}>
     <div className="font-body min-h-screen bg-surface">
       <div className="bg-header text-white px-4 py-3 flex items-center justify-between">
         <div className="flex items-center gap-2">
@@ -246,7 +283,7 @@ export function OperationFlow({
         </div>
       </div>
 
-      {(urlStage === 'learn' || (urlStage === 'practice' && !showSummary)) && (
+      {!showConcept && (urlStage === 'learn' || (urlStage === 'practice' && !showSummary)) && (
         <div className="flex justify-center gap-2 py-3">
           {urlStage === 'learn'
             ? learnExamples.map((_, i) => (
@@ -311,26 +348,11 @@ export function OperationFlow({
         </div>
       )}
 
-      {urlStage === 'practice' && !showSummary && currentProblem && (
+      {urlStage === 'practice' && !showConcept && !showSummary && currentProblem && (
         <div className="flex flex-col items-center p-4 sm:p-6">
           <h2 className="font-display text-[20px] text-orange mb-2">
             Time to Practice! 💪
           </h2>
-          {showCelebration && (
-            <div className="mb-3 animate-[pop-in_0.3s_ease-out]">
-              <CelebrationMessage
-                size={showCelebration === 'success' ? 'small' : 'small'}
-                label={showCelebration === 'success' ? undefined : getEncouragementMessage()}
-              />
-            </div>
-          )}
-          {mascotMessage && (
-            <MascotMessage
-              message={mascotMessage}
-              mood={showCelebration === 'success' ? 'excited' : 'encouraging'}
-              className="mb-3"
-            />
-          )}
           <div className={`w-full max-w-[420px] transition-opacity duration-200 ${fadeOut ? 'opacity-0' : 'opacity-100'}`}>
             <PracticeProblemView
               key={currentProblemIndex}
@@ -362,5 +384,12 @@ export function OperationFlow({
         />
       )}
     </div>
+
+      <Toast.Portal>
+        <Toast.Viewport className="fixed top-20 right-4 z-50 flex flex-col gap-2 min-w-[280px] max-w-[400px]">
+          <PracticeToastList />
+        </Toast.Viewport>
+      </Toast.Portal>
+    </Toast.Provider>
   );
 }

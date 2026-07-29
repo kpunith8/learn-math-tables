@@ -87,8 +87,11 @@ Legacy feature with its own components in `src/components/` (app-header, celebra
 
 - **Scroll to top** on stage change with `window.scrollTo({ top: 0, behavior: 'instant' })`
 - **State reset** for practice problems via `key={currentProblemIndex}` on the component
+- **Stars** are tracked per operation+difficulty via `milestoneStars` (keys like `addition:easy:practice`). Each milestone category has a cap (lesson: 2, practice: 7, quiz: 3). Revisiting the same topic uses `Math.max()` — never adds on top. Total stars = sum of all `milestoneStars`.
 - **Negative numbers** display as `-10` not `(-10)` — `padNumber` returns `String(n)`
-- **Emoji rendering** only when all operands and result > 0; multiplication/division show horizontal equation, addition/subtraction show right-aligned vertical stacked
-- **Practice problems** have 3 attempts before revealing answer
-- **Input width**: `w-[clamp(90px,35vw,140px)]` for number blanks; no `+/-` toggle; `-` accepted via keyboard
+- **Emoji rendering** only when all operands and result > 0 and each ≤ `EMOJI_SAFE_LIMIT` (10); multiplication/division show horizontal equation, addition/subtraction show right-aligned vertical stacked
+- **Practice problems**: 5 per session, 3 attempts before revealing answer; all content (examples, practice, quiz) uses `randInt` so it's different each visit — no fixed pools and no `generatedForRef` caching
+- **Input width**: `w-[clamp(70px,25vw,100px)]` for number blanks; `+/-` toggle button with `gap-1.5` from input; stacked vertical layout has `mt-3 pt-2` from the border line
+- **Practice feedback**: Correct answer fires a base-ui `Toast` (stacked, `type='success'`, `timeout=2000`) at top-center with ✅ check mark — not inline banners or Nova dialog
+- **Concept intro** and practice content are mutually exclusive (`!showConcept` guards the practice section)
 - **shadcn `@acme` registries in docs are placeholders** — no public ACME registry exists

@@ -44,4 +44,4 @@ export const OPERATION_META: Record<Operation, { emoji: string; name: string; ta
   division: { emoji: '➗', name: 'Division', tagline: 'Share things fairly!', description: 'Division is sharing a total equally into groups!', color: '#1D9E75' },
 };
 
-export const EMOJI_SAFE_LIMIT = 8;
+export const EMOJI_SAFE_LIMIT = 10;

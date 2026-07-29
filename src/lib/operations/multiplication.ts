@@ -21,29 +21,24 @@ function getHint(): string {
   return 'Try counting in equal groups — how many groups, how many in each?';
 }
 
-const EASY_EXAMPLES: Array<{ a: number; b: number }> = [
-  { a: 0, b: 5 }, { a: 1, b: 7 }, { a: 2, b: 3 }, { a: 4, b: 2 }, { a: 3, b: 5 },
-];
-
-const MEDIUM_EXAMPLES: Array<{ a: number; b: number }> = [
-  { a: 6, b: 3 }, { a: 8, b: 2 }, { a: 7, b: 4 }, { a: 9, b: 3 }, { a: 5, b: 6 },
-];
-
-const HARD_EXAMPLES: Array<{ a: number; b: number }> = [
-  { a: 12, b: 3 }, { a: 15, b: 4 }, { a: 4, b: -3 }, { a: 6, b: -2 }, { a: 11, b: 5 },
-];
-
 export function generateLearnExamples(difficulty: DifficultyLevel): Example[] {
   const emojis = pickEmojis(5);
   const examples: Example[] = [];
 
-  let pool: Array<{ a: number; b: number }>;
-  if (difficulty === 'easy') pool = EASY_EXAMPLES;
-  else if (difficulty === 'medium') pool = MEDIUM_EXAMPLES;
-  else pool = HARD_EXAMPLES;
-
   for (let i = 0; i < 5; i++) {
-    const { a, b } = pool[i];
+    let a: number;
+    let b: number;
+    if (difficulty === 'easy') {
+      a = randInt(0, 5);
+      b = randInt(0, 5);
+    } else if (difficulty === 'medium') {
+      a = randInt(2, 12);
+      b = randInt(2, 12);
+    } else {
+      a = randInt(2, 15);
+      b = randInt(-5, 5);
+      if (b === 0) b = 2;
+    }
     const result = a * b;
     const emoji = emojis[i];
     const safe = isEmojiSafe(a, b, result);
@@ -94,26 +89,23 @@ export function generateLearnExamples(difficulty: DifficultyLevel): Example[] {
 }
 
 export function generatePracticeProblems(difficulty: DifficultyLevel): PracticeProblem[] {
-  const emojis = pickEmojis(6);
+  const emojis = pickEmojis(5);
   const problems: PracticeProblem[] = [];
 
-  let problemPool: Array<{ a: number; b: number }>;
-  if (difficulty === 'easy') {
-    problemPool = [
-      { a: 3, b: 4 }, { a: 0, b: 7 }, { a: 5, b: 1 }, { a: 2, b: 6 }, { a: 4, b: 3 }, { a: 6, b: 2 },
-    ];
-  } else if (difficulty === 'medium') {
-    problemPool = [
-      { a: 6, b: 5 }, { a: 9, b: 2 }, { a: 7, b: 3 }, { a: 8, b: 4 }, { a: 10, b: 3 }, { a: 5, b: 7 },
-    ];
-  } else {
-    problemPool = [
-      { a: 14, b: 3 }, { a: 5, b: -2 }, { a: 11, b: 4 }, { a: 3, b: -4 }, { a: 12, b: 5 }, { a: -3, b: -5 },
-    ];
-  }
-
-  for (let i = 0; i < 6; i++) {
-    const { a, b } = problemPool[i];
+  for (let i = 0; i < 5; i++) {
+    let a: number;
+    let b: number;
+    if (difficulty === 'easy') {
+      a = randInt(0, 5);
+      b = randInt(0, 5);
+    } else if (difficulty === 'medium') {
+      a = randInt(2, 12);
+      b = randInt(2, 12);
+    } else {
+      a = randInt(2, 15);
+      b = randInt(-5, 5);
+      if (b === 0) b = 2;
+    }
     const result = a * b;
     const emoji = emojis[i];
     const safe = isEmojiSafe(a, b, result);

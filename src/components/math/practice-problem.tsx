@@ -93,7 +93,7 @@ export function PracticeProblemView({ problem, index, total, onComplete }: Pract
                   <>
                     <div className="text-right">{op1.padStart(maxW)}</div>
                     <div className="text-right">{symbol} {op2.padStart(Math.max(0, maxW - 2))}</div>
-                    <div className="border-t-2 border-orange mt-0.5 pt-0.5 text-right">
+                    <div className="border-t-2 border-orange mt-3 pt-2 text-right">
                       <NumberBlank
                         value={answer}
                         onChange={setAnswer}
@@ -110,9 +110,9 @@ export function PracticeProblemView({ problem, index, total, onComplete }: Pract
         )}
       </div>
 
-      {showEmoji && (
-        <div className="text-center my-3 py-2 bg-card-hover rounded-xl">
-          {(operation === 'addition' || operation === 'subtraction') ? (
+      <div className="text-center my-3 py-2 bg-card-hover rounded-xl min-h-[60px] flex items-center justify-center">
+        {showEmoji ? (
+          (operation === 'addition' || operation === 'subtraction') ? (
             <EmojiGroup
               emoji={emoji}
               count={operand1}
@@ -124,9 +124,16 @@ export function PracticeProblemView({ problem, index, total, onComplete }: Pract
             <EmojiGroup emoji={emoji} count={operand1} groups={operand2} mode="split" />
           ) : (
             <span className="text-[clamp(16px,3vw,22px)]">{emoji.repeat(operand1)}</span>
-          )}
-        </div>
-      )}
+          )
+        ) : (
+          <p className="font-body text-xs text-text-secondary px-2">
+            {operation === 'addition' ? 'Combine the two numbers!' :
+             operation === 'subtraction' ? 'Take the second from the first!' :
+             operation === 'multiplication' ? 'Count in equal groups!' :
+             'Share the total equally!'}
+          </p>
+        )}
+      </div>
 
       <div className="min-h-[36px] mt-2">
         {status === 'waiting' && (

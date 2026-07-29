@@ -24,29 +24,23 @@ function getHint(): string {
   return 'Think: what do I have left after taking some away?';
 }
 
-const EASY_EXAMPLES: Array<{ a: number; b: number }> = [
-  { a: 5, b: 2 }, { a: 8, b: 3 }, { a: 6, b: 1 }, { a: 9, b: 4 }, { a: 7, b: 5 },
-];
-
-const MEDIUM_EXAMPLES: Array<{ a: number; b: number }> = [
-  { a: 30, b: 18 }, { a: 45, b: 27 }, { a: 5, b: 8 }, { a: 12, b: 15 }, { a: 50, b: 22 },
-];
-
-const HARD_EXAMPLES: Array<{ a: number; b: number }> = [
-  { a: 80, b: 35 }, { a: 65, b: 42 }, { a: -5, b: 3 }, { a: -8, b: 5 }, { a: -3, b: -2 },
-];
-
 export function generateLearnExamples(difficulty: DifficultyLevel): Example[] {
   const emojis = pickEmojis(5);
   const examples: Example[] = [];
 
-  let pool: Array<{ a: number; b: number }>;
-  if (difficulty === 'easy') pool = EASY_EXAMPLES;
-  else if (difficulty === 'medium') pool = MEDIUM_EXAMPLES;
-  else pool = HARD_EXAMPLES;
-
   for (let i = 0; i < 5; i++) {
-    const { a, b } = pool[i];
+    let a: number;
+    let b: number;
+    if (difficulty === 'easy') {
+      a = randInt(2, 10);
+      b = randInt(1, a);
+    } else if (difficulty === 'medium') {
+      a = randInt(10, 60);
+      b = randInt(0, 50);
+    } else {
+      a = randInt(-10, 90);
+      b = randInt(-5, 40);
+    }
     const result = a - b;
     const emoji = emojis[i];
     const safe = isEmojiSafe(a, b, result);
@@ -86,26 +80,22 @@ export function generateLearnExamples(difficulty: DifficultyLevel): Example[] {
 }
 
 export function generatePracticeProblems(difficulty: DifficultyLevel): PracticeProblem[] {
-  const emojis = pickEmojis(6);
+  const emojis = pickEmojis(5);
   const problems: PracticeProblem[] = [];
 
-  let problemPool: Array<{ a: number; b: number }>;
-  if (difficulty === 'easy') {
-    problemPool = [
-      { a: 7, b: 3 }, { a: 10, b: 4 }, { a: 4, b: 2 }, { a: 9, b: 5 }, { a: 6, b: 1 }, { a: 8, b: 6 },
-    ];
-  } else if (difficulty === 'medium') {
-    problemPool = [
-      { a: 28, b: 15 }, { a: 50, b: 22 }, { a: 8, b: 12 }, { a: 35, b: 18 }, { a: 42, b: 30 }, { a: 60, b: 25 },
-    ];
-  } else {
-    problemPool = [
-      { a: 90, b: 37 }, { a: -3, b: 4 }, { a: 55, b: 28 }, { a: 70, b: 45 }, { a: -8, b: 2 }, { a: -5, b: -3 },
-    ];
-  }
-
-  for (let i = 0; i < 6; i++) {
-    const { a, b } = problemPool[i];
+  for (let i = 0; i < 5; i++) {
+    let a: number;
+    let b: number;
+    if (difficulty === 'easy') {
+      a = randInt(2, 10);
+      b = randInt(1, a);
+    } else if (difficulty === 'medium') {
+      a = randInt(10, 60);
+      b = randInt(0, 50);
+    } else {
+      a = randInt(-10, 90);
+      b = randInt(-5, 40);
+    }
     const result = a - b;
     const emoji = emojis[i];
     const safe = isEmojiSafe(a, b, result);

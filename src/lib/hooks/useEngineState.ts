@@ -11,12 +11,20 @@ import {
   BadgeId,
 } from '@/lib/engines/types';
 import { recordAttempt, getWeakFacts, getDueFacts } from '@/lib/engines/mastery-engine';
-import { generateDailyMission, isMissionExpired, isMissionComplete, updateMissionProgress } from '@/lib/engines/daily-mission';
+import { generateDailyMission, isMissionExpired, updateMissionProgress } from '@/lib/engines/daily-mission';
 import { unlockAchievement } from '@/lib/engines/achievement-engine';
-import { awardStarsForCorrectAnswer, awardStarsForLessonComplete, awardStarsForPracticeComplete, awardStarsForQuizComplete, awardStarsForDailyMission } from '@/lib/engines/star-economy';
+import {
+  awardStarsForCorrectAnswer,
+  awardStarsForLessonComplete,
+  awardStarsForPracticeComplete,
+  awardStarsForQuizComplete,
+  awardStarsForDailyMission,
+  computeTotalStars,
+} from '@/lib/engines/star-economy';
 
 interface EngineState {
   stars: number;
+  milestoneStars: Record<string, number>;
   streak: number;
   lastActiveDate: string;
   achievements: Achievement[];
@@ -30,6 +38,7 @@ interface EngineState {
 function getInitialEngineState(): EngineState {
   return {
     stars: 0,
+    milestoneStars: {},
     streak: 0,
     lastActiveDate: '',
     achievements: ALL_ACHIEVEMENTS.map((a) => ({ ...a })),
@@ -47,8 +56,15 @@ function loadEngineState(): EngineState {
     if (!raw) return getInitialEngineState();
     const parsed = JSON.parse(raw);
     if (!parsed || typeof parsed !== 'object') return getInitialEngineState();
+
+    const milestoneStars: Record<string, number> =
+      typeof parsed.milestoneStars === 'object' && parsed.milestoneStars !== null
+        ? parsed.milestoneStars
+        : {};
+
     return {
-      stars: typeof parsed.stars === 'number' ? parsed.stars : 0,
+      stars: computeTotalStars(milestoneStars),
+      milestoneStars,
       streak: typeof parsed.streak === 'number' ? parsed.streak : 0,
       lastActiveDate: typeof parsed.lastActiveDate === 'string' ? parsed.lastActiveDate : '',
       achievements: Array.isArray(parsed.achievements) ? parsed.achievements : ALL_ACHIEVEMENTS.map((a) => ({ ...a })),
@@ -69,6 +85,10 @@ function saveEngineState(state: EngineState): void {
   } catch {
     console.warn('Failed to save engine state');
   }
+}
+
+function recomputeStars(ms: Record<string, number>): number {
+  return computeTotalStars(ms);
 }
 
 export function useEngineState() {
@@ -115,9 +135,10 @@ export function useEngineState() {
     (amount: number, reason: string) => {
       persist((prev) => {
         const today = new Date().toISOString().split('T')[0];
+        const newStars = prev.stars + amount;
         return {
           ...prev,
-          stars: prev.stars + amount,
+          stars: newStars,
           starHistory: [...prev.starHistory, { date: today, amount, reason }],
         };
       });
@@ -125,33 +146,49 @@ export function useEngineState() {
     [persist]
   );
 
-  const awardCorrectAnswer = useCallback(() => {
-    persist((prev) => ({
-      ...prev,
-      stars: awardStarsForCorrectAnswer(prev.stars),
-    }));
-  }, [persist]);
+  const awardCorrectAnswer = useCallback(
+    (key: string) => {
+      persist((prev) => {
+        const newMilestones = awardStarsForCorrectAnswer(prev.milestoneStars, key);
+        if (newMilestones === prev.milestoneStars) return prev;
+        return { ...prev, milestoneStars: newMilestones, stars: recomputeStars(newMilestones) };
+      });
+    },
+    [persist]
+  );
 
-  const awardLessonComplete = useCallback(() => {
-    persist((prev) => ({
-      ...prev,
-      stars: awardStarsForLessonComplete(prev.stars),
-    }));
-  }, [persist]);
+  const awardLessonComplete = useCallback(
+    (key: string) => {
+      persist((prev) => {
+        const newMilestones = awardStarsForLessonComplete(prev.milestoneStars, key);
+        if (newMilestones === prev.milestoneStars) return prev;
+        return { ...prev, milestoneStars: newMilestones, stars: recomputeStars(newMilestones) };
+      });
+    },
+    [persist]
+  );
 
-  const awardPracticeComplete = useCallback(() => {
-    persist((prev) => ({
-      ...prev,
-      stars: awardStarsForPracticeComplete(prev.stars),
-    }));
-  }, [persist]);
+  const awardPracticeComplete = useCallback(
+    (key: string) => {
+      persist((prev) => {
+        const newMilestones = awardStarsForPracticeComplete(prev.milestoneStars, key);
+        if (newMilestones === prev.milestoneStars) return prev;
+        return { ...prev, milestoneStars: newMilestones, stars: recomputeStars(newMilestones) };
+      });
+    },
+    [persist]
+  );
 
-  const awardQuizComplete = useCallback(() => {
-    persist((prev) => ({
-      ...prev,
-      stars: awardStarsForQuizComplete(prev.stars),
-    }));
-  }, [persist]);
+  const awardQuizComplete = useCallback(
+    (key: string) => {
+      persist((prev) => {
+        const newMilestones = awardStarsForQuizComplete(prev.milestoneStars, key);
+        if (newMilestones === prev.milestoneStars) return prev;
+        return { ...prev, milestoneStars: newMilestones, stars: recomputeStars(newMilestones) };
+      });
+    },
+    [persist]
+  );
 
   const awardDailyMission = useCallback(() => {
     persist((prev) => ({

@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useAppContext } from '@/lib/contexts/AppContext';
 import { useEngineState } from '@/lib/hooks/useEngineState';
 import { NameModal } from '@/components/name-modal';
-import { MascotMessage } from '@/components/mascot-message';
+
 import { getStarsToNextMilestone } from '@/lib/engines/star-economy';
 
 const WORLDS = [
@@ -161,14 +161,6 @@ export default function LandingPage() {
             </section>
           )}
 
-          {isEngineLoaded && engineState.stars === 0 && state.playerName && (
-            <div className="mt-4 flex justify-center">
-              <MascotMessage
-                message="Welcome! Start by choosing a world above. Every correct answer earns you a star!"
-                mood="happy"
-              />
-            </div>
-          )}
         </div>
       </div>
 

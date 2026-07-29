@@ -39,27 +39,23 @@ export const WorkedExample = memo(function WorkedExample({ example }: WorkedExam
           </div>
         </div>
 
-        {showEmoji && (
-          <div className="text-center my-3 py-3 bg-card-hover rounded-xl">
-            {operation === 'multiplication' && operand1 > 0 ? (
+        <div className="text-center my-3 py-3 bg-card-hover rounded-xl min-h-[60px] flex items-center justify-center">
+          {showEmoji ? (
+            operation === 'multiplication' && operand1 > 0 ? (
               <EmojiGroup emoji={emoji} count={operand1 * operand2} groups={operand1} mode="groups" />
             ) : operation === 'division' && operand2 > 0 && result > 0 ? (
               <EmojiGroup emoji={emoji} count={operand1} groups={operand2} mode="split" />
             ) : (
               <span className="text-[clamp(16px,3vw,22px)]">{emoji.repeat(operand1)}</span>
-            )}
-          </div>
-        )}
+            )
+          ) : (
+            <p className="font-body text-xs text-text-secondary px-2">{explanation}</p>
+          )}
+        </div>
 
         <p className="font-body text-sm text-text-tertiary text-center italic mb-2">
           {hint}
         </p>
-
-        {!showEmoji && (
-          <p className="font-body text-sm text-text-secondary text-center leading-[1.6] bg-[#F8F8F8] rounded-xl p-3">
-            {explanation}
-          </p>
-        )}
       </div>
     );
   }
@@ -79,25 +75,21 @@ export const WorkedExample = memo(function WorkedExample({ example }: WorkedExam
         </div>
       </div>
 
-      {showEmoji && (
-        <div className="text-center my-3 py-3 bg-card-hover rounded-xl">
+      <div className="text-center my-3 py-3 bg-card-hover rounded-xl min-h-[60px] flex items-center justify-center">
+        {showEmoji ? (
           <EmojiGroup
             emoji={emoji}
             count={operand1}
             equation={{ operand1, operand2, result, symbol }}
           />
-        </div>
-      )}
+        ) : (
+          <p className="font-body text-xs text-text-secondary px-2">{explanation}</p>
+        )}
+      </div>
 
       <p className="font-body text-sm text-text-tertiary text-center italic mb-2">
         {hint}
       </p>
-
-      {!showEmoji && (
-        <p className="font-body text-sm text-text-secondary text-center leading-[1.6] bg-[#F8F8F8] rounded-xl p-3">
-          {explanation}
-        </p>
-      )}
     </div>
   );
 });

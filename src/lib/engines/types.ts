@@ -63,11 +63,17 @@ export interface MissionTask {
 
 export const STAR_REWARDS = {
   correctAnswer: 1,
-  lessonComplete: 5,
-  practiceComplete: 3,
-  quizComplete: 10,
+  lessonComplete: 2,
+  practiceComplete: 2,
+  quizComplete: 3,
   dailyMission: 15,
   streakBonus: 5,
 } as const;
+
+export const STAR_CAPS: Record<string, number> = {
+  lesson: 2,
+  practice: 7,
+  quiz: 3,
+};
 
 export const SPACED_REPETITION_INTERVALS = [1, 3, 7, 14, 30] as const;
