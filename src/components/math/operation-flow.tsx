@@ -386,7 +386,7 @@ export function OperationFlow({
     </div>
 
       <Toast.Portal>
-        <Toast.Viewport className="fixed top-20 right-4 z-50 flex flex-col gap-2 min-w-[280px] max-w-[400px]">
+        <Toast.Viewport className="fixed top-20 right-4 z-50 flex-col items-end gap-2 max-w-[360px] hidden sm:flex">
           <PracticeToastList />
         </Toast.Viewport>
       </Toast.Portal>
