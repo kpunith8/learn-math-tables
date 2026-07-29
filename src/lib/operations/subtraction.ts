@@ -174,6 +174,9 @@ export function generateQuizQuestions(difficulty: DifficultyLevel): QuizQuestion
 }
 
 export function getConceptIntro(difficulty: DifficultyLevel): ConceptIntro | null {
+  if (difficulty === 'easy') {
+    return { copy: "🍪🍪🍪🍪🍪🍪🍪 You have 7 cookies! A dinosaur eats 2. How many are left? Subtraction means taking away — let's see what's left!", level: 'easy' };
+  }
   if (difficulty === 'medium') {
     return { copy: "What if we don't have enough to take away? Sometimes the answer goes below zero — that's called a negative number!", level: 'medium' };
   }

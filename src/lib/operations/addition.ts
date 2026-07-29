@@ -163,6 +163,12 @@ export function generateQuizQuestions(difficulty: DifficultyLevel): QuizQuestion
 }
 
 export function getConceptIntro(difficulty: DifficultyLevel): ConceptIntro | null {
+  if (difficulty === 'easy') {
+    return { copy: "Addition means putting things together! Let's count everything together. 🍎🍎🍎 + 🍎🍎🍎🍎 = ?", level: 'easy' };
+  }
+  if (difficulty === 'medium') {
+    return { copy: "Let's add bigger numbers! Remember — addition means combining two groups to find the total.", level: 'medium' };
+  }
   if (difficulty === 'hard') {
     return { copy: "What happens when we add a negative number? 🤔 Adding a negative number is like taking a step backward!", level: 'hard' };
   }

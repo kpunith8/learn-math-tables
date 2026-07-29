@@ -183,6 +183,12 @@ export function generateQuizQuestions(difficulty: DifficultyLevel): QuizQuestion
 }
 
 export function getConceptIntro(difficulty: DifficultyLevel): ConceptIntro | null {
+  if (difficulty === 'easy') {
+    return { copy: "Let's discover multiplication! 🎈🎈 + 🎈🎈 + 🎈🎈 = 3 groups of 2 = 6. Multiplication is counting groups — it's like fast adding!", level: 'easy' };
+  }
+  if (difficulty === 'medium') {
+    return { copy: "Time to multiply with bigger numbers! Remember: multiplication means counting equal groups.", level: 'medium' };
+  }
   if (difficulty === 'hard') {
     return { copy: "What happens when we multiply a positive and a negative number? A positive times a negative always gives a negative answer!", level: 'hard' };
   }

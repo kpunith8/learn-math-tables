@@ -77,3 +77,4 @@ export type Difficulty = 'easy' | 'normal' | 'hard';
 export const STORAGE_KEY = 'mathAdventure';
 export const NAME_STORAGE_KEY = 'mathAdvName';
 export const LEADERBOARD_STORAGE_KEY = 'mathAdvLeaderboard';
+export const ENGINE_STORAGE_KEY = 'mathAdvEngine';

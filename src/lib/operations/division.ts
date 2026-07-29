@@ -178,6 +178,12 @@ export function generateQuizQuestions(difficulty: DifficultyLevel): QuizQuestion
 }
 
 export function getConceptIntro(difficulty: DifficultyLevel): ConceptIntro | null {
+  if (difficulty === 'easy') {
+    return { copy: "12 chocolates, 4 friends — share equally! 🍫🍫🍫🍫🍫🍫🍫🍫🍫🍫🍫🍫 Division means sharing fairly. Let's help everyone get the same amount!", level: 'easy' };
+  }
+  if (difficulty === 'medium') {
+    return { copy: "Let's divide bigger numbers! Remember — division means splitting a total into equal groups.", level: 'medium' };
+  }
   if (difficulty === 'hard') {
     return { copy: "Can we divide by zero? 🤔 If you try to share 6 cookies among 0 friends, the question doesn't make sense — so we say dividing by zero is 'undefined.'", level: 'hard' };
   }

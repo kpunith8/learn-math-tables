@@ -4,6 +4,7 @@ import dynamic from 'next/dynamic';
 import { useState, useCallback, useRef, useEffect } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { useAppContext } from '@/lib/contexts/AppContext';
+import { useEngineState } from '@/lib/hooks/useEngineState';
 import { useAudio } from '@/lib/hooks/useAudio';
 import {
   Operation, DifficultyLevel, Example, PracticeProblem,
@@ -16,6 +17,8 @@ import { ConceptIntroCard } from './concept-intro-card';
 import { WorkedExample } from './worked-example';
 import { PracticeProblemView } from './practice-problem';
 import { ProblemSummaryList } from './problem-summary';
+import { MascotMessage, getMascotHint, getMascotCelebration } from '@/components/mascot-message';
+import { CelebrationMessage, getWrongAnswerMessage, getEncouragementMessage } from '@/components/celebration-message';
 
 const QuizOverlay = dynamic(() => import('@/components/quiz-overlay').then((m) => m.QuizOverlay), { ssr: false });
 
@@ -38,6 +41,7 @@ export function OperationFlow({
   const params = useParams();
   const { state } = useAppContext();
   const { playSound } = useAudio();
+  const engine = useEngineState();
 
   const segments = params.segments as string[] | undefined;
   const urlDifficulty = segments?.[0] as DifficultyLevel | undefined;
@@ -59,6 +63,8 @@ export function OperationFlow({
   const [conceptIntro, setConceptIntro] = useState<ConceptIntro | null>(null);
   const [showConcept, setShowConcept] = useState(false);
   const [fadeOut, setFadeOut] = useState(false);
+  const [showCelebration, setShowCelebration] = useState<'success' | 'encourage' | null>(null);
+  const [mascotMessage, setMascotMessage] = useState<string | null>(null);
 
   const generatedForRef = useRef<DifficultyLevel | null>(null);
   const prevStageRef = useRef(urlStage);
@@ -77,6 +83,8 @@ export function OperationFlow({
     setPracticeCorrectCount(0);
     setShowSummary(false);
     setFadeOut(false);
+    setShowCelebration(null);
+    setMascotMessage(null);
 
     const intro = getConceptIntro(urlDifficulty);
     if (intro) {
@@ -95,6 +103,13 @@ export function OperationFlow({
     }
     prevStageRef.current = urlStage;
   }, [urlStage]);
+
+  useEffect(() => {
+    if (engine.isEngineLoaded && state.playerName) {
+      engine.checkStreak();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [engine.isEngineLoaded, state.playerName]);
 
   const handleSelectDifficulty = useCallback(
     (d: DifficultyLevel) => {
@@ -116,16 +131,27 @@ export function OperationFlow({
         playSound('click');
       }, 200);
     } else {
+      engine.awardLessonComplete();
       router.push(`/${operation}/${urlDifficulty}/practice`);
     }
-  }, [currentExampleIndex, learnExamples.length, playSound, router, operation, urlDifficulty]);
+  }, [currentExampleIndex, learnExamples.length, playSound, router, operation, urlDifficulty, engine]);
 
   const handlePracticeComplete = useCallback(
     (correct: boolean) => {
+      engine.updateMission('practice', 1);
       if (correct) {
         setPracticeCorrectCount((c) => c + 1);
+        engine.awardCorrectAnswer();
+        setShowCelebration('success');
+        setMascotMessage(getMascotCelebration());
+      } else {
+        setShowCelebration('encourage');
+        setMascotMessage(getMascotHint(operation));
       }
+
       setTimeout(() => {
+        setShowCelebration(null);
+        setMascotMessage(null);
         if (currentProblemIndex < practiceProblems.length - 1) {
           setFadeOut(true);
           setTimeout(() => {
@@ -133,23 +159,37 @@ export function OperationFlow({
             setFadeOut(false);
           }, 200);
         } else {
+          engine.awardPracticeComplete();
           setShowSummary(true);
         }
-      }, correct ? 800 : 2000);
+      }, correct ? 1200 : 2500);
     },
-    [currentProblemIndex, practiceProblems.length]
+    [currentProblemIndex, practiceProblems.length, engine, operation]
   );
 
   const handleSummaryContinue = useCallback(() => {
     setShowSummary(false);
+    engine.awardLessonComplete();
     router.push(`/${operation}/${urlDifficulty}/quiz`);
-  }, [router, operation, urlDifficulty]);
+  }, [router, operation, urlDifficulty, engine]);
 
   const handleQuizComplete = useCallback(
-    (_correct: number, _total: number) => {
+    (correct: number, total: number) => {
+      engine.awardQuizComplete();
+      engine.updateMission('challenge', 1);
+      if (correct === total) {
+        engine.unlockBadge('perfect-score');
+      }
+      engine.unlockBadge('first-quiz');
+      engine.markOperationComplete(operation);
+      const allOps = ['addition', 'subtraction', 'multiplication', 'division'];
+      const completedOps = [...engine.engineState.completedOperations, operation];
+      if (allOps.every((op) => completedOps.includes(op))) {
+        engine.unlockBadge('math-explorer');
+      }
       router.push(`/${operation}`);
     },
-    [router, operation]
+    [router, operation, engine]
   );
 
   const handleQuizSkip = useCallback(() => {
@@ -187,6 +227,9 @@ export function OperationFlow({
             <span className="font-display text-sm text-white">
               {urlDifficulty === 'easy' ? '🌟 Easy' : urlDifficulty === 'medium' ? '⭐ Medium' : '🏆 Hard'}
             </span>
+          )}
+          {engine.isEngineLoaded && (
+            <span className="font-display text-sm text-yellow-300">⭐{engine.engineState.stars}</span>
           )}
           <Button
             onClick={() => router.push('/')}
@@ -242,9 +285,12 @@ export function OperationFlow({
 
       {urlStage === 'learn' && !showConcept && currentExample && (
         <div className="flex flex-col items-center p-6">
-          <h2 className="font-display text-[20px] text-orange mb-4">
-            Let's Learn {meta.name}! {meta.emoji}
-          </h2>
+          <div className="flex items-center gap-3 mb-4">
+            <h2 className="font-display text-[20px] text-orange">
+              Let's Learn {meta.name} {meta.emoji}
+            </h2>
+          </div>
+          <MascotMessage message={getMascotHint(operation)} mood="happy" className="mb-4" />
           <div className={`transition-opacity duration-200 ${fadeOut ? 'opacity-0' : 'opacity-100'}`}>
             <WorkedExample example={currentExample} />
           </div>
@@ -267,9 +313,24 @@ export function OperationFlow({
 
       {urlStage === 'practice' && !showSummary && currentProblem && (
         <div className="flex flex-col items-center p-4 sm:p-6">
-          <h2 className="font-display text-[20px] text-orange mb-4">
+          <h2 className="font-display text-[20px] text-orange mb-2">
             Time to Practice! 💪
           </h2>
+          {showCelebration && (
+            <div className="mb-3 animate-[pop-in_0.3s_ease-out]">
+              <CelebrationMessage
+                size={showCelebration === 'success' ? 'small' : 'small'}
+                label={showCelebration === 'success' ? undefined : getEncouragementMessage()}
+              />
+            </div>
+          )}
+          {mascotMessage && (
+            <MascotMessage
+              message={mascotMessage}
+              mood={showCelebration === 'success' ? 'excited' : 'encouraging'}
+              className="mb-3"
+            />
+          )}
           <div className={`w-full max-w-[420px] transition-opacity duration-200 ${fadeOut ? 'opacity-0' : 'opacity-100'}`}>
             <PracticeProblemView
               key={currentProblemIndex}
