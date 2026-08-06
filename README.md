@@ -1,36 +1,58 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Kids Learning Next — Math Adventure
 
-## Getting Started
+An interactive math learning app for kids aged 5–8: learn **addition, subtraction,
+multiplication, division**, and **times tables** with stories, characters, stars,
+badges, and a daily mission system. Available in **English, Hindi, and Kannada**.
 
-First, run the development server:
+## Tech stack
+
+- **Next.js 16** (App Router) + **React 19**
+- **Tailwind CSS v4** + **shadcn v4** (`base-nova` style)
+- **Base UI** (`@base-ui/react`) for menus, toasts, and the language select
+- **i18next** + **react-i18next** for client-side i18n (en/hi/kn)
+- **TypeScript** (strict), `@/*` → `src/*`
+
+## Getting started
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
+npm run dev        # dev server at localhost:3000
+npm run build      # production build (also type-checks)
+npm run lint       # ESLint
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+No test framework is configured.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Routes
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Route | Description |
+| --- | --- |
+| `/` | Landing page: mission postcard, stats, expedition trail |
+| `/addition`, `/subtraction`, `/multiplication`, `/division` | Operation modules (`/…/difficulty`, `/…/practice`, `/…/quiz`) |
+| `/tables` | Times tables app (audio, certificates, leaderboard) |
 
-## Learn More
+## Multi-language support
 
-To learn more about Next.js, take a look at the following resources:
+The app is fully translated into **English (`en`), Hindi (`hi`), and Kannada (`kn`)**
+using client-side `i18next`. All UI strings live in `src/i18n/locales/{en,hi,kn}.json`.
+The language picker is a Base UI `Select` in the landing header and the tables
+app header/drawer.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+**Adding a new string**: add the key to **all three** locale files and keep key
+parity (only `_note` doc keys are English-only). See `AGENTS.md` → *i18n /
+Multi-language* for the full workflow and a key-parity verification command.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Recent changes
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- **Multi-language support (en/hi/kn)** — every route, operation generator, and
+  the tables app now render translated copy; language persists via localStorage.
+- **Language picker rebuilt on Base UI `Select`** — replaces a native `<select>`
+  whose OS dropdown spilled outside the header on mobile; the new popup is
+  portaled and `z-50` so it can't be clipped.
+- **+2px font bump for Hindi/Kannada** — Devanagari/Kannada glyphs render smaller
+  at the same px, so common text sizes get a +2px bump (all languages on mobile,
+  hi/kn only on desktop).
+- **Table pattern discovery supports tables up to 20** — `buildPattern(tableNumber)`
+  generates the discovery view dynamically, fixing tables 12+ rendering blank.
+- **Mission tasks use translated `descriptionKey`** with a legacy `description`
+  fallback; stored missions are migrated via `ensureDescriptionKeys()`.

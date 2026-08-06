@@ -24,6 +24,7 @@ No test framework is configured — no test commands exist.
 - **shadcn v4** (`components.json` style: `base-nova`); use `npx shadcn@latest add <item>` to add components
 - **PostCSS** with `@tailwindcss/postcss` v4 plugin
 - **TypeScript** (strict mode, `@/*` maps to `src/*`)
+- **i18n**: `i18next` + `react-i18next` + `i18next-browser-languagedetector` — client-side only, en/hi/kn (see **i18n / Multi-language** below)
 - `cn()` helper: `import { cn } from '@/lib/utils'` (wraps `tailwind-merge` + `clsx`)
 
 ## Architecture
@@ -47,13 +48,13 @@ Each operation module has 4 files and must export all 4 functions:
 
 ```
 src/lib/operations/{operation}.ts
-  ├── generateLearnExamples(d: DifficultyLevel) → Example[]
-  ├── generatePracticeProblems(d: DifficultyLevel) → PracticeProblem[]
-  ├── generateQuizQuestions(d: DifficultyLevel) → QuizQuestion[]
-  └── getConceptIntro(d: DifficultyLevel) → ConceptIntro | null
+  ├── generateLearnExamples(d: DifficultyLevel, t: Translate) → Example[]
+  ├── generatePracticeProblems(d: DifficultyLevel, t: Translate) → PracticeProblem[]
+  ├── generateQuizQuestions(d: DifficultyLevel, t: Translate) → QuizQuestion[]
+  └── getConceptIntro(d: DifficultyLevel, t: Translate) → ConceptIntro | null
 ```
 
-Shared types at `src/lib/operations/types.ts` (`Operation`, `DifficultyLevel`, `Stage`, `Example`, `PracticeProblem`, `QuizQuestion`, `ConceptIntro`, `OPERATION_META`, `EMOJI_SAFE_LIMIT`).
+Shared types at `src/lib/operations/types.ts` (`Operation`, `DifficultyLevel`, `Stage`, `Example`, `PracticeProblem`, `QuizQuestion`, `ConceptIntro`, `Translate`, `OPERATION_META`, `EMOJI_SAFE_LIMIT`). `Translate = (key: string, options?: Record<string, unknown>) => string`.
 
 Each route's page.tsx is a thin Client Component wrapper importing `OperationFlow` and the 4 generation functions.
 
@@ -70,18 +71,33 @@ Each route's page.tsx is a thin Client Component wrapper importing `OperationFlo
 - `isLoaded` signals localStorage hydration complete — **must wait for it** before reading `state.playerName`.
 - Exports `state`, `setPlayerName`, and other app state.
 
-### Color conventions (inline, no theme tokens)
+### Design tokens (Tailwind `@theme inline` in `src/app/globals.css`)
 
-- Header background: `#1E293B`
-- Primary indigo: `#4F46E5`, `#6366F1`
-- Orange accent (landing heading): `#C2410C`
-- Green success: `#15803D`
-- Body background: `#F5F5F5`
-- Font: `font-display` (ui-rounded stack) for headings/buttons, `font-body` (system-ui) for body
+- `ink` `#1B1447` — dark header bg + headings; `coral` `#FF6B52` (+ `coral-soft` `#F47C6B`, `coral-hover`, `coral-active`) — primary buttons/accents
+- `paper` `#F7F1E8` — body bg; `card` `#FFFDF8` — cards; `mist` `#E4DDCB` — borders
+- `gold` `#FFB648` — leaderboard/table accent; `leaf` `#3FA664` — success/complete
+- Body text: `text-text-primary` `#2B2352`, `text-text-secondary`, `text-text-muted/dim/tertiary`
+- Fonts: `font-display` = **Baloo_2** (rounded bold; default `font-weight:700`), `font-body` = **Nunito**
+
+### i18n / Multi-language (English / Hindi / Kannada)
+
+Client-side `i18next` only. `I18nProvider` wraps `<body>` in `src/app/layout.tsx` and
+sets `document.documentElement.lang` on language change. Use `useTranslation()` for copy.
+
+**When adding a new string, ALWAYS:**
+- Add the key to **all three** locale files: `src/i18n/locales/{en,hi,kn}.json` (keep key parity).
+- Only `_note` documentation keys may be en-only (there are exactly 4). Verify parity:
+  `node -e "const fs=require('fs');const L=l=>JSON.parse(fs.readFileSync('src/i18n/locales/'+l+'.json','utf8'));const leaf=(o,p='')=>{const r=[];for(const k in o){const np=p?p+'.'+k:k;o[k]&&typeof o[k]==='object'&&!Array.isArray(o[k])?r.push(...leaf(o[k],np)):r.push(np)}return r};const en=leaf(L('en')).sort();const hi=new Set(leaf(L('hi'))),kn=new Set(leaf(L('kn')));console.log(en.filter(k=>!hi.has(k)||!kn.has(k)))"`
+- In components: `const { t } = useTranslation()`. In operation generators: receive `t: Translate` and call `t('key', { var })`.
+- **`TFunction` type is imported from `i18next`, NOT `react-i18next`** (v17 doesn't export it).
+- `getMascotHint(t, operation?)` — `t` is the FIRST argument.
+- Difficulty key is `common.difficulty.${level}.desc` (NOT `.description`).
+- `LanguageSelector` (`src/components/language-selector.tsx`) is a **Base UI `Select`** (portaled popup, `z-50`) — keep the `dark`/`className` props. Rendered in the landing header and in `AppHeader` (desktop top row + mobile drawer → two instances coexist in the DOM on desktop).
+- **+2px font bump**: `globals.css` remaps common `text-*` size utilities (10px→12 … 28px→30, `text-xs`→14, `text-sm`→16, etc.) under `@media (max-width:767px)` (all languages) and `html[lang='hi'], html[lang='kn']` (desktop, hi/kn only) — Devanagari/Kannada glyphs render smaller at the same px. If you introduce a new small text class (below ~30px), add it to those two scoped blocks.
 
 ### Tables module (`/tables`)
 
-Legacy feature with its own components in `src/components/` (app-header, celebration, certificate, leaderboard, fact-card, illustration-panel, landing-screen, table-selector, progress-bar). Has audio (Web Speech), SVG generation, hamburger drawer. No name modal.
+Legacy feature with its own components in `src/components/` (app-header, celebration, certificate, leaderboard, fact-card, illustration-panel, table-selector, progress-bar, pattern-discovery). Has audio (Web Speech), SVG generation, hamburger drawer. No name modal.
 
 ## Key conventions
 
@@ -94,4 +110,7 @@ Legacy feature with its own components in `src/components/` (app-header, celebra
 - **Input width**: `w-[clamp(70px,25vw,100px)]` for number blanks; `+/-` toggle button with `gap-1.5` from input; stacked vertical layout has `mt-3 pt-2` from the border line
 - **Practice feedback**: Correct answer fires a base-ui `Toast` (stacked, `type='success'`, `timeout=2000`) at top-center with ✅ check mark — not inline banners or Nova dialog
 - **Concept intro** and practice content are mutually exclusive (`!showConcept` guards the practice section)
+- **Use shadcn components for generic UI** — import from `@/components/ui/` (`Button`, `Dialog` + `DialogContent/Header/Title/Description/Footer`, `Input`, `Card`, `Badge`, `Progress`) instead of hand-rolling raw JSX (`<button>`, custom modal `<div>`s). Add missing ones with `npx shadcn@latest add <item>`. Base UI is also fine for low-level primitives already in use (Toast, Select).
 - **shadcn `@acme` registries in docs are placeholders** — no public ACME registry exists
+- **Mission tasks** carry a translated `descriptionKey` (i18n key in all 3 locales) plus a legacy English `description` fallback. New mission templates in `src/lib/engines/daily-mission.ts` must set `descriptionKey`; `ensureDescriptionKeys()` migrates old stored missions in `useEngineState.ts`.
+- **Table pattern discovery** (`pattern-discovery.tsx`) is generated dynamically via `buildPattern(tableNumber)` — there is NO fixed table map (the old 2–11 hardcoded map caused tables 12+ to render blank). Tables go up to 20 (practice/hard), 15 normal, 10 easy.
