@@ -1,5 +1,6 @@
 'use client';
 
+import { useMemo, memo } from 'react';
 import { useAppContext } from '@/lib/contexts/AppContext';
 import { formatElapsedTime } from '@/lib/utils';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
@@ -10,16 +11,19 @@ interface LeaderboardOverlayProps {
   onClose: () => void;
 }
 
-export function LeaderboardOverlay({ isOpen, onClose }: LeaderboardOverlayProps) {
+function LeaderboardOverlayInner({ isOpen, onClose }: LeaderboardOverlayProps) {
   const { leaderboardData } = useAppContext();
 
-  const data = leaderboardData();
-  const sortedEntries = Object.entries(data)
-    .map(([name, entry]) => ({ name, data: entry }))
-    .sort((a, b) => {
-      if (b.data.totalStars !== a.data.totalStars) return b.data.totalStars - a.data.totalStars;
-      return a.data.totalTime - b.data.totalTime;
-    });
+  const sortedEntries = useMemo(() => {
+    if (!isOpen) return [];
+    const data = leaderboardData();
+    return Object.entries(data)
+      .map(([name, entry]) => ({ name, data: entry }))
+      .sort((a, b) => {
+        if (b.data.totalStars !== a.data.totalStars) return b.data.totalStars - a.data.totalStars;
+        return a.data.totalTime - b.data.totalTime;
+      });
+  }, [isOpen, leaderboardData]);
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => { if (!open) onClose(); }}>
@@ -37,13 +41,13 @@ export function LeaderboardOverlay({ isOpen, onClose }: LeaderboardOverlayProps)
         ) : (
           <div className="max-h-[280px] overflow-y-auto">
             <table className="w-full border-collapse font-body">
-              <thead className="sticky top-0 bg-white z-10">
+              <thead className="sticky top-0 bg-card z-10">
                 <tr>
-                  <th className="font-display text-xs text-text-dim py-2 px-1.5 text-left border-b-2 border-[#E5E5E5]">#</th>
-                  <th className="font-display text-xs text-text-dim py-2 px-1.5 text-left border-b-2 border-[#E5E5E5]">Name</th>
-                  <th className="font-display text-xs text-text-dim py-2 px-1.5 text-left border-b-2 border-[#E5E5E5]">Stars</th>
-                  <th className="font-display text-xs text-text-dim py-2 px-1.5 text-left border-b-2 border-[#E5E5E5]">Tables</th>
-                  <th className="font-display text-xs text-text-dim py-2 px-1.5 text-left border-b-2 border-[#E5E5E5]">Time</th>
+                  <th className="font-display text-xs text-text-dim py-2 px-1.5 text-left border-b-2 border-mist">#</th>
+                  <th className="font-display text-xs text-text-dim py-2 px-1.5 text-left border-b-2 border-mist">Name</th>
+                  <th className="font-display text-xs text-text-dim py-2 px-1.5 text-left border-b-2 border-mist">Stars</th>
+                  <th className="font-display text-xs text-text-dim py-2 px-1.5 text-left border-b-2 border-mist">Tables</th>
+                  <th className="font-display text-xs text-text-dim py-2 px-1.5 text-left border-b-2 border-mist">Time</th>
                 </tr>
               </thead>
               <tbody>
@@ -51,7 +55,7 @@ export function LeaderboardOverlay({ isOpen, onClose }: LeaderboardOverlayProps)
                 const maxTables = entry.data.maxTables || 10;
                 const maxStars = maxTables * 3;
                 return (
-                  <tr key={entry.name} className={`text-xs ${index % 2 === 0 ? 'bg-white' : 'bg-[#FAFAFA]'}`}>
+                  <tr key={entry.name} className={`text-xs ${index % 2 === 0 ? 'bg-card' : 'bg-paper'}`}>
                     <td className="py-2.5 px-1.5 text-text-secondary">{index + 1}</td>
                     <td className="py-2.5 px-1.5 text-text-primary font-medium">{entry.name}</td>
                     <td className="py-2.5 px-1.5 text-text-secondary">{entry.data.totalStars}/{maxStars}</td>
@@ -74,3 +78,5 @@ export function LeaderboardOverlay({ isOpen, onClose }: LeaderboardOverlayProps)
     </Dialog>
   );
 }
+
+export const LeaderboardOverlay = memo(LeaderboardOverlayInner);

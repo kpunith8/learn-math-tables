@@ -82,7 +82,7 @@ export function RetrievalPractice({ tableNumber, weakFacts, onComplete }: Retrie
   if (!currentQuestion) {
     return (
       <div className="flex justify-center p-4">
-        <div className="bg-white rounded-2xl border-2 border-green/20 p-5 max-w-[420px] w-full text-center">
+        <div className="bg-card rounded-2xl border-2 border-leaf/20 p-5 max-w-[420px] w-full text-center">
           <CelebrationMessage size="small" label="Review complete!" />
           <Button onClick={() => onComplete(results)} variant="indigo" size="xl" className="mt-4">
             Continue
@@ -96,8 +96,8 @@ export function RetrievalPractice({ tableNumber, weakFacts, onComplete }: Retrie
 
   return (
     <div className="flex justify-center p-4">
-      <div className="bg-white rounded-2xl border-2 border-purple/20 p-5 max-w-[420px] w-full text-center">
-        <h2 className="font-display text-sm text-purple mb-2">
+      <div className="bg-card rounded-2xl border-2 border-coral/20 p-5 max-w-[420px] w-full text-center">
+        <h2 className="font-display text-sm text-coral mb-2">
           🧠 Retrieval Practice
         </h2>
         <p className="font-body text-xs text-text-dim mb-3">

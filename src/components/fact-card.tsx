@@ -29,26 +29,26 @@ function FactCardInner({ groupCount, currentTable, isRevealed, isActive, onRevea
         aria-label={`${currentTable} times ${groupCount}${isRevealed ? ` equals ${answer}` : ', tap to reveal'}`}
         className={`fact-card-row w-full rounded-xl border-2 cursor-pointer transition-all duration-150 min-h-[52px] flex items-center justify-between px-5 py-3.5
           ${isActive
-            ? 'bg-[#EEF2FF] border-[#6366F1]'
+            ? 'bg-coral/10 border-coral'
             : isRevealed
-              ? 'bg-[#F8F8F8] border-[#E2E8F0]'
-              : 'bg-white border-[#E2E8F0]'
+              ? 'bg-paper border-mist'
+              : 'bg-card border-mist'
           }
-          hover:border-[#6366F1] hover:bg-[#FAFAFA] active:scale-[0.97]`}
+          hover:border-coral hover:bg-card-hover active:scale-[0.97]`}
       >
-        <span className="fact-equation font-display text-[clamp(15px,4vw,17px)] text-[#C2410C]">
+        <span className="fact-equation font-display text-[clamp(15px,4vw,17px)] text-castle">
           {currentTable} × {groupCount} = ?
         </span>
         {isRevealed ? (
-          <span className="fact-answer-shown text-[16px] text-[#15803D] font-bold">✓ {answer}</span>
+          <span className="fact-answer-shown text-[16px] text-leaf font-bold">✓ {answer}</span>
         ) : (
-          <span className="fact-answer-hint text-sm text-[#64748B] font-bold">Tap to reveal</span>
+          <span className="fact-answer-hint text-sm text-text-muted font-bold">Tap to reveal</span>
         )}
       </div>
 
       {storyHtml && (
         <div
-          className="fact-story-popup mt-1 text-[13px] leading-[1.7] text-[#334155] bg-[#FFF7ED] rounded-[10px] p-[10px_14px] border-2 border-[#E5E5E5] shadow-[0_4px_12px_rgba(0,0,0,0.08)] animate-[popup-in_0.25s_ease-out] [&_strong]:text-[#C2410C] [&_strong]:font-bold"
+          className="fact-explainer mt-1 text-[13px] leading-[1.7] text-text-primary bg-warm-bg rounded-[10px] p-[10px_14px] border-2 border-warm-border shadow-[0_4px_12px_rgba(0,0,0,0.08)] animate-[popup-in_0.25s_ease-out] [&_strong]:text-castle [&_strong]:font-bold"
           dangerouslySetInnerHTML={{ __html: storyHtml }}
         />
       )}

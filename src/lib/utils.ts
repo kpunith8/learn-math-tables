@@ -164,7 +164,7 @@ export const generateMultiplicationSVG = (multiplier: number, groupCount: number
     const fontSize = Math.max(SVG_CONFIG.MIN_FONT, radius * SVG_CONFIG.FONT_SIZE);
 
     return `
-      <circle cx="${centerX}" cy="${centerY}" r="${radius}" fill="#B45309" stroke="${SVG_CONFIG.STROKE}" stroke-width="${SVG_CONFIG.STROKE_WIDTH}"/>
+      <circle cx="${centerX}" cy="${centerY}" r="${radius}" fill="var(--color-gold)" stroke="${SVG_CONFIG.STROKE}" stroke-width="${SVG_CONFIG.STROKE_WIDTH}"/>
       <text x="${centerX}" y="${centerY + 5}" text-anchor="middle" font-family="system-ui,sans-serif" font-size="${fontSize}" fill="#FFFFFF">${multiplier}</text>
     `;
   }).join('');
@@ -172,7 +172,7 @@ export const generateMultiplicationSVG = (multiplier: number, groupCount: number
   const svgHeight = SVG_CONFIG.TOP_PAD + totalRows * SVG_CONFIG.ROW_HEIGHT + SVG_CONFIG.BOTTOM_PAD;
   const groupLabel = `${groupCount} group${groupCount > 1 ? 's' : ''} of ${multiplier} = ${totalProduct}`;
 
-  return `<svg viewBox="0 0 ${SVG_CONFIG.WIDTH} ${svgHeight}" xmlns="http://www.w3.org/2000/svg">${circleElements}<text x="${SVG_CONFIG.WIDTH / 2}" y="${svgHeight - 4}" text-anchor="middle" font-family="system-ui,sans-serif" font-size="${SVG_CONFIG.GROUP_FONT}" fill="#64748B">${groupLabel}</text></svg>`;
+  return `<svg viewBox="0 0 ${SVG_CONFIG.WIDTH} ${svgHeight}" xmlns="http://www.w3.org/2000/svg">${circleElements}<text x="${SVG_CONFIG.WIDTH / 2}" y="${svgHeight - 4}" text-anchor="middle" font-family="system-ui,sans-serif" font-size="${SVG_CONFIG.GROUP_FONT}" fill="var(--color-text-muted)">${groupLabel}</text></svg>`;
 };
 
 // ── Story Generation ───────────────────────────────────────

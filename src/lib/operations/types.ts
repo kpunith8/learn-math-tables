@@ -38,10 +38,10 @@ export interface ConceptIntro {
 }
 
 export const OPERATION_META: Record<Operation, { emoji: string; name: string; tagline: string; description: string; color: string }> = {
-  addition: { emoji: '➕', name: 'Addition', tagline: 'Put numbers together!', description: 'Addition is putting two groups together to find the total!', color: '#C2410C' },
-  subtraction: { emoji: '➖', name: 'Subtraction', tagline: 'Take some away!', description: 'Subtraction is taking some away to see what\'s left!', color: '#1565C0' },
-  multiplication: { emoji: '✖️', name: 'Multiplication', tagline: 'Count in groups!', description: 'Multiplication is counting in equal groups — a fast way to add!', color: '#7B1FA2' },
-  division: { emoji: '➗', name: 'Division', tagline: 'Share things fairly!', description: 'Division is sharing a total equally into groups!', color: '#1D9E75' },
+  addition: { emoji: '➕', name: 'Addition', tagline: 'Put numbers together!', description: 'Addition is putting two groups together to find the total!', color: '#4FA8F5' },
+  subtraction: { emoji: '➖', name: 'Subtraction', tagline: 'Take some away!', description: 'Subtraction is taking some away to see what\'s left!', color: '#57C278' },
+  multiplication: { emoji: '✖️', name: 'Multiplication', tagline: 'Count in groups!', description: 'Multiplication is counting in equal groups — a fast way to add!', color: '#7E8CD9' },
+  division: { emoji: '➗', name: 'Division', tagline: 'Share things fairly!', description: 'Division is sharing a total equally into groups!', color: '#FF7A59' },
 };
 
 export const EMOJI_SAFE_LIMIT = 10;

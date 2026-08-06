@@ -19,11 +19,11 @@ const buttonVariants = cva(
           "bg-destructive/10 text-destructive hover:bg-destructive/20 focus-visible:border-destructive/40 focus-visible:ring-destructive/20 dark:bg-destructive/20 dark:hover:bg-destructive/30 dark:focus-visible:ring-destructive/40",
         link: "text-primary underline-offset-4 hover:underline",
         indigo:
-          "bg-indigo text-white shadow-[0_4px_12px_rgba(79,70,229,0.3)] hover:bg-indigo-hover active:bg-indigo-active",
+          "bg-coral text-white shadow-[0_4px_12px_rgba(255,107,82,0.35)] hover:bg-coral-hover active:bg-coral-active",
         orange:
-          "bg-orange text-white shadow-[0_4px_8px_rgba(194,65,12,0.3)] hover:bg-[#A3350A] active:bg-[#852B08]",
+          "bg-castle text-white shadow-[0_4px_8px_rgba(255,122,89,0.35)] hover:bg-coral-hover active:bg-coral-active",
         "indigo-outline":
-          "border-2 border-indigo bg-white text-indigo hover:bg-indigo/5 active:bg-indigo/10",
+          "border-2 border-coral bg-card text-coral hover:bg-coral/5 active:bg-coral/10",
       },
       size: {
         default:

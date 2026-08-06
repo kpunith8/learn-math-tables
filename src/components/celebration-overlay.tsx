@@ -76,7 +76,7 @@ export function CelebrationOverlay({
       onClick={handleClick}
       className="celebration-overlay fixed inset-0 flex items-center justify-center bg-black/40 z-[1000] cursor-pointer animate-[fade-in_0.3s_ease-out_forwards]"
     >
-      <div className="celebration-card font-display text-[clamp(22px,5vw,36px)] text-white text-center shadow-[2px_2px_8px_rgba(0,0,0,0.4)] bg-[#4F46E5] py-7 px-9 rounded-[24px] animate-[pop-in_0.4s_cubic-bezier(0.175,0.885,0.32,1.275)] leading-relaxed max-w-[440px]">
+      <div className="celebration-card font-display text-[clamp(22px,5vw,36px)] text-white text-center shadow-[2px_2px_8px_rgba(0,0,0,0.4)] bg-gradient-to-br from-ink to-[#2E2572] py-7 px-9 rounded-[24px] animate-[pop-in_0.4s_cubic-bezier(0.175,0.885,0.32,1.275)] leading-relaxed max-w-[440px]">
         🎉✨ Incredible! ✨🎉
         <span className="celebration-message block font-body text-base font-bold mt-2 opacity-90">
           You conquered the {tableNumber} times table!

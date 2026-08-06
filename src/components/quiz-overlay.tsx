@@ -136,7 +136,7 @@ export function QuizOverlay({ questions, onComplete, onSkip, onPlaySound }: Quiz
                 const isCorrect = option === currentQuestion.correctAnswer;
                 const isWrong = isSelected && phase === 'wrong-hint';
 
-                let stateClass = 'bg-card-hover border-border-card text-text-secondary hover:border-indigo-light hover:bg-surface hover:scale-[1.03]';
+                let stateClass = 'bg-card border-mist text-text-secondary hover:border-coral hover:bg-paper hover:scale-[1.03]';
 
                 if (isCorrect && phase === 'wrong-hint') {
                   stateClass = 'bg-quiz-correct-bg border-quiz-correct-border text-quiz-correct-text';
@@ -196,7 +196,7 @@ export function QuizOverlay({ questions, onComplete, onSkip, onPlaySound }: Quiz
                 const isCorrect = option === currentQuestion.correctAnswer;
                 const revealed = isSelected;
 
-                let stateClass = 'bg-card-hover border-border-card text-text-secondary hover:border-indigo-light hover:bg-surface hover:scale-[1.03]';
+                let stateClass = 'bg-card border-mist text-text-secondary hover:border-coral hover:bg-paper hover:scale-[1.03]';
 
                 if (revealed) {
                   stateClass = isCorrect

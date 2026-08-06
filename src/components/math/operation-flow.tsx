@@ -285,7 +285,7 @@ export function OperationFlow({
                 <div
                   key={i}
                   className={`w-2.5 h-2.5 rounded-full transition-colors duration-200 ${
-                    i === currentExampleIndex ? 'bg-indigo' : i < currentExampleIndex ? 'bg-green' : 'bg-[#ddd]'
+                    i === currentExampleIndex ? 'bg-coral' : i < currentExampleIndex ? 'bg-leaf' : 'bg-mist'
                   }`}
                 />
               ))
@@ -293,7 +293,7 @@ export function OperationFlow({
                 <div
                   key={i}
                   className={`w-2.5 h-2.5 rounded-full transition-colors duration-200 ${
-                    i === currentProblemIndex ? 'bg-indigo' : i < currentProblemIndex ? 'bg-green' : 'bg-[#ddd]'
+                    i === currentProblemIndex ? 'bg-coral' : i < currentProblemIndex ? 'bg-leaf' : 'bg-mist'
                   }`}
                 />
               ))}

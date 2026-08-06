@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useCallback } from 'react';
-import { PracticeProblem as PracticeProblemType, Operation } from '@/lib/operations/types';
+import { PracticeProblem as PracticeProblemType, Operation, OPERATION_META } from '@/lib/operations/types';
 import { EmojiGroup } from './emoji-group';
 import { NumberBlank } from './number-blank';
 
@@ -61,15 +61,17 @@ export function PracticeProblemView({ problem, index, total, onComplete }: Pract
     }
   }, [answer, result, attempts, status, onComplete]);
 
+  const accent = OPERATION_META[operation].color;
+
   return (
-    <div className="w-full max-w-[420px] bg-white rounded-2xl border-2 border-border-card p-5 animate-[fade-in_0.3s_ease-out]">
+    <div className="w-full max-w-[420px] bg-card rounded-2xl border-2 border-mist p-5 animate-[fade-in_0.3s_ease-out]">
       <div className="text-sm font-body text-text-dim text-center mb-2">
         Problem {index + 1} of {total}
       </div>
 
       <div className="mb-4">
         {isHorizontal ? (
-          <div className="text-[clamp(22px,6vw,34px)] font-display text-orange text-center leading-[1.4]">
+          <div className="text-[clamp(22px,6vw,34px)] font-display text-center leading-[1.4]" style={{ color: accent }}>
             {operation === 'multiplication'
               ? `${padNumber(operand1)} × ${padNumber(operand2)} = `
               : `${padNumber(operand1)} ÷ ${padNumber(operand2)} = `}
@@ -82,8 +84,8 @@ export function PracticeProblemView({ problem, index, total, onComplete }: Pract
             />
           </div>
         ) : (
-          <div className="font-display text-orange text-center leading-[1.3]">
-            <div className="inline-block text-[clamp(22px,6vw,34px)] text-right font-mono">
+          <div className="font-display text-center leading-[1.3]">
+            <div className="inline-block text-[clamp(22px,6vw,34px)] text-right font-mono" style={{ color: accent }}>
               {(() => {
                 const op1 = padNumber(operand1);
                 const op2 = padNumber(operand2);
@@ -93,7 +95,7 @@ export function PracticeProblemView({ problem, index, total, onComplete }: Pract
                   <>
                     <div className="text-right">{op1.padStart(maxW)}</div>
                     <div className="text-right">{symbol} {op2.padStart(Math.max(0, maxW - 2))}</div>
-                    <div className="border-t-2 border-orange mt-3 pt-2 text-right">
+                    <div className="border-t-2 mt-3 pt-2 text-right" style={{ borderColor: accent }}>
                       <NumberBlank
                         value={answer}
                         onChange={setAnswer}
@@ -110,7 +112,7 @@ export function PracticeProblemView({ problem, index, total, onComplete }: Pract
         )}
       </div>
 
-      <div className="text-center my-3 py-2 bg-card-hover rounded-xl min-h-[60px] flex items-center justify-center">
+      <div className="text-center my-3 py-2 bg-mist/40 rounded-xl min-h-[60px] flex items-center justify-center">
         {showEmoji ? (
           (operation === 'addition' || operation === 'subtraction') ? (
             <EmojiGroup
@@ -156,7 +158,7 @@ export function PracticeProblemView({ problem, index, total, onComplete }: Pract
           </div>
         )}
         {status === 'revealed' && (
-          <div className="font-body text-sm text-text-secondary bg-[#F8F8F8] rounded-xl p-3 text-center leading-[1.6]">
+          <div className="font-body text-sm text-text-secondary bg-mist/30 rounded-xl p-3 text-center leading-[1.6]">
             <p className="font-display text-base text-orange mb-2">Here&apos;s how we solve it! Let&apos;s look together 👀</p>
             <p>{explanation}</p>
           </div>

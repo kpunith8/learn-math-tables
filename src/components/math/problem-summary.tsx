@@ -1,6 +1,6 @@
 'use client';
 
-import { PracticeProblem, Operation } from '@/lib/operations/types';
+import { PracticeProblem, Operation, OPERATION_META } from '@/lib/operations/types';
 import { EmojiGroup } from './emoji-group';
 
 interface ProblemSummaryListProps {
@@ -35,9 +35,9 @@ export function ProblemSummaryList({ problems, correctCount, onContinue }: Probl
           return (
             <div
               key={i}
-              className="bg-white rounded-xl border-2 border-border-card p-4"
+              className="bg-card rounded-xl border-2 border-mist p-4"
             >
-              <div className="font-display text-[17px] text-orange mb-2">
+              <div className="font-display text-[17px] text-ink mb-2" style={{ color: OPERATION_META[p.operation].color }}>
                 {p.operand1} {symbol} {p.operand2} = {p.result}
               </div>
               {showEmoji && (
@@ -67,7 +67,7 @@ export function ProblemSummaryList({ problems, correctCount, onContinue }: Probl
 
       <button
         onClick={onContinue}
-        className="w-full mt-5 font-display text-base py-3 rounded-xl border-none bg-indigo text-white cursor-pointer transition-colors duration-150 shadow-[0_4px_12px_rgba(79,70,229,0.3)] hover:bg-indigo-hover active:bg-indigo-active"
+        className="w-full mt-5 font-display text-base py-3 rounded-xl border-none bg-coral text-white cursor-pointer transition-colors duration-150 shadow-[0_4px_12px_rgba(255,107,82,0.35)] hover:bg-coral-hover active:bg-coral-active"
       >
         Let&apos;s do the quiz! 🎉
       </button>

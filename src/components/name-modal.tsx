@@ -35,7 +35,7 @@ export function NameModal({ isOpen, initialName, onSave, onCancel }: NameModalPr
     <Dialog open={isOpen} onOpenChange={(open) => { if (!open) onCancel(); }}>
       <DialogContent showCloseButton={false} className="max-w-[380px] text-center p-7 md:p-6">
         <DialogHeader>
-          <DialogTitle className="font-display text-[24px] text-indigo">
+          <DialogTitle className="font-display text-[24px] text-ink">
             What&apos;s your name?
           </DialogTitle>
           <DialogDescription className="text-sm text-text-muted">
@@ -62,7 +62,7 @@ export function NameModal({ isOpen, initialName, onSave, onCancel }: NameModalPr
         <DialogFooter className="flex-row justify-center gap-3 border-none bg-transparent p-0 -mb-2">
           <Button
             onClick={handleSave}
-            className="font-display text-base py-2.5 px-7 rounded-full bg-indigo text-white hover:bg-indigo-hover active:bg-indigo-active shadow-[0_4px_12px_rgba(79,70,229,0.3)]"
+            className="font-display text-base py-2.5 px-7 rounded-full bg-coral text-white hover:bg-coral-hover active:bg-coral-active shadow-[0_4px_12px_rgba(255,107,82,0.35)]"
           >
             Let&apos;s Go!
           </Button>

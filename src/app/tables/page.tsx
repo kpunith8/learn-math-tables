@@ -2,22 +2,23 @@
 
 import { useEffect, useCallback, useState, useRef, useMemo, startTransition } from 'react';
 import { useRouter } from 'next/navigation';
+import dynamic from 'next/dynamic';
 import { useAppContext } from '@/lib/contexts/AppContext';
 import { useAudio } from '@/lib/hooks/useAudio';
-import { useTimer } from '@/lib/hooks/useTimer';
 import { useEngineState } from '@/lib/hooks/useEngineState';
 import { calculateStarRating, getMaxAllowedTable, calculateLeaderboardStats, speakStoryText, cancelSpeech, generateQuizQuestions, toQuizQuestions } from '@/lib/utils';
 import { AppHeader } from '@/components/app-header';
 import { ProgressBar } from '@/components/progress-bar';
 import { FactCard } from '@/components/fact-card';
 import { IllustrationPanel } from '@/components/illustration-panel';
-import { QuizOverlay } from '@/components/quiz-overlay';
-import { CelebrationOverlay } from '@/components/celebration-overlay';
-import { CertificateOverlay } from '@/components/certificate-overlay';
-import { LeaderboardOverlay } from '@/components/leaderboard-overlay';
-import { ConfirmDialog } from '@/components/confirm-dialog';
-import { PatternDiscovery } from '@/components/pattern-discovery';
-import { RetrievalPractice } from '@/components/retrieval-practice';
+
+const QuizOverlay = dynamic(() => import('@/components/quiz-overlay').then((m) => m.QuizOverlay), { ssr: false });
+const CelebrationOverlay = dynamic(() => import('@/components/celebration-overlay').then((m) => m.CelebrationOverlay), { ssr: false });
+const CertificateOverlay = dynamic(() => import('@/components/certificate-overlay').then((m) => m.CertificateOverlay), { ssr: false });
+const LeaderboardOverlay = dynamic(() => import('@/components/leaderboard-overlay').then((m) => m.LeaderboardOverlay), { ssr: false });
+const ConfirmDialog = dynamic(() => import('@/components/confirm-dialog').then((m) => m.ConfirmDialog), { ssr: false });
+const PatternDiscovery = dynamic(() => import('@/components/pattern-discovery').then((m) => m.PatternDiscovery), { ssr: false });
+const RetrievalPractice = dynamic(() => import('@/components/retrieval-practice').then((m) => m.RetrievalPractice), { ssr: false });
 
 export default function TablesPage() {
   const {
@@ -37,7 +38,6 @@ export default function TablesPage() {
   } = useAppContext();
 
   const { playSound, playConfettiSound, stopSong, isMuted, toggleMute } = useAudio();
-  const { formatDisplay } = useTimer(state.tableStartTime);
   const engine = useEngineState();
   const router = useRouter();
 
@@ -58,6 +58,9 @@ export default function TablesPage() {
   const [showPatternDiscovery, setShowPatternDiscovery] = useState(false);
   const [showRetrievalPractice, setShowRetrievalPractice] = useState(false);
   const [retrievalWeakFacts, setRetrievalWeakFacts] = useState<string[]>([]);
+
+  const handleCloseLeaderboard = useCallback(() => setShowLeaderboard(false), []);
+  const handleCloseConfirm = useCallback(() => setShowConfirm(false), []);
 
   const completedCheckRef = useRef(new Set<string>());
   const prevTableRef = useRef(state.currentTable);
@@ -362,7 +365,7 @@ export default function TablesPage() {
         completedTables={state.completedTables}
         difficulty={state.difficulty}
         practiceMode={state.practiceMode}
-        timerDisplay={formatDisplay}
+        tableStartTime={state.tableStartTime}
       />
 
       {showPatternDiscovery && (
@@ -382,7 +385,7 @@ export default function TablesPage() {
           />
 
           <section className="cards-column flex-1 min-w-0 min-h-0 overflow-y-auto md:max-w-[400px] md:self-stretch pb-10">
-            <p className="cards-hint font-display text-[13px] text-[#777] text-center mb-2">
+            <p className="cards-hint font-display text-[13px] font-semibold text-text-muted text-center mb-2">
               Tap a card to reveal the answer!
             </p>
             <div className="cards-grid grid grid-cols-1 gap-2.5 w-full">
@@ -450,7 +453,7 @@ export default function TablesPage() {
 
       <LeaderboardOverlay
         isOpen={showLeaderboard}
-        onClose={() => setShowLeaderboard(false)}
+        onClose={handleCloseLeaderboard}
       />
 
       <ConfirmDialog
@@ -461,7 +464,7 @@ export default function TablesPage() {
           setShowConfirm(false);
           confirmData.callback();
         }}
-        onCancel={() => setShowConfirm(false)}
+        onCancel={handleCloseConfirm}
       />
 
     </div>

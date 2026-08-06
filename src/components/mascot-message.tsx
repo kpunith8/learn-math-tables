@@ -18,7 +18,7 @@ export function MascotMessage({ message, mood = 'happy', className = '' }: Masco
     >
       <span className="text-[28px] leading-none shrink-0" aria-hidden="true">{MASCOT}</span>
       <div className="flex-1 min-w-0">
-        <p className="font-display text-sm text-orange font-semibold">
+        <p className="font-display text-sm text-ink font-semibold">
           Nova says {MOOD_EMOJIS[mood]}
         </p>
         <p className="font-body text-sm text-text-secondary mt-0.5">{message}</p>

@@ -50,14 +50,14 @@ export function NumberBlank({ value, onChange, onSubmit, disabled, placeholder }
         inputMode="numeric"
         autoComplete="off"
         aria-label="Answer"
-        className="number-blank-input w-[clamp(70px,25vw,100px)] text-center font-display text-[clamp(20px,4vw,24px)] text-orange bg-warm-bg border-2 border-warm-border rounded-xl py-1.5 px-2 outline-none focus:border-indigo-light focus:bg-white transition-colors duration-150 [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+        className="number-blank-input w-[clamp(70px,25vw,100px)] text-center font-display text-[clamp(20px,4vw,24px)] text-ink bg-paper border-2 border-mist rounded-xl py-1.5 px-2 outline-none focus:border-coral focus:bg-card transition-colors duration-150 [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
       />
       <button
         onClick={toggleNegative}
         disabled={disabled}
         type="button"
         aria-label="Toggle negative number"
-        className="font-display text-base text-indigo bg-indigo/10 border-2 border-indigo/20 rounded-lg w-9 h-9 flex items-center justify-center cursor-pointer transition-colors duration-150 hover:bg-indigo/20 active:bg-indigo/30 disabled:opacity-40 disabled:cursor-not-allowed shrink-0"
+        className="font-display text-base text-coral bg-coral/10 border-2 border-coral/20 rounded-lg w-9 h-9 flex items-center justify-center cursor-pointer transition-colors duration-150 hover:bg-coral/20 active:bg-coral/30 disabled:opacity-40 disabled:cursor-not-allowed shrink-0"
       >
         +/−
       </button>

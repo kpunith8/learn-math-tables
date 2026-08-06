@@ -23,12 +23,12 @@ export function ConceptIntroCard({ copy, onDone }: ConceptIntroCardProps) {
 
   return (
     <div className={`w-full max-w-[400px] bg-warm-bg rounded-2xl border-2 border-warm-border p-6 text-center transition-opacity duration-300 ${fading ? 'opacity-0' : 'opacity-100'}`}>
-      <p className="font-display text-[17px] leading-[1.6] text-orange mb-4">
+      <p className="font-display text-[17px] leading-[1.6] text-ink mb-4">
         {copy}
       </p>
       <button
         onClick={handleDone}
-        className="font-display text-base py-2.5 px-8 rounded-full border-none bg-indigo text-white cursor-pointer transition-colors duration-150 shadow-[0_4px_12px_rgba(79,70,229,0.3)] hover:bg-indigo-hover active:bg-indigo-active"
+        className="font-display text-base py-2.5 px-8 rounded-full border-none bg-coral text-white cursor-pointer transition-colors duration-150 shadow-[0_4px_12px_rgba(255,107,82,0.35)] hover:bg-coral-hover active:bg-coral-active"
       >
         Got it! 👍
       </button>

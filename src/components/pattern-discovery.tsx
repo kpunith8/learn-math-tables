@@ -81,13 +81,13 @@ export function PatternDiscovery({ tableNumber, onComplete }: PatternDiscoveryPr
 
   return (
     <div className="flex justify-center p-4">
-      <div className="bg-white rounded-2xl border-2 border-indigo/20 p-5 max-w-[420px] w-full text-center">
+      <div className="bg-card rounded-2xl border-2 border-coral/20 p-5 max-w-[420px] w-full text-center">
         <div className="text-[36px] mb-2">🔍</div>
         <h2 className="font-display text-lg text-text-primary font-bold mb-1">
           Pattern Discovery: Table {tableNumber}
         </h2>
 
-        <div className="font-display text-base text-indigo font-semibold my-3 tracking-wide">
+        <div className="font-display text-base text-coral font-semibold my-3 tracking-wide">
           {pattern.pattern}
         </div>
 
@@ -96,7 +96,7 @@ export function PatternDiscovery({ tableNumber, onComplete }: PatternDiscoveryPr
         {!showReveal && (
           <>
             <p className="font-body text-xs text-text-muted mb-1">{pattern.example}</p>
-            <div className="h-px bg-border-card/50 my-3" />
+            <div className="h-px bg-mist/50 my-3" />
             <Button
               onClick={() => setShowReveal(true)}
               variant="indigo"

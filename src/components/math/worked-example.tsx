@@ -1,7 +1,7 @@
 'use client';
 
 import { memo } from 'react';
-import { Example, Operation } from '@/lib/operations/types';
+import { Example, Operation, OPERATION_META } from '@/lib/operations/types';
 import { EmojiGroup } from './emoji-group';
 
 interface WorkedExampleProps {
@@ -32,14 +32,14 @@ export const WorkedExample = memo(function WorkedExample({ example }: WorkedExam
       : `${padNumber(operand1)} ÷ ${padNumber(operand2)} = ${result}`;
 
     return (
-      <div className="w-full max-w-[400px] bg-white rounded-2xl border-2 border-border-card p-5 animate-[fade-in_0.3s_ease-out]">
+      <div className="w-full max-w-[400px] bg-card rounded-2xl border-2 border-mist p-5 animate-[fade-in_0.3s_ease-out]">
         <div className="font-display text-center mb-4">
-          <div className="text-[clamp(22px,6vw,34px)] text-orange leading-[1.4]">
+          <div className="text-[clamp(22px,6vw,34px)] leading-[1.4]" style={{ color: OPERATION_META[operation].color }}>
             {display}
           </div>
         </div>
 
-        <div className="text-center my-3 py-3 bg-card-hover rounded-xl min-h-[60px] flex items-center justify-center">
+        <div className="text-center my-3 py-3 bg-mist/40 rounded-xl min-h-[60px] flex items-center justify-center">
           {showEmoji ? (
             operation === 'multiplication' && operand1 > 0 ? (
               <EmojiGroup emoji={emoji} count={operand1 * operand2} groups={operand1} mode="groups" />
@@ -63,19 +63,21 @@ export const WorkedExample = memo(function WorkedExample({ example }: WorkedExam
   // Addition/Subtraction: right-aligned vertical
   const maxWidth = Math.max(padNumber(operand1).length, padNumber(operand2).length, padNumber(result).length);
 
+  const accent = OPERATION_META[operation].color;
+
   return (
-    <div className="w-full max-w-[400px] bg-white rounded-2xl border-2 border-border-card p-5 animate-[fade-in_0.3s_ease-out]">
+    <div className="w-full max-w-[400px] bg-card rounded-2xl border-2 border-mist p-5 animate-[fade-in_0.3s_ease-out]">
       <div className="font-display text-center mb-4">
-        <div className="inline-block text-[clamp(22px,6vw,34px)] text-orange leading-[1.3] text-right font-mono">
+        <div className="inline-block text-[clamp(22px,6vw,34px)] leading-[1.3] text-right font-mono" style={{ color: accent }}>
           <div className="text-right">{padNumber(operand1).padStart(maxWidth)}</div>
           <div className="text-right">{symbol} {padNumber(operand2).padStart(maxWidth - 2)}</div>
-          <div className="border-t-2 border-orange mt-0.5 pt-0.5 text-right">
+          <div className="border-t-2 mt-0.5 pt-0.5 text-right" style={{ borderColor: accent }}>
             {String(result).padStart(maxWidth)}
           </div>
         </div>
       </div>
 
-      <div className="text-center my-3 py-3 bg-card-hover rounded-xl min-h-[60px] flex items-center justify-center">
+      <div className="text-center my-3 py-3 bg-mist/40 rounded-xl min-h-[60px] flex items-center justify-center">
         {showEmoji ? (
           <EmojiGroup
             emoji={emoji}

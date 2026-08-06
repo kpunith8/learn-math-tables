@@ -34,7 +34,7 @@ export function EmojiGroup({ emoji, count, groups, mode = 'row', equation }: Emo
           {Array.from({ length: groups }, (_, i) => (
             <div key={i} className="emoji-group-group flex flex-col items-center">
               <span className="emoji-group-emojis text-[clamp(16px,3vw,22px)] leading-[1.8]">{emoji.repeat(perGroup)}</span>
-              <span className="emoji-group-label text-[11px] text-[#999] font-body mt-1">{i + 1}</span>
+              <span className="emoji-group-label text-[11px] text-text-muted font-body mt-1">{i + 1}</span>
             </div>
           ))}
         </div>
@@ -49,7 +49,7 @@ export function EmojiGroup({ emoji, count, groups, mode = 'row', equation }: Emo
             {Array.from({ length: groups }, (_, i) => (
               <div key={i} className="emoji-split-group flex flex-col items-center">
                 <span className="emoji-split-emojis text-[clamp(16px,3vw,22px)] leading-[1.8]">{emoji.repeat(perGroup)}</span>
-                <span className="emoji-split-label text-[11px] text-[#999] font-body mt-1">{perGroup}</span>
+                <span className="emoji-split-label text-[11px] text-text-muted font-body mt-1">{perGroup}</span>
               </div>
             ))}
           </div>

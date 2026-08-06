@@ -7,29 +7,46 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-sans);
+  --font-sans: var(--font-nunito);
   --font-mono: var(--font-geist-mono);
-  --font-heading: var(--font-sans);
-  --font-display: ui-rounded, "Arial Rounded MT Bold", "Trebuchet MS", system-ui, sans-serif;
-  --font-body: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  --color-header: #1E293B;
-  --color-indigo: #4F46E5;
-  --color-indigo-light: #6366F1;
-  --color-indigo-hover: #4338CA;
-  --color-indigo-active: #3730A3;
-  --color-orange: #C2410C;
-  --color-green: #15803D;
-  --color-surface: #F5F5F5;
-  --color-border-card: #8896A9;
-  --color-text-primary: #1E293B;
-  --color-text-secondary: #475569;
-  --color-text-tertiary: #555555;
-  --color-text-muted: #595959;
-  --color-text-dim: #666666;
-  --color-card-hover: #FAFAFA;
-  --color-card-active: #F0F0F0;
-  --color-warm-bg: #FFF7ED;
-  --color-warm-border: #FED7AA;
+  --font-heading: var(--font-baloo);
+  --font-display: var(--font-baloo);
+  --font-body: var(--font-nunito);
+  --color-ink: #1B1447;
+  --color-header: #1B1447;
+  --color-coral: #FF6B52;
+  --color-coral-soft: #F47C6B;
+  --color-coral-soft-hover: #E56A58;
+  --color-coral-light: #FF8A74;
+  --color-coral-hover: #E8572F;
+  --color-coral-active: #D14A26;
+  --color-indigo: #FF6B52;
+  --color-indigo-light: #FF8A74;
+  --color-indigo-hover: #E8572F;
+  --color-indigo-active: #D14A26;
+  --color-orange: #E8572F;
+  --color-green: #3FA664;
+  --color-leaf: #3FA664;
+  --color-gold: #FFB648;
+  --color-paper: #F7F1E8;
+  --color-surface: #F7F1E8;
+  --color-card: #FFFDF8;
+  --color-mist: #E4DDCB;
+  --color-border-card: #E4DDCB;
+  --color-text-primary: #2B2352;
+  --color-text-secondary: #4B4468;
+  --color-text-tertiary: #6A6476;
+  --color-text-muted: #5D5666;
+  --color-text-dim: #645D6E;
+  --color-card-hover: #FBF5EA;
+  --color-card-active: #F3EBDD;
+  --color-warm-bg: #FFF3E2;
+  --color-warm-border: #F4D9A8;
+  --color-lagoon: #4FA8F5;
+  --color-valley: #57C278;
+  --color-periwinkle: #7E8CD9;
+  --color-castle: #FF7A59;
+  --color-kingdom: #F5AB3C;
   --color-quiz-correct-bg: #C8E6C9;
   --color-quiz-correct-border: #4CAF50;
   --color-quiz-correct-text: #2E7D32;
@@ -75,38 +92,38 @@
 }
 
 :root {
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
+  --background: #F7F1E8;
+  --foreground: #2B2352;
+  --card: #FFFDF8;
+  --card-foreground: #2B2352;
+  --popover: #FFFDF8;
+  --popover-foreground: #2B2352;
+  --primary: #FF6B52;
+  --primary-foreground: #FFFFFF;
+  --secondary: #F0E8DA;
+  --secondary-foreground: #2B2352;
+  --muted: #F0E8DA;
+  --muted-foreground: #6A6476;
+  --accent: #F0E8DA;
+  --accent-foreground: #2B2352;
   --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
+  --border: #E4DDCB;
+  --input: #E4DDCB;
+  --ring: #FF6B52;
+  --chart-1: #FF6B52;
+  --chart-2: #4FA8F5;
+  --chart-3: #57C278;
+  --chart-4: #FFB648;
+  --chart-5: #7E8CD9;
   --radius: 0.625rem;
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+  --sidebar: #F7F1E8;
+  --sidebar-foreground: #2B2352;
+  --sidebar-primary: #FF6B52;
+  --sidebar-primary-foreground: #FFFFFF;
+  --sidebar-accent: #F0E8DA;
+  --sidebar-accent-foreground: #2B2352;
+  --sidebar-border: #E4DDCB;
+  --sidebar-ring: #FF6B52;
 }
 
 .dark {
@@ -154,12 +171,18 @@
     @apply font-sans;
   }
 
+  /* Display type defaults to a bold weight (Baloo ships 500-800 only,
+     so weight 400 renders thin and loses the rounded-bold look). */
+  .font-display {
+    font-weight: 700;
+  }
+
   button:focus-visible,
   a:focus-visible,
   input:focus-visible,
   [role="button"]:focus-visible {
     outline: none;
-    box-shadow: 0 0 0 4px var(--color-indigo-light);
+    box-shadow: 0 0 0 4px var(--color-coral-light);
   }
 }
 
