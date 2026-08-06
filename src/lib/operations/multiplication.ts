@@ -1,4 +1,4 @@
-import { Example, PracticeProblem, QuizQuestion, ConceptIntro, DifficultyLevel, EMOJI_SAFE_LIMIT } from './types';
+import { Example, PracticeProblem, QuizQuestion, ConceptIntro, DifficultyLevel, EMOJI_SAFE_LIMIT, Translate } from './types';
 import { pickEmojis } from './emoji-pool';
 
 function randInt(min: number, max: number): number {
@@ -17,11 +17,11 @@ function emojiGroups(a: number, b: number, emoji: string): string {
   return Array.from({ length: a }, () => emoji.repeat(b)).join('  ');
 }
 
-function getHint(): string {
-  return 'Try counting in equal groups — how many groups, how many in each?';
+function getHint(t: Translate): string {
+  return t('operations.practiceTip.multiplication');
 }
 
-export function generateLearnExamples(difficulty: DifficultyLevel): Example[] {
+export function generateLearnExamples(difficulty: DifficultyLevel, t: Translate): Example[] {
   const emojis = pickEmojis(5);
   const examples: Example[] = [];
 
@@ -42,43 +42,45 @@ export function generateLearnExamples(difficulty: DifficultyLevel): Example[] {
     const result = a * b;
     const emoji = emojis[i];
     const safe = isEmojiSafe(a, b, result);
+    const h = 'operations.multiplication';
+    const opts = { a, b, result, absB: Math.abs(b), emojiGroups: emojiGroups(a, b, emoji) };
 
     let hint: string;
     let explanation: string;
 
     if (difficulty === 'easy') {
       if (a === 0) {
-        hint = 'Anything times 0 is always 0!';
-        explanation = `${a} × ${b}: when you have 0 groups, there's nothing at all. That's why the answer is always 0!`;
+        hint = t(`${h}.hints.easyZero`);
+        explanation = t(`${h}.explanations.easyZero`, opts);
       } else if (a === 1) {
-        hint = 'Times 1 stays the same!';
-        explanation = `${a} × ${b}: one group of ${b} is just ${b}. That's why anything times 1 stays the same!`;
+        hint = t(`${h}.hints.easyOne`);
+        explanation = t(`${h}.explanations.easyOne`, opts);
       } else {
-        hint = `Count all the ${emoji === '🎈' ? 'balloons' : 'items'}!`;
+        hint = t(emoji === '🎈' ? `${h}.hints.easyCountBalloons` : `${h}.hints.easyCountItems`);
         if (safe && a > 0 && b > 0) {
-          explanation = `${a} groups of ${b}: ${emojiGroups(a, b, emoji)}\nThat's ${result} in total!`;
+          explanation = t(`${h}.explanations.easyGeneralSafe`, opts);
         } else {
-          explanation = `${a} × ${b} = ${result}. ${a} groups of ${b} makes ${result}.`;
+          explanation = t(`${h}.explanations.easyGeneralNotSafe`, opts);
         }
       }
     } else if (difficulty === 'medium') {
       if (a === 0 || b === 0) {
-        hint = 'Anything times 0 is 0!';
-        explanation = `${a} × ${b} = ${result}. Zero groups means zero items.`;
+        hint = t(`${h}.hints.mediumZero`);
+        explanation = t(`${h}.explanations.mediumZero`, opts);
       } else if (a === 1 || b === 1) {
-        hint = 'Times 1 stays the same!';
-        explanation = `${a} × ${b} = ${result}. One group keeps the number the same.`;
+        hint = t(`${h}.hints.mediumOne`);
+        explanation = t(`${h}.explanations.mediumOne`, opts);
       } else {
-        hint = 'Count all the items in every group!';
-        explanation = `${a} × ${b}: ${a} groups of ${b} equals ${result}.`;
+        hint = t(`${h}.hints.mediumGeneral`);
+        explanation = t(`${h}.explanations.mediumGeneral`, opts);
       }
     } else {
       if (result < 0) {
-        hint = 'Positive times negative always gives a negative answer!';
-        explanation = `${a} × ${b}: a positive (${a}) times a negative (${b}) means we have ${a} groups of ${Math.abs(b)} below zero. The answer is ${result}.`;
+        hint = t(`${h}.hints.hardNegative`);
+        explanation = t(`${h}.explanations.hardNegative`, opts);
       } else {
-        hint = 'Count all the items in every group!';
-        explanation = `${a} × ${b} = ${result}. Multiply the numbers together.`;
+        hint = t(`${h}.hints.hardPositive`);
+        explanation = t(`${h}.explanations.hardPositive`, opts);
       }
     }
 
@@ -88,7 +90,7 @@ export function generateLearnExamples(difficulty: DifficultyLevel): Example[] {
   return examples;
 }
 
-export function generatePracticeProblems(difficulty: DifficultyLevel): PracticeProblem[] {
+export function generatePracticeProblems(difficulty: DifficultyLevel, t: Translate): PracticeProblem[] {
   const emojis = pickEmojis(5);
   const problems: PracticeProblem[] = [];
 
@@ -117,16 +119,16 @@ export function generatePracticeProblems(difficulty: DifficultyLevel): PracticeP
       result,
       blanks: ['result'],
       emojiSafe: safe,
-      explanation: `${a} × ${b} = ${result}. ${safe && a > 0 && b > 0 ? emojiGroups(a, b, emoji) : ''}`,
+      explanation: t('operations.multiplication.explanations.practiceFallback', { a, b, result, emojiGroups: safe && a > 0 && b > 0 ? emojiGroups(a, b, emoji) : '' }),
       emoji,
-      tip: getHint(),
+      tip: getHint(t),
     });
   }
 
   return problems;
 }
 
-export function generateQuizQuestions(difficulty: DifficultyLevel): QuizQuestion[] {
+export function generateQuizQuestions(difficulty: DifficultyLevel, t: Translate): QuizQuestion[] {
   const questions: QuizQuestion[] = [];
   const qs: Array<{ a: number; b: number }> = [];
 
@@ -167,22 +169,22 @@ export function generateQuizQuestions(difficulty: DifficultyLevel): QuizQuestion
       if (options.size >= 4) break;
       if (d !== result && d >= -100 && d <= 100) options.add(d);
     }
-    const hint = `The answer is ${result} — ${a} × ${b} = ${result}`;
+    const hint = t('operations.multiplication.quizHint', { result, a, b });
     questions.push({ label, correctAnswer: result, options: shuffleArray(Array.from(options)), hint });
   }
 
   return questions;
 }
 
-export function getConceptIntro(difficulty: DifficultyLevel): ConceptIntro | null {
+export function getConceptIntro(difficulty: DifficultyLevel, t: Translate): ConceptIntro | null {
   if (difficulty === 'easy') {
-    return { copy: "Let's discover multiplication! 🎈🎈 + 🎈🎈 + 🎈🎈 = 3 groups of 2 = 6. Multiplication is counting groups — it's like fast adding!", level: 'easy' };
+    return { copy: t('operations.conceptIntro.multiplication.easy'), level: 'easy' };
   }
   if (difficulty === 'medium') {
-    return { copy: "Time to multiply with bigger numbers! Remember: multiplication means counting equal groups.", level: 'medium' };
+    return { copy: t('operations.conceptIntro.multiplication.medium'), level: 'medium' };
   }
   if (difficulty === 'hard') {
-    return { copy: "What happens when we multiply a positive and a negative number? A positive times a negative always gives a negative answer!", level: 'hard' };
+    return { copy: t('operations.conceptIntro.multiplication.hard'), level: 'hard' };
   }
   return null;
 }

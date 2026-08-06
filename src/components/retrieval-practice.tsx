@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback, useMemo, useRef, startTransition } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { getWrongAnswerMessage } from '@/components/celebration-message';
 import { CelebrationMessage } from '@/components/celebration-message';
@@ -17,6 +18,7 @@ function shuffleArray<T>(arr: T[]): T[] {
 
 export function RetrievalPractice({ tableNumber, weakFacts, onComplete }: RetrievalPracticeProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const { t } = useTranslation();
   const [showAnswer, setShowAnswer] = useState(true);
   const [inputValue, setInputValue] = useState('');
   const [phase, setPhase] = useState<'show' | 'recall' | 'result'>('show');
@@ -83,9 +85,9 @@ export function RetrievalPractice({ tableNumber, weakFacts, onComplete }: Retrie
     return (
       <div className="flex justify-center p-4">
         <div className="bg-card rounded-2xl border-2 border-leaf/20 p-5 max-w-[420px] w-full text-center">
-          <CelebrationMessage size="small" label="Review complete!" />
+          <CelebrationMessage size="small" label={t('tables.retrievalPractice.reviewComplete')} />
           <Button onClick={() => onComplete(results)} variant="indigo" size="xl" className="mt-4">
-            Continue
+            {t('common.buttons.continue')}
           </Button>
         </div>
       </div>
@@ -98,10 +100,10 @@ export function RetrievalPractice({ tableNumber, weakFacts, onComplete }: Retrie
     <div className="flex justify-center p-4">
       <div className="bg-card rounded-2xl border-2 border-coral/20 p-5 max-w-[420px] w-full text-center">
         <h2 className="font-display text-sm text-coral mb-2">
-          🧠 Retrieval Practice
+          {t('tables.retrievalPractice.title')}
         </h2>
         <p className="font-body text-xs text-text-dim mb-3">
-          {currentIndex + 1} of {questions.length}
+          {t('tables.retrievalPractice.questionOf', { current: currentIndex + 1, total: questions.length })}
         </p>
 
         <div className="font-display text-[clamp(24px,5vw,32px)] text-text-primary mb-4">
@@ -115,13 +117,13 @@ export function RetrievalPractice({ tableNumber, weakFacts, onComplete }: Retrie
                 = {correctAnswer}
               </div>
             </div>
-            <p className="font-body text-xs text-text-dim">Remember this answer!</p>
+            <p className="font-body text-xs text-text-dim">{t('tables.retrievalPractice.rememberThisAnswer')}</p>
           </div>
         )}
 
         {phase === 'recall' && (
           <div className="animate-[pop-in_0.3s_ease-out]">
-            <p className="font-body text-sm text-text-secondary mb-3">What is the answer?</p>
+            <p className="font-body text-sm text-text-secondary mb-3">{t('tables.retrievalPractice.whatIsTheAnswer')}</p>
             <div className="flex items-center justify-center gap-2">
               <span className="font-display text-xl text-text-primary">{tableNumber} × {currentQuestion.multiplier} = </span>
               <input
@@ -133,7 +135,7 @@ export function RetrievalPractice({ tableNumber, weakFacts, onComplete }: Retrie
                   if (e.key === 'Enter') handleSubmit();
                 }}
                 className="w-[80px] text-center font-display text-xl py-2 rounded-xl border-2 border-border-card focus:border-indigo focus:outline-none"
-                aria-label="Enter your answer"
+                aria-label={t('common.aria.enterYourAnswer')}
                 autoFocus
               />
             </div>
@@ -144,7 +146,7 @@ export function RetrievalPractice({ tableNumber, weakFacts, onComplete }: Retrie
               className="mt-3"
               disabled={inputValue === ''}
             >
-              Check Answer
+              {t('tables.retrievalPractice.checkAnswer')}
             </Button>
           </div>
         )}
@@ -152,11 +154,11 @@ export function RetrievalPractice({ tableNumber, weakFacts, onComplete }: Retrie
         {phase === 'result' && (
           <div className="animate-[pop-in_0.3s_ease-out]">
             {answerStatus === 'correct' ? (
-              <CelebrationMessage size="small" label="Correct!" />
+              <CelebrationMessage size="small" label={t('tables.retrievalPractice.correct')} />
             ) : (
               <div className="bg-quiz-wrong-bg rounded-xl border-2 border-quiz-wrong-border p-3">
                 <p className="font-body text-sm text-quiz-wrong-text">
-                  {getWrongAnswerMessage()}
+                  {getWrongAnswerMessage(t)}
                 </p>
                 <p className="font-display text-lg text-text-primary mt-2">
                   {tableNumber} × {currentQuestion.multiplier} = {correctAnswer}

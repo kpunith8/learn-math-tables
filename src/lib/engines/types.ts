@@ -55,6 +55,7 @@ export interface DailyMission {
 
 export interface MissionTask {
   description: string;
+  descriptionKey?: string;
   type: 'practice' | 'review' | 'challenge';
   target: number;
   progress: number;

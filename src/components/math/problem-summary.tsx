@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslation } from 'react-i18next';
 import { PracticeProblem, Operation, OPERATION_META } from '@/lib/operations/types';
 import { EmojiGroup } from './emoji-group';
 
@@ -17,14 +18,15 @@ const OP_SYMBOLS: Record<Operation, string> = {
 };
 
 export function ProblemSummaryList({ problems, correctCount, onContinue }: ProblemSummaryListProps) {
+  const { t } = useTranslation();
   return (
     <div className="w-full max-w-[420px] mx-auto animate-[fade-in_0.3s_ease-out]">
       <div className="text-center mb-4">
         <h3 className="font-display text-[22px] text-orange mb-1">
-          You finished practicing! 🌈
+          {t('operations.screen.finishedPracticing', 'You finished practicing! 🌈')}
         </h3>
         <p className="font-body text-sm text-text-tertiary">
-          {correctCount} of {problems.length} correct
+          {t('operations.screen.correctOfTotal', { correct: correctCount, total: problems.length })}
         </p>
       </div>
 
@@ -69,7 +71,7 @@ export function ProblemSummaryList({ problems, correctCount, onContinue }: Probl
         onClick={onContinue}
         className="w-full mt-5 font-display text-base py-3 rounded-xl border-none bg-coral text-white cursor-pointer transition-colors duration-150 shadow-[0_4px_12px_rgba(255,107,82,0.35)] hover:bg-coral-hover active:bg-coral-active"
       >
-        Let&apos;s do the quiz! 🎉
+        {t('operations.screen.letsDoQuiz', "Let's do the quiz! 🎉")}
       </button>
     </div>
   );

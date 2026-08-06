@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslation } from 'react-i18next';
 import { getMaxAllowedTable, isTableUnlocked } from '@/lib/utils';
 import { Difficulty } from '@/lib/constants';
 
@@ -43,10 +44,11 @@ export function TableSelector({
   practiceMode,
   onSelectTable,
 }: TableSelectorProps) {
+  const { t } = useTranslation();
   const maxAllowed = getMaxAllowedTable(practiceMode, difficulty);
 
   return (
-    <nav aria-label="Select a times table" className="table-selector flex gap-1.5 flex-wrap">
+    <nav aria-label={t('tables.tableSelector.ariaLabel', 'Select a times table')} className="table-selector flex gap-1.5 flex-wrap">
         {Array.from({ length: maxAllowed }, (_, i) => i + 1).map((tableNumber) => {
         const isUnlocked = isTableUnlocked(tableNumber, practiceMode, difficulty, completedTables);
         const isActive = tableNumber === currentTable;
@@ -58,7 +60,7 @@ export function TableSelector({
             key={tableNumber}
             onClick={() => isUnlocked && onSelectTable(tableNumber)}
             disabled={!isUnlocked}
-            aria-label={`Table ${tableNumber}${!isUnlocked ? ' (locked)' : ''}`}
+            aria-label={`${t('tables.tableSelector.ariaTable', { number: tableNumber })}${!isUnlocked ? t('tables.tableSelector.ariaLocked', ' (locked)') : ''}`}
             className="table-btn w-9 h-9 rounded-full border-[2.5px] font-display text-sm transition-all duration-150"
             style={
               isUnlocked

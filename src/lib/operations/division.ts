@@ -1,4 +1,4 @@
-import { Example, PracticeProblem, QuizQuestion, ConceptIntro, DifficultyLevel, EMOJI_SAFE_LIMIT } from './types';
+import { Example, PracticeProblem, QuizQuestion, ConceptIntro, DifficultyLevel, EMOJI_SAFE_LIMIT, Translate } from './types';
 import { pickEmojis } from './emoji-pool';
 
 function randInt(min: number, max: number): number {
@@ -19,11 +19,11 @@ function emojiSplit(total: number, groups: number, emoji: string): string {
   return `${emoji.repeat(total)} → ${groupsStr}`;
 }
 
-function getHint(): string {
-  return 'Try sharing the total equally into groups — how many in each group?';
+function getHint(t: Translate): string {
+  return t('operations.practiceTip.division');
 }
 
-export function generateLearnExamples(difficulty: DifficultyLevel): Example[] {
+export function generateLearnExamples(difficulty: DifficultyLevel, t: Translate): Example[] {
   const emojis = pickEmojis(5);
   const examples: Example[] = [];
 
@@ -46,35 +46,37 @@ export function generateLearnExamples(difficulty: DifficultyLevel): Example[] {
     const result = a / b;
     const emoji = emojis[i];
     const safe = isEmojiSafe(a, b, result);
+    const h = 'operations.division';
+    const opts = { a, b, result, emoji, emojiSplit: emojiSplit(a, b, emoji) };
 
     let hint: string;
     let explanation: string;
 
     if (difficulty === 'easy') {
       if (a === 0) {
-        hint = 'Sharing nothing gives everyone nothing!';
-        explanation = `${a} ÷ ${b} = ${result}. If you have 0 items to share among ${b} friends, everyone gets 0.`;
+        hint = t(`${h}.hints.easyZero`);
+        explanation = t(`${h}.explanations.easyZero`, opts);
       } else if (b === 1) {
-        hint = 'Dividing by 1 keeps the same number!';
-        explanation = `${a} ÷ ${b} = ${result}. One friend gets everything — so the number stays the same!`;
+        hint = t(`${h}.hints.easyOne`);
+        explanation = t(`${h}.explanations.easyOne`, opts);
       } else {
-        hint = `Count how many ${emoji === '🍪' ? 'cookies' : 'items'} are in each group!`;
+        hint = t(emoji === '🍪' ? `${h}.hints.easyCountCookies` : `${h}.hints.easyCountItems`);
         if (safe && a > 0 && b > 0 && result > 0) {
-          explanation = `Share ${a} ${emoji} among ${b} groups: ${emojiSplit(a, b, emoji)}\nEach group gets ${result}!`;
+          explanation = t(`${h}.explanations.easyGeneralSafe`, opts);
         } else {
-          explanation = `${a} ÷ ${b} = ${result}. Share ${a} equally into ${b} groups — each gets ${result}.`;
+          explanation = t(`${h}.explanations.easyGeneralNotSafe`, opts);
         }
       }
     } else if (difficulty === 'medium') {
-      hint = `Count how many ${emoji === '🍪' ? 'cookies' : 'items'} are in each group!`;
+      hint = t(emoji === '🍪' ? `${h}.hints.mediumCountCookies` : `${h}.hints.mediumCountItems`);
       if (safe && a > 0 && b > 0 && result > 0) {
-        explanation = `Share ${a} ${emoji} among ${b} groups: ${emojiSplit(a, b, emoji)}\nEach group gets ${result}!`;
+        explanation = t(`${h}.explanations.mediumSafe`, opts);
       } else {
-        explanation = `${a} ÷ ${b} = ${result}. ${a} shared equally among ${b} gives ${result} each.`;
+        explanation = t(`${h}.explanations.mediumNotSafe`, opts);
       }
     } else {
-      hint = 'Share the total equally into groups!';
-      explanation = `${a} ÷ ${b} = ${result}. Divide ${a} by ${b} to get ${result} in each group.`;
+      hint = t(`${h}.hints.hard`);
+      explanation = t(`${h}.explanations.hard`, opts);
     }
 
     examples.push({ operand1: a, operand2: b, operation: 'division', result, emojiSafe: safe, hint, explanation, emoji });
@@ -83,7 +85,7 @@ export function generateLearnExamples(difficulty: DifficultyLevel): Example[] {
   return examples;
 }
 
-export function generatePracticeProblems(difficulty: DifficultyLevel): PracticeProblem[] {
+export function generatePracticeProblems(difficulty: DifficultyLevel, t: Translate): PracticeProblem[] {
   const emojis = pickEmojis(5);
   const problems: PracticeProblem[] = [];
 
@@ -114,16 +116,16 @@ export function generatePracticeProblems(difficulty: DifficultyLevel): PracticeP
       result,
       blanks: ['result'],
       emojiSafe: safe,
-      explanation: `${a} ÷ ${b} = ${result}. ${safe && a > 0 && b > 0 && result > 0 ? emojiSplit(a, b, emoji) : ''}`,
+      explanation: t('operations.division.explanations.practiceFallback', { a, b, result }) + (safe && a > 0 && b > 0 && result > 0 ? ` ${emojiSplit(a, b, emoji)}` : ''),
       emoji,
-      tip: getHint(),
+      tip: getHint(t),
     });
   }
 
   return problems;
 }
 
-export function generateQuizQuestions(difficulty: DifficultyLevel): QuizQuestion[] {
+export function generateQuizQuestions(difficulty: DifficultyLevel, t: Translate): QuizQuestion[] {
   const questions: QuizQuestion[] = [];
   const qs: Array<{ a: number; b: number }> = [];
 
@@ -166,22 +168,22 @@ export function generateQuizQuestions(difficulty: DifficultyLevel): QuizQuestion
       if (options.size >= 4) break;
       if (d !== result && d >= -100 && d <= 100 && Number.isInteger(d)) options.add(d);
     }
-    const hint = `The answer is ${result} — ${a} ÷ ${b} = ${result}`;
+    const hint = t('operations.division.quizHint', { result, a, b });
     questions.push({ label, correctAnswer: result, options: shuffleArray(Array.from(options)), hint });
   }
 
   return questions;
 }
 
-export function getConceptIntro(difficulty: DifficultyLevel): ConceptIntro | null {
+export function getConceptIntro(difficulty: DifficultyLevel, t: Translate): ConceptIntro | null {
   if (difficulty === 'easy') {
-    return { copy: "12 chocolates, 4 friends — share equally! 🍫🍫🍫🍫🍫🍫🍫🍫🍫🍫🍫🍫 Division means sharing fairly. Let's help everyone get the same amount!", level: 'easy' };
+    return { copy: t('operations.conceptIntro.division.easy'), level: 'easy' };
   }
   if (difficulty === 'medium') {
-    return { copy: "Let's divide bigger numbers! Remember — division means splitting a total into equal groups.", level: 'medium' };
+    return { copy: t('operations.conceptIntro.division.medium'), level: 'medium' };
   }
   if (difficulty === 'hard') {
-    return { copy: "Can we divide by zero? 🤔 If you try to share 6 cookies among 0 friends, the question doesn't make sense — so we say dividing by zero is 'undefined.'", level: 'hard' };
+    return { copy: t('operations.conceptIntro.division.hard'), level: 'hard' };
   }
   return null;
 }

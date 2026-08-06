@@ -1,8 +1,10 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Difficulty } from '@/lib/constants';
 import { TableSelector } from './table-selector';
+import { LanguageSelector } from './language-selector';
 
 interface AppHeaderProps {
   currentTable: number;
@@ -40,6 +42,7 @@ export function AppHeader({
   onHome,
 }: AppHeaderProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { t } = useTranslation();
 
   const closeMenu = () => setIsMenuOpen(false);
 
@@ -57,19 +60,19 @@ export function AppHeader({
       {/* Mobile top row: title + home + hamburger */}
       <div className="flex md:hidden items-center gap-2 mb-2">
         <h1 className="font-display text-lg text-ink font-normal flex-1 leading-tight">
-          🔢 Tables
+          {t('header.title')}
         </h1>
         <button
           onClick={onHome}
           className="text-ink/70 text-xl p-1.5 min-w-[44px] min-h-[44px] flex items-center justify-center hover:text-ink"
-          aria-label="Home"
+          aria-label={t('common.nav.home')}
         >
           🏠
         </button>
         <button
           onClick={() => setIsMenuOpen(true)}
           className="text-ink text-2xl p-1.5 min-w-[44px] min-h-[44px] flex items-center justify-center"
-          aria-label="Open menu"
+          aria-label={t('common.nav.menu')}
         >
           ☰
         </button>
@@ -81,12 +84,12 @@ export function AppHeader({
           <button
             onClick={onHome}
             className="text-ink/70 text-xl p-1.5 min-w-[44px] min-h-[44px] flex items-center justify-center hover:text-ink transition-colors"
-            aria-label="Home"
+            aria-label={t('common.nav.home')}
           >
             🏠
           </button>
           <h1 className="font-display text-xl text-ink font-normal">
-            🔢 Tables
+            {t('header.title')}
           </h1>
         </div>
         <div className="flex gap-1.5 items-center flex-wrap">
@@ -99,18 +102,18 @@ export function AppHeader({
                 : 'bg-coral-soft border-coral-soft text-white hover:bg-coral-soft-hover active:scale-95'
               }`}
           >
-            🎯 Practice
+            {t('header.practice')}
           </button>
           <button
             onClick={onShowLeaderboard}
             className={`${btnBase} px-2.5 md:px-3.5 border-gold bg-gold text-ink hover:bg-kingdom active:scale-95`}
           >
-            🏆 Scores
+            {t('header.scores')}
           </button>
           <button
             onClick={onToggleMute}
             className={`${btnBase} px-2.5 md:px-3.5 border-[#DED5F0] bg-white/80 text-ink hover:bg-white active:scale-95`}
-            aria-label={isMuted ? 'Unmute sounds' : 'Mute sounds'}
+            aria-label={isMuted ? t('common.nav.unmute') : t('common.nav.mute')}
           >
             {isMuted ? '🔇' : '🔊'}
           </button>
@@ -118,8 +121,9 @@ export function AppHeader({
             onClick={onShowPlayerName}
             className={`${btnBase} border-coral-soft bg-coral-soft text-white hover:bg-coral-soft-hover active:scale-95 max-w-[100px] overflow-hidden text-ellipsis whitespace-nowrap min-w-[44px]`}
           >
-            {playerName || 'Add Name'}
+            {playerName || t('common.nav.addName')}
           </button>
+          <LanguageSelector />
         </div>
       </div>
 
@@ -137,7 +141,7 @@ export function AppHeader({
       {/* Desktop difficulty row */}
       <div className="hidden md:flex items-center gap-2 flex-wrap justify-center md:justify-start">
         <div className="difficulty-selector flex items-center gap-1 bg-white/70 py-1 px-2 rounded-full shadow-[inset_0_1px_3px_rgba(0,0,0,0.05)]">
-          <span className="font-display text-[11px] text-ink/70 mr-0.5">Difficulty:</span>
+          <span className="font-display text-[11px] text-ink/70 mr-0.5">{t('common.difficulty.label')}</span>
           {(['easy', 'normal', 'hard'] as Difficulty[]).map((level) => (
             <button
               key={level}
@@ -149,7 +153,7 @@ export function AppHeader({
                   : 'bg-white text-ink/70 hover:bg-mist/60'
                 }`}
             >
-              {level.charAt(0).toUpperCase() + level.slice(1)}
+              {t(`common.difficulty.${level === 'normal' ? 'medium' : level}.title`)}
             </button>
           ))}
         </div>
@@ -157,7 +161,7 @@ export function AppHeader({
           onClick={onReset}
           className={`${btnBase} flex items-center gap-1.5 border-[#DED5F0] bg-white/80 text-ink hover:bg-white active:scale-95`}
         >
-          <span className="text-base leading-none" aria-hidden="true">↻</span> Reset
+          <span className="text-base leading-none" aria-hidden="true">↻</span> {t('header.resetLabel')}
         </button>
       </div>
 
@@ -176,14 +180,14 @@ export function AppHeader({
               <button
                 onClick={() => { onHome?.(); closeMenu(); }}
                 className="text-ink/70 text-xl p-1.5 min-w-[44px] min-h-[44px] flex items-center justify-center hover:text-ink transition-colors"
-                aria-label="Home"
+                aria-label={t('common.nav.home')}
               >
                 🏠
               </button>
               <button
                 onClick={closeMenu}
                 className="drawer-close text-ink/70 text-2xl p-1 hover:text-ink"
-                aria-label="Close menu"
+                aria-label={t('common.nav.closeMenu')}
               >
                 ✕
               </button>
@@ -192,7 +196,7 @@ export function AppHeader({
               onClick={() => { onShowPlayerName(); closeMenu(); }}
               className="drawer-avatar font-display text-xs py-3 px-4 rounded-xl border-2 border-coral-soft bg-coral-soft text-white cursor-pointer self-end hover:bg-coral-soft-hover max-w-full overflow-hidden text-ellipsis whitespace-nowrap"
             >
-              {playerName || '👤 Add Name'}
+              {playerName || t('common.nav.addNameShort')}
             </button>
             <button
               onClick={() => { onTogglePractice(); closeMenu(); }}
@@ -203,16 +207,16 @@ export function AppHeader({
                   : 'bg-coral-soft border-coral-soft text-white hover:bg-coral-soft-hover'
                 }`}
             >
-              🎯 Practice
+              {t('header.practice')}
             </button>
             <button
               onClick={() => { onShowLeaderboard(); closeMenu(); }}
               className={`drawer-scores ${btnBase} w-full text-center border-gold bg-gold text-ink hover:bg-kingdom`}
             >
-              🏆 Scores
+              {t('header.scores')}
             </button>
             <div className="drawer-difficulty flex flex-col gap-2 pt-2 border-t border-[#E9E3F3]">
-              <span className="font-display text-[11px] text-ink/70 uppercase tracking-wider">Difficulty</span>
+              <span className="font-display text-[11px] text-ink/70 uppercase tracking-wider">{t('header.drawer.difficulty')}</span>
               <div className="flex items-center gap-2">
                 {(['easy', 'normal', 'hard'] as Difficulty[]).map((level) => (
                   <button
@@ -225,7 +229,7 @@ export function AppHeader({
                         : 'bg-white border-2 border-[#E9E3F3] text-ink/70 hover:bg-[#F3EFFB]'
                       }`}
                   >
-                    {level.charAt(0).toUpperCase() + level.slice(1)}
+                    {t(`common.difficulty.${level === 'normal' ? 'medium' : level}.title`)}
                   </button>
                 ))}
               </div>
@@ -234,14 +238,15 @@ export function AppHeader({
               onClick={() => { onReset(); closeMenu(); }}
               className={`drawer-reset ${btnBase} w-full text-center flex items-center justify-center gap-1.5 border-[#DED5F0] bg-white/80 text-ink hover:bg-white`}
             >
-              <span className="text-base leading-none" aria-hidden="true">↻</span> Reset
+              <span className="text-base leading-none" aria-hidden="true">↻</span> {t('header.resetLabel')}
             </button>
             <button
               onClick={() => { onToggleMute(); closeMenu(); }}
               className={`drawer-mute ${btnBase} w-full text-center flex items-center justify-center gap-1.5 border-[#DED5F0] bg-white/80 text-ink hover:bg-white`}
             >
-              {isMuted ? '🔇 Unmute' : '🔊 Mute'}
+              {isMuted ? '🔇 ' + t('common.nav.unmute') : '🔊 ' + t('common.nav.mute')}
             </button>
+            <LanguageSelector className="w-full justify-center" />
           </aside>
       </div>
     </header>

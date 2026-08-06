@@ -1,6 +1,7 @@
 'use client';
 
 import { useMemo, memo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useAppContext } from '@/lib/contexts/AppContext';
 import { formatElapsedTime } from '@/lib/utils';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
@@ -13,6 +14,7 @@ interface LeaderboardOverlayProps {
 
 function LeaderboardOverlayInner({ isOpen, onClose }: LeaderboardOverlayProps) {
   const { leaderboardData } = useAppContext();
+  const { t } = useTranslation();
 
   const sortedEntries = useMemo(() => {
     if (!isOpen) return [];
@@ -30,24 +32,24 @@ function LeaderboardOverlayInner({ isOpen, onClose }: LeaderboardOverlayProps) {
       <DialogContent showCloseButton={false} className="max-w-[480px] p-7 md:p-6 max-h-[80vh]">
         <DialogHeader>
           <DialogTitle className="font-display text-[26px] text-text-primary text-center">
-            🏆 Scoreboard
+            {t('modals.leaderboard.title')}
           </DialogTitle>
         </DialogHeader>
 
         {sortedEntries.length === 0 ? (
           <p className="text-center text-text-dim text-sm py-5">
-            No scores yet! Complete tables to appear here.
+            {t('modals.leaderboard.empty')}
           </p>
         ) : (
           <div className="max-h-[280px] overflow-y-auto">
             <table className="w-full border-collapse font-body">
               <thead className="sticky top-0 bg-card z-10">
                 <tr>
-                  <th className="font-display text-xs text-text-dim py-2 px-1.5 text-left border-b-2 border-mist">#</th>
-                  <th className="font-display text-xs text-text-dim py-2 px-1.5 text-left border-b-2 border-mist">Name</th>
-                  <th className="font-display text-xs text-text-dim py-2 px-1.5 text-left border-b-2 border-mist">Stars</th>
-                  <th className="font-display text-xs text-text-dim py-2 px-1.5 text-left border-b-2 border-mist">Tables</th>
-                  <th className="font-display text-xs text-text-dim py-2 px-1.5 text-left border-b-2 border-mist">Time</th>
+                  <th className="font-display text-xs text-text-dim py-2 px-1.5 text-left border-b-2 border-mist">{t('modals.leaderboard.columns.rank')}</th>
+                  <th className="font-display text-xs text-text-dim py-2 px-1.5 text-left border-b-2 border-mist">{t('modals.leaderboard.columns.name')}</th>
+                  <th className="font-display text-xs text-text-dim py-2 px-1.5 text-left border-b-2 border-mist">{t('modals.leaderboard.columns.stars')}</th>
+                  <th className="font-display text-xs text-text-dim py-2 px-1.5 text-left border-b-2 border-mist">{t('modals.leaderboard.columns.tables')}</th>
+                  <th className="font-display text-xs text-text-dim py-2 px-1.5 text-left border-b-2 border-mist">{t('modals.leaderboard.columns.time')}</th>
                 </tr>
               </thead>
               <tbody>
@@ -71,7 +73,7 @@ function LeaderboardOverlayInner({ isOpen, onClose }: LeaderboardOverlayProps) {
 
         <div className="flex justify-center mt-4">
           <Button onClick={onClose} variant="ghost" className="text-text-muted hover:text-text-primary">
-            Close
+            {t('modals.leaderboard.close')}
           </Button>
         </div>
       </DialogContent>

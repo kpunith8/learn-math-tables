@@ -222,6 +222,51 @@
   to { opacity: 1; }
 }
 
+/* Devaangari/Kannada glyphs render smaller at the same px, so Hindi and
+   Kannada get a +2px bump. On mobile (where everything reads tiny) the
+   bump applies to all languages; on desktop only hi/kn are bumped. */
+@media (max-width: 767px) {
+  html .text-\[10px\] { font-size: 12px; }
+  html .text-\[11px\] { font-size: 13px; }
+  html .text-xs { font-size: 14px; }
+  html .text-\[13px\] { font-size: 15px; }
+  html .text-sm { font-size: 16px; }
+  html .text-\[15px\] { font-size: 17px; }
+  html .text-base { font-size: 18px; }
+  html .text-\[16px\] { font-size: 18px; }
+  html .text-\[17px\] { font-size: 19px; }
+  html .text-lg { font-size: 20px; }
+  html .text-xl { font-size: 22px; }
+  html .text-\[20px\] { font-size: 22px; }
+  html .text-2xl { font-size: 26px; }
+  html .text-\[22px\] { font-size: 24px; }
+  html .text-\[24px\] { font-size: 26px; }
+  html .text-\[26px\] { font-size: 28px; }
+  html .text-\[28px\] { font-size: 30px; }
+  html .text-\[0\.8rem\] { font-size: 0.925rem; }
+}
+
+@media (min-width: 768px) {
+  :is(html[lang='hi'], html[lang='kn']) .text-\[10px\] { font-size: 12px; }
+  :is(html[lang='hi'], html[lang='kn']) .text-\[11px\] { font-size: 13px; }
+  :is(html[lang='hi'], html[lang='kn']) .text-xs { font-size: 14px; }
+  :is(html[lang='hi'], html[lang='kn']) .text-\[13px\] { font-size: 15px; }
+  :is(html[lang='hi'], html[lang='kn']) .text-sm { font-size: 16px; }
+  :is(html[lang='hi'], html[lang='kn']) .text-\[15px\] { font-size: 17px; }
+  :is(html[lang='hi'], html[lang='kn']) .text-base { font-size: 18px; }
+  :is(html[lang='hi'], html[lang='kn']) .text-\[16px\] { font-size: 18px; }
+  :is(html[lang='hi'], html[lang='kn']) .text-\[17px\] { font-size: 19px; }
+  :is(html[lang='hi'], html[lang='kn']) .text-lg { font-size: 20px; }
+  :is(html[lang='hi'], html[lang='kn']) .text-xl { font-size: 22px; }
+  :is(html[lang='hi'], html[lang='kn']) .text-\[20px\] { font-size: 22px; }
+  :is(html[lang='hi'], html[lang='kn']) .text-2xl { font-size: 26px; }
+  :is(html[lang='hi'], html[lang='kn']) .text-\[22px\] { font-size: 24px; }
+  :is(html[lang='hi'], html[lang='kn']) .text-\[24px\] { font-size: 26px; }
+  :is(html[lang='hi'], html[lang='kn']) .text-\[26px\] { font-size: 28px; }
+  :is(html[lang='hi'], html[lang='kn']) .text-\[28px\] { font-size: 30px; }
+  :is(html[lang='hi'], html[lang='kn']) .text-\[0\.8rem\] { font-size: 0.925rem; }
+}
+
 /* Reduced motion */
 @media (prefers-reduced-motion: reduce) {
   *,

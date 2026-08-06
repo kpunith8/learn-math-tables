@@ -1,6 +1,7 @@
 'use client';
 
 import { useMemo, memo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { generateStoryText } from '@/lib/utils';
 
 interface FactCardProps {
@@ -12,13 +13,14 @@ interface FactCardProps {
 }
 
 function FactCardInner({ groupCount, currentTable, isRevealed, isActive, onReveal }: FactCardProps) {
+  const { t } = useTranslation();
   const cardKey = `${currentTable}x${groupCount}`;
   const answer = currentTable * groupCount;
 
   const storyHtml = useMemo(() => {
     if (!isActive || !isRevealed) return null;
-    return generateStoryText(currentTable, groupCount);
-  }, [currentTable, groupCount, isActive, isRevealed]);
+    return generateStoryText(currentTable, groupCount, t);
+  }, [currentTable, groupCount, isActive, isRevealed, t]);
 
   return (
     <div className="fact-card-wrapper w-full">
@@ -26,7 +28,9 @@ function FactCardInner({ groupCount, currentTable, isRevealed, isActive, onRevea
         onClick={() => onReveal(cardKey)}
         tabIndex={0}
         role="button"
-        aria-label={`${currentTable} times ${groupCount}${isRevealed ? ` equals ${answer}` : ', tap to reveal'}`}
+        aria-label={isRevealed
+          ? t('tables.factCard.ariaRevealed', { table: currentTable, group: groupCount, answer })
+          : t('tables.factCard.ariaUnrevealed', { table: currentTable, group: groupCount })}
         className={`fact-card-row w-full rounded-xl border-2 cursor-pointer transition-all duration-150 min-h-[52px] flex items-center justify-between px-5 py-3.5
           ${isActive
             ? 'bg-coral/10 border-coral'
@@ -42,7 +46,7 @@ function FactCardInner({ groupCount, currentTable, isRevealed, isActive, onRevea
         {isRevealed ? (
           <span className="fact-answer-shown text-[16px] text-leaf font-bold">✓ {answer}</span>
         ) : (
-          <span className="fact-answer-hint text-sm text-text-muted font-bold">Tap to reveal</span>
+          <span className="fact-answer-hint text-sm text-text-muted font-bold">{t('tables.factCard.tapToReveal', 'Tap to reveal')}</span>
         )}
       </div>
 

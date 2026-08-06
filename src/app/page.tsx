@@ -2,22 +2,25 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useTranslation, Trans } from 'react-i18next';
 import { useAppContext } from '@/lib/contexts/AppContext';
 import { useEngineState } from '@/lib/hooks/useEngineState';
 import { NameModal } from '@/components/name-modal';
+import { LanguageSelector } from '@/components/language-selector';
 
 import { getStarsToNextMilestone } from '@/lib/engines/star-economy';
 
 const TRAIL = [
-  { id: 'addition' as const, name: 'Addition Island', emoji: '🏝️', tagline: 'Combine and count!', route: '/addition', accent: '#4FA8F5' },
-  { id: 'subtraction' as const, name: 'Number Valley', emoji: '🏞️', tagline: 'Take some away!', route: '/subtraction', accent: '#57C278' },
-  { id: 'multiplication' as const, name: 'Multiplication Mountain', emoji: '⛰️', tagline: 'Groups are fast!', route: '/multiplication', accent: '#7E8CD9' },
-  { id: 'division' as const, name: 'Division Castle', emoji: '🏰', tagline: 'Share it fairly!', route: '/division', accent: '#FF7A59' },
-  { id: 'tables' as const, name: 'Table Kingdom', emoji: '👑', tagline: 'Master your tables!', route: '/tables', accent: '#F5AB3C' },
+  { id: 'addition' as const, emoji: '🏝️', route: '/addition', accent: '#4FA8F5' },
+  { id: 'subtraction' as const, emoji: '🏞️', route: '/subtraction', accent: '#57C278' },
+  { id: 'multiplication' as const, emoji: '⛰️', route: '/multiplication', accent: '#7E8CD9' },
+  { id: 'division' as const, emoji: '🏰', route: '/division', accent: '#FF7A59' },
+  { id: 'tables' as const, emoji: '👑', route: '/tables', accent: '#F5AB3C' },
 ];
 
 export default function LandingPage() {
   const router = useRouter();
+  const { t } = useTranslation();
   const { state, setPlayerName } = useAppContext();
   const { engineState, isEngineLoaded, getNewBadges } = useEngineState();
   const [showNameModal, setShowNameModal] = useState(false);
@@ -29,16 +32,19 @@ export default function LandingPage() {
 
   return (
     <div className="font-body min-h-screen bg-paper flex flex-col">
-      <header className="bg-ink text-white px-4 py-3 flex items-center justify-between">
-        <span className="font-display text-base">🌟 Math Adventure!</span>
-        <button
-          onClick={() => setShowNameModal(true)}
-          className="font-display text-sm bg-coral text-white py-1.5 px-4 rounded-full border-none cursor-pointer hover:bg-coral-hover transition-colors min-h-[44px] flex items-center"
-        >
-          <span className="max-w-[180px] overflow-hidden text-ellipsis whitespace-nowrap" title={state.playerName}>
-            {state.playerName || '👤 Add Name'}
-          </span>
-        </button>
+      <header className="bg-ink text-white px-4 py-3 flex items-center justify-between gap-2">
+        <span className="font-display text-base">{t('home.header.title')}</span>
+        <div className="flex items-center gap-2">
+          <LanguageSelector dark />
+          <button
+            onClick={() => setShowNameModal(true)}
+            className="font-display text-sm bg-coral text-white py-1.5 px-4 rounded-full border-none cursor-pointer hover:bg-coral-hover transition-colors min-h-[44px] flex items-center"
+          >
+            <span className="max-w-[180px] overflow-hidden text-ellipsis whitespace-nowrap" title={state.playerName}>
+              {state.playerName || t('common.nav.addNameShort')}
+            </span>
+          </button>
+        </div>
       </header>
 
       <div className="flex-1 overflow-y-auto pb-8">
@@ -48,32 +54,34 @@ export default function LandingPage() {
           <section className="text-center pt-6 pb-2">
             <div className="text-[40px] mb-1 animate-[pop-in_0.3s_ease-out]">🧭</div>
             <h1 className="font-display text-[clamp(24px,6vw,36px)] text-ink leading-tight">
-              Welcome Number Explorer!
+              {t('home.hero.welcome')}
             </h1>
             <p className="font-body text-sm text-text-tertiary mt-1 max-w-[400px] mx-auto">
-              Follow the trail through the math lands and collect{' '}
-              <span className="text-coral font-bold">100 stars</span> to become a Math Champion!
+              <Trans
+                i18nKey="home.hero.subtitle"
+                components={[<span key="stars" className="text-coral font-bold" />]}
+              />
             </p>
             <div className="inline-flex items-center gap-1.5 mt-4 border-2 border-mist bg-card rounded-full px-4 py-2 shadow-[0_2px_6px_rgba(27,20,71,0.06)]">
               <span className="text-lg">⭐</span>
               <span className="font-display text-sm text-ink font-bold">{starProgress}</span>
-              <span className="font-body text-xs font-semibold text-text-dim">stars to next milestone</span>
+              <span className="font-body text-xs font-semibold text-text-dim">{t('home.hero.starsToNextMilestone')}</span>
             </div>
           </section>
 
           {/* Today's Postcard */}
           {isEngineLoaded && mission && (
-            <section className="mb-5">
+            <section className="mt-5 mb-5">
               <div className="relative bg-card rounded-2xl border-2 border-gold/50 p-4 pt-5 shadow-[0_4px_14px_rgba(255,182,72,0.18)]">
-                <span className="absolute -top-2.5 left-1/2 -translate-x-1/2 font-display text-[10px] tracking-wider text-card bg-coral px-3 py-0.5 rounded-full uppercase">
-                  Postcard from Nova
+                <span className="absolute -top-2.5 left-1/2 -translate-x-1/2 font-display text-[10px] tracking-wider text-card bg-coral px-3 py-0.5 rounded-full uppercase max-w-[calc(100%-2rem)] whitespace-nowrap overflow-hidden text-ellipsis">
+                  {t('home.mission.postcardFrom')}
                 </span>
                 <div className="flex items-center justify-between mb-2">
-                  <h2 className="font-display text-sm font-bold text-ink">Today&apos;s Mission</h2>
+                  <h2 className="font-display text-sm font-bold text-ink">{t('home.mission.todaysMission')}</h2>
                   {mission.completed ? (
-                    <span className="font-display text-xs text-leaf font-semibold">✅ Complete!</span>
+                    <span className="font-display text-xs text-leaf font-semibold">{t('home.mission.complete')}</span>
                   ) : (
-                    <span className="font-display text-xs text-coral">Reward: +15 ⭐</span>
+                    <span className="font-display text-xs text-coral">{t('home.mission.reward')}</span>
                   )}
                 </div>
                 <div className="space-y-1.5">
@@ -81,7 +89,7 @@ export default function LandingPage() {
                     <div key={i} className="flex items-center gap-2">
                       <span className="text-sm shrink-0">{task.completed ? '✅' : '⭐'}</span>
                       <span className={`font-body text-xs flex-1 ${task.completed ? 'text-leaf line-through' : 'text-text-secondary'}`}>
-                        {task.description}
+                        {task.descriptionKey ? t(task.descriptionKey) : task.description}
                       </span>
                       {!task.completed && task.target > 1 && (
                         <span className="font-body text-xs text-text-dim">{task.progress}/{task.target}</span>
@@ -100,22 +108,22 @@ export default function LandingPage() {
                 <div className="bg-card rounded-xl border-2 border-mist p-3 text-center">
                   <div className="text-xl">⭐</div>
                   <div className="font-display text-lg font-bold text-ink">{engineState.stars}</div>
-                  <div className="font-body text-[11px] font-semibold text-text-muted">Stars</div>
+                  <div className="font-body text-[11px] font-semibold text-text-muted">{t('home.stats.stars')}</div>
                 </div>
                 <div className="bg-card rounded-xl border-2 border-mist p-3 text-center">
                   <div className="text-xl">📚</div>
                   <div className="font-display text-lg font-bold text-ink">{newBadges.length}</div>
-                  <div className="font-body text-[11px] font-semibold text-text-muted">Badges</div>
+                  <div className="font-body text-[11px] font-semibold text-text-muted">{t('home.stats.badges')}</div>
                 </div>
                 <div className="bg-card rounded-xl border-2 border-mist p-3 text-center">
                   <div className="text-xl">{engineState.streak > 0 ? '🔥' : '⏳'}</div>
                   <div className="font-display text-lg font-bold text-ink">{engineState.streak}</div>
-                  <div className="font-body text-[11px] font-semibold text-text-muted">Day Streak</div>
+                  <div className="font-body text-[11px] font-semibold text-text-muted">{t('home.stats.dayStreak')}</div>
                 </div>
                 <div className="bg-card rounded-xl border-2 border-mist p-3 text-center">
                   <div className="text-xl">🎯</div>
                   <div className="font-display text-lg font-bold text-coral">{starProgress}</div>
-                  <div className="font-body text-[11px] font-semibold text-text-muted">To Next ⭐</div>
+                  <div className="font-body text-[11px] font-semibold text-text-muted">{t('home.stats.toNextStar')}</div>
                 </div>
               </div>
             </section>
@@ -125,8 +133,8 @@ export default function LandingPage() {
           <section className="relative">
             <div className="flex items-center gap-2 mb-4">
               <span className="text-lg">🗺️</span>
-              <h2 className="font-display text-base font-bold text-ink">The Number Trail</h2>
-              <span className="font-body text-xs font-semibold text-text-dim">travel through all five lands!</span>
+              <h2 className="font-display text-base font-bold text-ink">{t('home.trail.sectionTitle')}</h2>
+              <span className="font-body text-xs font-semibold text-text-dim">{t('home.trail.sectionSubtitle')}</span>
             </div>
 
             <div className="space-y-3">
@@ -159,14 +167,14 @@ export default function LandingPage() {
                         </div>
                         <div className="min-w-0 flex-1">
                           <div className="flex items-center gap-2">
-                            <span className="font-display text-base text-ink font-bold truncate">{world.name}</span>
+                            <span className="font-display text-base text-ink font-bold truncate">{t(`home.trail.worlds.${world.id}.name`)}</span>
                             {completed && (
-                              <span className="font-display text-[10px] text-white bg-leaf rounded-full px-2 py-0.5 shrink-0">Done ✓</span>
+                              <span className="font-display text-[10px] text-white bg-leaf rounded-full px-2 py-0.5 shrink-0">{t('home.trail.done')}</span>
                             )}
                           </div>
-                          <div className="font-body text-xs font-semibold text-text-muted mt-0.5">{world.tagline}</div>
+                          <div className="font-body text-xs font-semibold text-text-muted mt-0.5">{t(`home.trail.worlds.${world.id}.tagline`)}</div>
                         </div>
-                        <span className="font-body text-[11px] font-semibold text-text-dim shrink-0">Explore →</span>
+                        <span className="font-body text-[11px] font-semibold text-text-dim shrink-0">{t('common.buttons.explore')}</span>
                       </div>
                     </button>
                   </div>
@@ -179,17 +187,17 @@ export default function LandingPage() {
           {isEngineLoaded && newBadges.length > 0 && (
             <section className="mt-6">
               <h2 className="font-display text-sm font-bold text-ink mb-2 flex items-center gap-1.5">
-                <span>🏅</span> Your Badges
+                <span>🏅</span> {t('home.badges.sectionTitle')}
               </h2>
               <div className="flex flex-wrap gap-2">
                 {newBadges.slice(0, 6).map((badge) => (
                   <div
                     key={badge.id}
                     className="flex items-center gap-1.5 bg-card rounded-xl border border-mist px-3 py-1.5 rotate-[-1.5deg] shadow-[0_2px_4px_rgba(90,20,71,0.06)]"
-                    title={badge.description}
+                    title={t(`achievements.${badge.id}.description`)}
                   >
                     <span className="text-base">{badge.icon}</span>
-                    <span className="font-body text-[11px] text-text-secondary font-medium">{badge.label}</span>
+                    <span className="font-body text-[11px] text-text-secondary font-medium">{t(`achievements.${badge.id}.label`)}</span>
                   </div>
                 ))}
               </div>

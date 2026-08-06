@@ -2,6 +2,8 @@ export type Operation = 'addition' | 'subtraction' | 'multiplication' | 'divisio
 export type DifficultyLevel = 'easy' | 'medium' | 'hard';
 export type Stage = 'difficulty' | 'learn' | 'practice' | 'quiz';
 
+export type Translate = (key: string, options?: Record<string, unknown>) => string;
+
 export interface Example {
   operand1: number;
   operand2: number;

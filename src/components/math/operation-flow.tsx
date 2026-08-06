@@ -2,6 +2,7 @@
 
 import dynamic from 'next/dynamic';
 import { useState, useCallback, useEffect, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useRouter, useParams } from 'next/navigation';
 import { Toast } from '@base-ui/react/toast';
 import { useAppContext } from '@/lib/contexts/AppContext';
@@ -9,7 +10,7 @@ import { useEngineState } from '@/lib/hooks/useEngineState';
 import { useAudio } from '@/lib/hooks/useAudio';
 import {
   Operation, DifficultyLevel, Example, PracticeProblem,
-  QuizQuestion, ConceptIntro, OPERATION_META,
+  QuizQuestion, ConceptIntro, OPERATION_META, Translate,
 } from '@/lib/operations/types';
 import { Button } from '@/components/ui/button';
 import { resetEmojiPool } from '@/lib/operations/emoji-pool';
@@ -24,16 +25,11 @@ const QuizOverlay = dynamic(() => import('@/components/quiz-overlay').then((m) =
 
 const practiceToastManager = Toast.createToastManager();
 
-const TOAST_MESSAGES = [
-  'You got it!',
-  'Super!',
-  'Awesome work!',
-  'Brilliant!',
-  'Nailed it!',
-];
-
-function getToastMessage(): string {
-  return TOAST_MESSAGES[Math.floor(Math.random() * TOAST_MESSAGES.length)];
+function getToastMessage(t: Translate): string {
+  const pool = t('messages.practiceToast.title', { returnObjects: true }) as unknown as string[];
+  return pool && pool.length > 0
+    ? pool[Math.floor(Math.random() * pool.length)]
+    : 'You got it!';
 }
 
 function PracticeToastList() {
@@ -55,10 +51,10 @@ function PracticeToastList() {
 
 interface OperationFlowProps {
   operation: Operation;
-  generateLearnExamples: (d: DifficultyLevel) => Example[];
-  generatePracticeProblems: (d: DifficultyLevel) => PracticeProblem[];
-  generateQuizQuestions: (d: DifficultyLevel) => QuizQuestion[];
-  getConceptIntro: (d: DifficultyLevel) => ConceptIntro | null;
+  generateLearnExamples: (d: DifficultyLevel, t: Translate) => Example[];
+  generatePracticeProblems: (d: DifficultyLevel, t: Translate) => PracticeProblem[];
+  generateQuizQuestions: (d: DifficultyLevel, t: Translate) => QuizQuestion[];
+  getConceptIntro: (d: DifficultyLevel, t: Translate) => ConceptIntro | null;
 }
 
 export function OperationFlow({
@@ -73,6 +69,7 @@ export function OperationFlow({
   const { state } = useAppContext();
   const { playSound } = useAudio();
   const engine = useEngineState();
+  const { t } = useTranslation();
 
   const segments = params.segments as string[] | undefined;
   const urlDifficulty = segments?.[0] as DifficultyLevel | undefined;
@@ -83,16 +80,18 @@ export function OperationFlow({
       : 'learn';
 
   const meta = OPERATION_META[operation];
+  const metaName = t(`operations.meta.${operation}.name`, meta.name);
+  const metaDescription = t(`operations.meta.${operation}.description`, meta.description);
 
   const generatedContent = useMemo(() => {
     if (!urlDifficulty) return null;
     resetEmojiPool();
-    const examples = genExamples(urlDifficulty);
-    const problems = genPractice(urlDifficulty);
-    const quizzes = genQuiz(urlDifficulty);
-    const intro = getConceptIntro(urlDifficulty);
+    const examples = genExamples(urlDifficulty, t);
+    const problems = genPractice(urlDifficulty, t);
+    const quizzes = genQuiz(urlDifficulty, t);
+    const intro = getConceptIntro(urlDifficulty, t);
     return { examples, problems, quizzes, intro };
-  }, [urlDifficulty, genExamples, genPractice, genQuiz, getConceptIntro]);
+  }, [urlDifficulty, genExamples, genPractice, genQuiz, getConceptIntro, t]);
 
   const learnExamples: Example[] = generatedContent?.examples ?? [];
   const practiceProblems: PracticeProblem[] = generatedContent?.problems ?? [];
@@ -163,8 +162,8 @@ export function OperationFlow({
         setPracticeCorrectCount((c) => c + 1);
         engine.awardCorrectAnswer(key);
         practiceToastManager.add({
-          title: getToastMessage(),
-          description: 'Keep it up, Math Explorer!',
+          title: getToastMessage(t),
+          description: t('messages.practiceToast.description', 'Keep it up, Math Explorer!'),
           type: 'success',
           timeout: 2000,
         });
@@ -195,7 +194,7 @@ export function OperationFlow({
         }, 1500);
       }
     },
-    [currentProblemIndex, practiceProblems.length, engine, operation, urlDifficulty]
+    [currentProblemIndex, practiceProblems.length, engine, operation, urlDifficulty, t]
   );
 
   const handleSummaryContinue = useCallback(() => {
@@ -242,7 +241,7 @@ export function OperationFlow({
           <button
             onClick={handleBackToMenu}
             className="text-white/70 text-xl p-1.5 min-w-[44px] min-h-[44px] flex items-center justify-center hover:text-white transition-colors cursor-pointer"
-            aria-label="Home"
+            aria-label={t('common.aria.home', 'Home')}
           >
             🏠
           </button>
@@ -251,13 +250,13 @@ export function OperationFlow({
             className="font-display text-base text-white p-1.5 min-h-[44px] flex items-center gap-1 hover:text-white/80 transition-colors cursor-pointer"
           >
             <span style={{ filter: 'brightness(0) invert(1)' }}>{meta.emoji}</span>
-            {meta.name}
+            {metaName}
           </button>
         </div>
         <div className="flex items-center gap-2">
           {urlStage !== 'difficulty' && urlDifficulty && (
             <span className="font-display text-sm text-white">
-              {urlDifficulty === 'easy' ? '🌟 Easy' : urlDifficulty === 'medium' ? '⭐ Medium' : '🏆 Hard'}
+              {t(`common.difficulty.${urlDifficulty}.badge`, urlDifficulty)}
             </span>
           )}
           {engine.isEngineLoaded && (
@@ -272,7 +271,7 @@ export function OperationFlow({
               className="max-w-[180px] overflow-hidden text-ellipsis whitespace-nowrap"
               title={state.playerName}
             >
-              {state.playerName || '👤 Add Name'}
+              {state.playerName || t('common.nav.addNameShort', '👤 Add Name')}
             </span>
           </Button>
         </div>
@@ -303,8 +302,8 @@ export function OperationFlow({
       {urlStage === 'difficulty' && !showConcept && (
         <DifficultySelector
           operationEmoji={meta.emoji}
-          operationName={meta.name}
-          description={meta.description}
+          operationName={metaName}
+          description={metaDescription}
           onSelect={handleSelectDifficulty}
         />
       )}
@@ -319,10 +318,10 @@ export function OperationFlow({
         <div className="flex flex-col items-center p-6">
           <div className="flex items-center gap-3 mb-4">
             <h2 className="font-display text-[20px] text-orange">
-              Let&apos;s Learn {meta.name} {meta.emoji}
+              {t('operations.screen.letsLearn', { name: metaName, emoji: meta.emoji })}
             </h2>
           </div>
-          <MascotMessage message={getMascotHint(operation)} mood="happy" className="mb-4" />
+          <MascotMessage message={getMascotHint(t, operation)} mood="happy" className="mb-4" />
           <div className={`transition-opacity duration-200 ${fadeOut ? 'opacity-0' : 'opacity-100'}`}>
             <WorkedExample example={currentExample} />
           </div>
@@ -332,12 +331,12 @@ export function OperationFlow({
             size="xl"
             className="mt-5"
           >
-            {currentExampleIndex < learnExamples.length - 1 ? 'Next →' : "Let\u2019s Practice! 💪"}
+            {currentExampleIndex < learnExamples.length - 1 ? t('common.buttons.next', 'Next →') : t('operations.screen.letsGoPractice', "Let's Practice! 💪")}
           </Button>
 
           {currentExampleIndex < learnExamples.length - 1 && (
             <p className="font-body text-sm text-text-dim mt-3">
-              View all examples to unlock practice
+              {t('operations.screen.viewAllToUnlock', 'View all examples to unlock practice')}
             </p>
           )}
         </div>
@@ -346,7 +345,7 @@ export function OperationFlow({
       {urlStage === 'practice' && !showConcept && !showSummary && currentProblem && (
         <div className="flex flex-col items-center p-4 sm:p-6">
           <h2 className="font-display text-[20px] text-orange mb-2">
-            Time to Practice! 💪
+            {t('operations.screen.timeToPractice', 'Time to Practice! 💪')}
           </h2>
           <div className={`w-full max-w-[420px] transition-opacity duration-200 ${fadeOut ? 'opacity-0' : 'opacity-100'}`}>
             <PracticeProblemView

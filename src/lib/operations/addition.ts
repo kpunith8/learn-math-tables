@@ -1,4 +1,4 @@
-import { Example, PracticeProblem, QuizQuestion, ConceptIntro, DifficultyLevel, EMOJI_SAFE_LIMIT } from './types';
+import { Example, PracticeProblem, QuizQuestion, ConceptIntro, DifficultyLevel, EMOJI_SAFE_LIMIT, Translate } from './types';
 import { pickEmojis } from './emoji-pool';
 
 function randInt(min: number, max: number): number {
@@ -19,11 +19,13 @@ function emojiLine(a: number, b: number, result: number, emoji: string): string 
   return `${groupA} + ${groupB} = ${emoji.repeat(result)}`;
 }
 
-function getHint(): string {
-  return 'Try counting all the items together, starting from the first number!';
+const pad = (n: number): string | number => (n < 0 ? `(${n})` : n);
+
+function getHint(t: Translate): string {
+  return t('operations.practiceTip.addition');
 }
 
-export function generateLearnExamples(difficulty: DifficultyLevel): Example[] {
+export function generateLearnExamples(difficulty: DifficultyLevel, t: Translate): Example[] {
   const emojis = pickEmojis(5);
   const examples: Example[] = [];
 
@@ -43,23 +45,36 @@ export function generateLearnExamples(difficulty: DifficultyLevel): Example[] {
     const result = a + b;
     const emoji = emojis[i];
     const safe = isEmojiSafe(a, b, result);
+    const h = 'operations.addition';
 
     let hint: string;
     let explanation: string;
 
     if (difficulty === 'easy') {
-      hint = `Count the ${emoji === '🍎' ? 'apples' : emoji === '🍪' ? 'cookies' : 'items'}!`;
+      hint = t(emoji === '🍎' ? `${h}.hints.easyCountApples` : emoji === '🍪' ? `${h}.hints.easyCountCookies` : `${h}.hints.easyCountItems`);
       if (safe) {
         explanation = emojiLine(a, b, result, emoji);
       } else {
-        explanation = `${a} + ${b} = ${result}. Add the two numbers together to find the total!`;
+        explanation = t(`${h}.explanations.easyNotSafe`, { a, b, result });
       }
     } else if (difficulty === 'medium') {
-      hint = 'Add the tens, then the ones!';
-      explanation = `${a} + ${b}: first add the tens (${Math.floor(a / 10) * 10} + ${Math.floor(b / 10) * 10} = ${Math.floor((a + b) / 10) * 10}), then the ones (${a % 10} + ${b % 10} = ${(a % 10) + (b % 10)}). Combined: ${result}.`;
+      hint = t(`${h}.hints.medium`);
+      explanation = t(`${h}.explanations.medium`, {
+        a, b, result,
+        tensA: Math.floor(a / 10) * 10,
+        tensB: Math.floor(b / 10) * 10,
+        tensSum: Math.floor((a + b) / 10) * 10,
+        onesA: a % 10,
+        onesB: b % 10,
+        onesSum: (a % 10) + (b % 10),
+      });
     } else {
-      hint = 'Think of the number line — adding a negative means moving left!';
-      explanation = `${a} + ${b}: start at ${a} on the number line. Adding ${b} means moving ${Math.abs(b)} step${Math.abs(b) > 1 ? 's' : ''} ${b < 0 ? 'left' : 'right'}. You land at ${result}.`;
+      hint = t(`${h}.hints.hard`);
+      explanation = t(`${h}.explanations.hard`, {
+        a, b, result,
+        steps: Math.abs(b),
+        direction: b < 0 ? 'left' : 'right',
+      });
     }
 
     examples.push({ operand1: a, operand2: b, operation: 'addition', result, emojiSafe: safe, hint, explanation, emoji });
@@ -68,7 +83,7 @@ export function generateLearnExamples(difficulty: DifficultyLevel): Example[] {
   return examples;
 }
 
-export function generatePracticeProblems(difficulty: DifficultyLevel): PracticeProblem[] {
+export function generatePracticeProblems(difficulty: DifficultyLevel, t: Translate): PracticeProblem[] {
   const emojis = pickEmojis(5);
   const problems: PracticeProblem[] = [];
 
@@ -96,16 +111,16 @@ export function generatePracticeProblems(difficulty: DifficultyLevel): PracticeP
       result,
       blanks: ['result'],
       emojiSafe: safe,
-      explanation: `${a} + ${b} = ${result}. ${safe ? emojiLine(a, b, result, emoji) : ''}`,
+      explanation: t('operations.addition.explanations.practiceFallback', { a, b, result }) + (safe ? ` ${emojiLine(a, b, result, emoji)}` : ''),
       emoji,
-      tip: getHint(),
+      tip: getHint(t),
     });
   }
 
   return problems;
 }
 
-export function generateQuizQuestions(difficulty: DifficultyLevel): QuizQuestion[] {
+export function generateQuizQuestions(difficulty: DifficultyLevel, t: Translate): QuizQuestion[] {
   const questions: QuizQuestion[] = [];
   const qs: Array<{ a: number; b: number }> = [];
 
@@ -131,7 +146,7 @@ export function generateQuizQuestions(difficulty: DifficultyLevel): QuizQuestion
 
   for (const { a, b } of qs) {
     const result = a + b;
-    const label = `${a >= 0 ? a : `(${a})`} + ${b >= 0 ? b : `(${b})`} = ?`;
+    const label = `${pad(a)} + ${pad(b)} = ?`;
     const options = new Set<number>();
     options.add(result);
     const distractors = [
@@ -145,22 +160,22 @@ export function generateQuizQuestions(difficulty: DifficultyLevel): QuizQuestion
       if (options.size >= 4) break;
       if (d !== result && d >= -100 && d <= 100) options.add(d);
     }
-    const hint = `The answer is ${result} — ${a >= 0 ? a : `(${a})`} + ${b >= 0 ? b : `(${b})`} = ${result}`;
+    const hint = t('operations.addition.quizHint', { result, a: pad(a), b: pad(b) });
     questions.push({ label, correctAnswer: result, options: shuffleArray(Array.from(options)), hint });
   }
 
   return questions;
 }
 
-export function getConceptIntro(difficulty: DifficultyLevel): ConceptIntro | null {
+export function getConceptIntro(difficulty: DifficultyLevel, t: Translate): ConceptIntro | null {
   if (difficulty === 'easy') {
-    return { copy: "Addition means putting things together! Let's count everything together. 🍎🍎🍎 + 🍎🍎🍎🍎 = ?", level: 'easy' };
+    return { copy: t('operations.conceptIntro.addition.easy'), level: 'easy' };
   }
   if (difficulty === 'medium') {
-    return { copy: "Let's add bigger numbers! Remember — addition means combining two groups to find the total.", level: 'medium' };
+    return { copy: t('operations.conceptIntro.addition.medium'), level: 'medium' };
   }
   if (difficulty === 'hard') {
-    return { copy: "What happens when we add a negative number? 🤔 Adding a negative number is like taking a step backward!", level: 'hard' };
+    return { copy: t('operations.conceptIntro.addition.hard'), level: 'hard' };
   }
   return null;
 }

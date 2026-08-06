@@ -11,7 +11,7 @@ import {
   BadgeId,
 } from '@/lib/engines/types';
 import { recordAttempt, getWeakFacts, getDueFacts } from '@/lib/engines/mastery-engine';
-import { generateDailyMission, isMissionExpired, updateMissionProgress } from '@/lib/engines/daily-mission';
+import { generateDailyMission, isMissionExpired, updateMissionProgress, ensureDescriptionKeys } from '@/lib/engines/daily-mission';
 import { unlockAchievement } from '@/lib/engines/achievement-engine';
 import {
   awardStarsForCorrectAnswer,
@@ -105,6 +105,10 @@ function _initStore(): void {
     const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0];
     const newStreak = loaded.lastActiveDate === yesterday ? loaded.streak + 1 : 1;
     loaded = { ...loaded, streak: newStreak, lastActiveDate: today };
+  }
+
+  if (loaded.dailyMission) {
+    loaded = { ...loaded, dailyMission: ensureDescriptionKeys(loaded.dailyMission) };
   }
 
   if (!loaded.dailyMission || isMissionExpired(loaded.dailyMission)) {

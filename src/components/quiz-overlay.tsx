@@ -1,9 +1,10 @@
 'use client';
 
 import { useState, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { MascotMessage, getMascotHint } from '@/components/mascot-message';
+import { MascotMessage, getMascotHint, getMascotCelebration } from '@/components/mascot-message';
 import { getWrongAnswerMessage, getEncouragementMessage } from '@/components/celebration-message';
 
 export interface QuizQuestion {
@@ -24,6 +25,7 @@ type QuizPhase = 'answering' | 'wrong-hint' | 'retry' | 'correct' | 'finished';
 
 export function QuizOverlay({ questions, onComplete, onSkip, onPlaySound }: QuizOverlayProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const { t } = useTranslation();
   const [correctAnswers, setCorrectAnswers] = useState(0);
   const [phase, setPhase] = useState<QuizPhase>('answering');
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
@@ -92,34 +94,34 @@ export function QuizOverlay({ questions, onComplete, onSkip, onPlaySound }: Quiz
     <Dialog open onOpenChange={(open) => { if (!open) onSkip(); }}>
       <DialogContent showCloseButton={false} className="max-w-[420px] p-7 md:p-8 text-center">
         <div className="font-display text-sm text-text-dim mb-1" aria-live="polite">
-          {phase === 'finished' ? 'Quiz Complete!' : `Question ${currentIndex + 1} of ${questions.length}`}
+          {phase === 'finished' ? t('quiz.quizComplete') : t('quiz.questionOf', { current: currentIndex + 1, total: questions.length })}
         </div>
 
         {phase === 'finished' && (
           <div className="mt-3">
             <MascotMessage
               message={correctAnswers === questions.length
-                ? 'Perfect score! You\'re a Math Champion!'
+                ? t('quiz.results.perfect')
                 : correctAnswers >= 3
-                  ? 'Great job! Keep practising and you\'ll get even better!'
-                  : 'Nice effort! Every question helps you learn!'
+                  ? t('quiz.results.good')
+                  : t('quiz.results.keepTrying')
               }
               mood={correctAnswers === questions.length ? 'excited' : 'happy'}
               className="mb-4"
             />
             <div className="font-display text-[24px] text-orange my-3">
               {correctAnswers === questions.length
-                ? `Perfect score! ${correctAnswers}/${questions.length}`
+                ? t('quiz.results.perfectScoreLine', { correct: correctAnswers, total: questions.length })
                 : correctAnswers >= 3
-                  ? `Great job! ${correctAnswers}/${questions.length}`
-                  : `Keep practising! ${correctAnswers}/${questions.length}`}
+                  ? t('quiz.results.goodScoreLine', { correct: correctAnswers, total: questions.length })
+                  : t('quiz.results.keepPractisingLine', { correct: correctAnswers, total: questions.length })}
             </div>
             <Button
               onClick={() => onComplete(correctAnswers, questions.length)}
               variant="indigo"
               size="xl"
             >
-              Continue
+              {t('common.buttons.continue')}
             </Button>
           </div>
         )}
@@ -130,7 +132,7 @@ export function QuizOverlay({ questions, onComplete, onSkip, onPlaySound }: Quiz
               {currentQuestion.label}
             </div>
 
-            <div className="grid grid-cols-2 gap-2.5" role="radiogroup" aria-label="Answer options">
+            <div className="grid grid-cols-2 gap-2.5" role="radiogroup" aria-label={t('common.aria.answerOptions')}>
               {currentQuestion.options.map((option) => {
                 const isSelected = selectedAnswer === String(option);
                 const isCorrect = option === currentQuestion.correctAnswer;
@@ -162,19 +164,19 @@ export function QuizOverlay({ questions, onComplete, onSkip, onPlaySound }: Quiz
             {phase === 'wrong-hint' && (
               <div className="mt-4 space-y-2">
                 <p className="font-body text-sm text-orange bg-warm-bg rounded-[10px] py-2 px-3.5 border-[1.5px] border-warm-border text-center">
-                  {getWrongAnswerMessage()}
+                  {getWrongAnswerMessage(t)}
                 </p>
                 <p className="font-body text-sm text-text-secondary bg-surface rounded-[10px] py-2 px-3.5 border border-border-card text-center">
                   💡 {hintText}
                 </p>
-                <MascotMessage message={getMascotHint()} mood="encouraging" className="mx-auto" />
+                <MascotMessage message={getMascotHint(t)} mood="encouraging" className="mx-auto" />
                 <Button
                   onClick={handleRetry}
                   variant="orange"
                   size="xl"
                   className="mt-2"
                 >
-                  Try Again 💪
+                  {t('quiz.tryAgain')}
                 </Button>
               </div>
             )}
@@ -184,13 +186,13 @@ export function QuizOverlay({ questions, onComplete, onSkip, onPlaySound }: Quiz
         {phase === 'retry' && currentQuestion && (
           <div className="min-h-[280px] flex flex-col">
             <p className="font-body text-sm text-text-secondary mb-2">
-              {getEncouragementMessage()}
+              {getEncouragementMessage(t)}
             </p>
             <div className="font-display text-[clamp(26px,6vw,34px)] text-orange my-2 mb-4">
               {currentQuestion.label}
             </div>
 
-            <div className="grid grid-cols-2 gap-2.5" role="radiogroup" aria-label="Answer options">
+            <div className="grid grid-cols-2 gap-2.5" role="radiogroup" aria-label={t('common.aria.answerOptions')}>
               {currentQuestion.options.map((option) => {
                 const isSelected = selectedAnswer === String(option);
                 const isCorrect = option === currentQuestion.correctAnswer;
@@ -221,7 +223,7 @@ export function QuizOverlay({ questions, onComplete, onSkip, onPlaySound }: Quiz
 
             {retryCorrect && (
               <div className="mt-3 animate-[pop-in_0.3s_ease-out]">
-                <MascotMessage message="You got it! That's the spirit!" mood="excited" className="mx-auto" />
+                <MascotMessage message={getMascotCelebration(t)} mood="excited" className="mx-auto" />
               </div>
             )}
           </div>
@@ -229,13 +231,13 @@ export function QuizOverlay({ questions, onComplete, onSkip, onPlaySound }: Quiz
 
         {phase === 'correct' && currentQuestion && (
           <div className="min-h-[280px] flex flex-col items-center justify-center">
-            <MascotMessage message="Amazing! You discovered the answer!" mood="excited" className="mb-4" />
+            <MascotMessage message={getMascotCelebration(t)} mood="excited" className="mb-4" />
             <Button
               onClick={goToNext}
               variant="indigo"
               size="xl"
             >
-              {currentIndex + 1 >= questions.length ? 'See Results →' : 'Next →'}
+              {currentIndex + 1 >= questions.length ? t('quiz.seeResults') : t('quiz.next')}
             </Button>
           </div>
         )}

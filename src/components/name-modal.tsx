@@ -1,6 +1,7 @@
 'use client';
 
 import { useRef, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -15,6 +16,7 @@ interface NameModalProps {
 export function NameModal({ isOpen, initialName, onSave, onCancel }: NameModalProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [name, setName] = useState(initialName);
+  const { t } = useTranslation();
 
   useEffect(() => {
     if (isOpen) {
@@ -36,21 +38,21 @@ export function NameModal({ isOpen, initialName, onSave, onCancel }: NameModalPr
       <DialogContent showCloseButton={false} className="max-w-[380px] text-center p-7 md:p-6">
         <DialogHeader>
           <DialogTitle className="font-display text-[24px] text-ink">
-            What&apos;s your name?
+            {t('modals.nameModal.title')}
           </DialogTitle>
           <DialogDescription className="text-sm text-text-muted">
-            Enter your name so we can track your scores!
+            {t('modals.nameModal.description')}
           </DialogDescription>
         </DialogHeader>
         <div className="my-2">
-          <label htmlFor="playerName" className="sr-only">Player name</label>
+          <label htmlFor="playerName" className="sr-only">{t('modals.nameModal.title')}</label>
           <Input
             id="playerName"
             ref={inputRef}
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            placeholder="Type your name..."
+            placeholder={t('modals.nameModal.placeholder')}
             maxLength={20}
             autoComplete="off"
             onKeyDown={(e) => {
@@ -64,14 +66,14 @@ export function NameModal({ isOpen, initialName, onSave, onCancel }: NameModalPr
             onClick={handleSave}
             className="font-display text-base py-2.5 px-7 rounded-full bg-coral text-white hover:bg-coral-hover active:bg-coral-active shadow-[0_4px_12px_rgba(255,107,82,0.35)]"
           >
-            Let&apos;s Go!
+            {t('modals.nameModal.save')}
           </Button>
           <Button
             onClick={onCancel}
             variant="secondary"
             className="font-display text-base py-2.5 px-7 rounded-full"
           >
-            Skip
+            {t('modals.nameModal.skip')}
           </Button>
         </DialogFooter>
       </DialogContent>

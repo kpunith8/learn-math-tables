@@ -1,6 +1,7 @@
 'use client';
 
 import { useCallback, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 interface ConceptIntroCardProps {
   copy: string;
@@ -8,6 +9,7 @@ interface ConceptIntroCardProps {
 }
 
 export function ConceptIntroCard({ copy, onDone }: ConceptIntroCardProps) {
+  const { t } = useTranslation();
   const [visible, setVisible] = useState(true);
   const [fading, setFading] = useState(false);
 
@@ -30,7 +32,7 @@ export function ConceptIntroCard({ copy, onDone }: ConceptIntroCardProps) {
         onClick={handleDone}
         className="font-display text-base py-2.5 px-8 rounded-full border-none bg-coral text-white cursor-pointer transition-colors duration-150 shadow-[0_4px_12px_rgba(255,107,82,0.35)] hover:bg-coral-hover active:bg-coral-active"
       >
-        Got it! 👍
+        {t('common.buttons.gotIt', 'Got it! 👍')}
       </button>
     </div>
   );

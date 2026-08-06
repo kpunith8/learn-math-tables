@@ -1,5 +1,6 @@
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
+import type { TFunction } from 'i18next';
 import { Difficulty, CHARACTERS, FUN_FACTS } from './constants';
 
 export function cn(...inputs: ClassValue[]) {
@@ -177,22 +178,23 @@ export const generateMultiplicationSVG = (multiplier: number, groupCount: number
 
 // ── Story Generation ───────────────────────────────────────
 
-export const generateStoryText = (tableNumber: number, groupCount: number): string => {
+export const generateStoryText = (tableNumber: number, groupCount: number, t: TFunction): string => {
   const character = CHARACTERS[tableNumber] || { name: "our friend", item: "things", emoji: "\u2728" };
+  const item = t(`characters.${tableNumber}.item`, character.item);
   const totalProduct = tableNumber * groupCount;
   const countSequence = Array.from({ length: groupCount }, (_, index) => (index + 1) * tableNumber).join(', ');
 
   const storyTemplates = [
-    `Meet <strong>${character.name} ${character.emoji}</strong>! Every single one has exactly <strong>${tableNumber} ${character.item}</strong>. With just <strong>1</strong>, that's <strong>${tableNumber} \u00D7 1 = ${totalProduct}</strong>. Easy peasy!`,
-    `Now there are <strong>2</strong> of ${character.name}! Each has <strong>${tableNumber} ${character.item}</strong>. Count together: <strong>${countSequence}</strong>. So <strong>${tableNumber} \u00D7 2 = ${totalProduct}</strong>!`,
-    `Three ${character.emoji}${character.emoji}${character.emoji}! Count the ${character.item} in groups of ${tableNumber}: <strong>${countSequence}</strong>. <strong>${tableNumber} \u00D7 3 = ${totalProduct}</strong>!`,
-    `Four friends join the fun! Count all their ${character.item}: <strong>${countSequence}</strong>. Remember: <strong>${tableNumber} \u00D7 4 = ${totalProduct}</strong>!`,
-    `Halfway there \u2014 5 of ${character.name}! Their ${character.item} go: <strong>${countSequence}</strong>. <strong>${tableNumber} \u00D7 5 = ${totalProduct}</strong>!`,
-    `Six is a super number! All the ${character.item} together: <strong>${countSequence}</strong>. <strong>${tableNumber} \u00D7 6 = ${totalProduct}</strong>!`,
-    `Lucky 7! Count each group's ${character.item}: <strong>${countSequence}</strong>. <strong>${tableNumber} \u00D7 7 = ${totalProduct}</strong>. You're doing great!`,
-    `Eight is great! All their ${character.item}: <strong>${countSequence}</strong>. <strong>${tableNumber} \u00D7 8 = ${totalProduct}</strong>!`,
-    `Almost at 10! Nine groups, count the ${character.item}: <strong>${countSequence}</strong>. <strong>${tableNumber} \u00D7 9 = ${totalProduct}</strong>!`,
-    `The big 10! Count ALL the ${character.item}: <strong>${countSequence}</strong>. <strong>${tableNumber} \u00D7 10 = ${totalProduct}</strong>! You finished the whole table!`,
+    `Meet <strong>${character.name} ${character.emoji}</strong>! Every single one has exactly <strong>${tableNumber} ${item}</strong>. With just <strong>1</strong>, that's <strong>${tableNumber} \u00D7 1 = ${totalProduct}</strong>. Easy peasy!`,
+    `Now there are <strong>2</strong> of ${character.name}! Each has <strong>${tableNumber} ${item}</strong>. Count together: <strong>${countSequence}</strong>. So <strong>${tableNumber} \u00D7 2 = ${totalProduct}</strong>!`,
+    `Three ${character.emoji}${character.emoji}${character.emoji}! Count the ${item} in groups of ${tableNumber}: <strong>${countSequence}</strong>. <strong>${tableNumber} \u00D7 3 = ${totalProduct}</strong>!`,
+    `Four friends join the fun! Count all their ${item}: <strong>${countSequence}</strong>. Remember: <strong>${tableNumber} \u00D7 4 = ${totalProduct}</strong>!`,
+    `Halfway there \u2014 5 of ${character.name}! Their ${item} go: <strong>${countSequence}</strong>. <strong>${tableNumber} \u00D7 5 = ${totalProduct}</strong>!`,
+    `Six is a super number! All the ${item} together: <strong>${countSequence}</strong>. <strong>${tableNumber} \u00D7 6 = ${totalProduct}</strong>!`,
+    `Lucky 7! Count each group's ${item}: <strong>${countSequence}</strong>. <strong>${tableNumber} \u00D7 7 = ${totalProduct}</strong>. You're doing great!`,
+    `Eight is great! All their ${item}: <strong>${countSequence}</strong>. <strong>${tableNumber} \u00D7 8 = ${totalProduct}</strong>!`,
+    `Almost at 10! Nine groups, count the ${item}: <strong>${countSequence}</strong>. <strong>${tableNumber} \u00D7 9 = ${totalProduct}</strong>!`,
+    `The big 10! Count ALL the ${item}: <strong>${countSequence}</strong>. <strong>${tableNumber} \u00D7 10 = ${totalProduct}</strong>! You finished the whole table!`,
   ];
 
   return storyTemplates[groupCount - 1] || `${groupCount} groups of ${tableNumber} \u2014 count them: <strong>${countSequence}</strong>. <strong>${tableNumber} \u00D7 ${groupCount} = ${totalProduct}</strong>!`;

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import { PracticeProblem as PracticeProblemType, Operation, OPERATION_META } from '@/lib/operations/types';
 import { EmojiGroup } from './emoji-group';
 import { NumberBlank } from './number-blank';
@@ -24,6 +25,7 @@ function padNumber(n: number): string {
 }
 
 export function PracticeProblemView({ problem, index, total, onComplete }: PracticeProblemProps) {
+  const { t } = useTranslation();
   const [attempts, setAttempts] = useState(0);
   const [answer, setAnswer] = useState('');
   const [status, setStatus] = useState<'waiting' | 'correct' | 'incorrect' | 'revealed'>('waiting');
@@ -66,7 +68,7 @@ export function PracticeProblemView({ problem, index, total, onComplete }: Pract
   return (
     <div className="w-full max-w-[420px] bg-card rounded-2xl border-2 border-mist p-5 animate-[fade-in_0.3s_ease-out]">
       <div className="text-sm font-body text-text-dim text-center mb-2">
-        Problem {index + 1} of {total}
+        {t('operations.screen.problemOf', { index: index + 1, total })}
       </div>
 
       <div className="mb-4">
@@ -129,10 +131,7 @@ export function PracticeProblemView({ problem, index, total, onComplete }: Pract
           )
         ) : (
           <p className="font-body text-xs text-text-secondary px-2">
-            {operation === 'addition' ? 'Combine the two numbers!' :
-             operation === 'subtraction' ? 'Take the second from the first!' :
-             operation === 'multiplication' ? 'Count in equal groups!' :
-             'Share the total equally!'}
+            {t(`operations.screen.fallbackHint.${operation}`)}
           </p>
         )}
       </div>
@@ -149,17 +148,17 @@ export function PracticeProblemView({ problem, index, total, onComplete }: Pract
         )}
         {status === 'correct' && (
           <div className="text-center font-display text-lg text-green animate-[popup-in_0.25s_ease-out]" role="status">
-            ✅ Yes! Great job! 🌟
+            {t('operations.screen.correctFeedback', '✅ Yes! Great job! 🌟')}
           </div>
         )}
         {status === 'incorrect' && (
           <div className="text-center font-display text-base text-orange animate-[popup-in_0.25s_ease-out]" role="alert">
-            Not quite — try again! 💡
+            {t('operations.screen.incorrectFeedback', "Not quite — try again! 💡")}
           </div>
         )}
         {status === 'revealed' && (
           <div className="font-body text-sm text-text-secondary bg-mist/30 rounded-xl p-3 text-center leading-[1.6]">
-            <p className="font-display text-base text-orange mb-2">Here&apos;s how we solve it! Let&apos;s look together 👀</p>
+            <p className="font-display text-base text-orange mb-2">{t('operations.screen.revealedIntro', "Here's how we solve it! Let's look together 👀")}</p>
             <p>{explanation}</p>
           </div>
         )}

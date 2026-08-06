@@ -3,6 +3,7 @@
 import { useEffect, useCallback, useState, useRef, useMemo, startTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import dynamic from 'next/dynamic';
+import { useTranslation } from 'react-i18next';
 import { useAppContext } from '@/lib/contexts/AppContext';
 import { useAudio } from '@/lib/hooks/useAudio';
 import { useEngineState } from '@/lib/hooks/useEngineState';
@@ -40,6 +41,7 @@ export default function TablesPage() {
   const { playSound, playConfettiSound, stopSong, isMuted, toggleMute } = useAudio();
   const engine = useEngineState();
   const router = useRouter();
+  const { t } = useTranslation();
 
   // UI state
   const [showCelebration, setShowCelebration] = useState(false);
@@ -194,7 +196,7 @@ export default function TablesPage() {
       const isNew = revealCard(cardKey);
       if (isNew) {
         playSound('reveal');
-        engine.addStars(1, `Revealed ${cardKey}`);
+        engine.addStars(1, t('tables.page.revealedReason', { cardKey }));
         engine.updateMission('practice', 1);
       }
       if (cardKey !== state.activeCard) {
@@ -205,11 +207,11 @@ export default function TablesPage() {
         const table = parseInt(parts[0], 10);
         const group = parseInt(parts[1], 10);
         const answer = table * group;
-        speakStoryText(`${table} times ${group} equals ${answer}`, () => setIsSpeaking(false));
+        speakStoryText(t('tables.factCard.ariaRevealed', { table, group, answer }), () => setIsSpeaking(false));
         setIsSpeaking(true);
       }
     },
-    [revealCard, playSound, stopSpeaking, state.activeCard, isMuted, engine]
+    [revealCard, playSound, stopSpeaking, state.activeCard, isMuted, engine, t]
   );
 
   const handlePatternComplete = useCallback(() => {
@@ -290,8 +292,8 @@ export default function TablesPage() {
 
   const handleReset = useCallback(() => {
     setConfirmData({
-      title: 'Reset Progress?',
-      message: 'All your progress will be lost. This cannot be undone!',
+      title: t('tables.confirmDialogs.resetTitle', 'Reset Progress?'),
+      message: t('tables.confirmDialogs.resetMessage', 'All your progress will be lost. This cannot be undone!'),
       callback: () => {
         resetProgress();
         stopSong();
@@ -299,12 +301,12 @@ export default function TablesPage() {
       },
     });
     setShowConfirm(true);
-  }, [resetProgress, stopSong, stopSpeaking]);
+  }, [resetProgress, stopSong, stopSpeaking, t]);
 
   const handlePlayAgain = useCallback(() => {
     setConfirmData({
-      title: 'Play Again?',
-      message: 'This will reset all your progress. Are you sure?',
+      title: t('tables.confirmDialogs.playAgainTitle', 'Play Again?'),
+      message: t('tables.confirmDialogs.playAgainMessage', 'This will reset all your progress. Are you sure?'),
       callback: () => {
         playAgain();
         stopSong();
@@ -313,7 +315,7 @@ export default function TablesPage() {
       },
     });
     setShowConfirm(true);
-  }, [playAgain, stopSong, stopSpeaking]);
+  }, [playAgain, stopSong, stopSpeaking, t]);
 
   const handleSpeak = useCallback((text: string) => {
     if (isSpeaking) {
@@ -336,9 +338,7 @@ export default function TablesPage() {
   return (
     <div className="app-root font-body h-screen flex flex-col">
       <h2 className="sr-only">
-        Free interactive times tables learning app for kids under 8 — tap each multiplication card to
-        reveal the answer, see a fun illustration, and read a short story that makes learning maths tables easy and
-        enjoyable for children aged 5 to 8.
+        {t('tables.page.srOnlyIntro', 'Free interactive times tables learning app for kids under 8')}
       </h2>
 
       <AppHeader
@@ -386,7 +386,7 @@ export default function TablesPage() {
 
           <section className="cards-column flex-1 min-w-0 min-h-0 overflow-y-auto md:max-w-[400px] md:self-stretch pb-10">
             <p className="cards-hint font-display text-[13px] font-semibold text-text-muted text-center mb-2">
-              Tap a card to reveal the answer!
+              {t('tables.page.tapCardHint', 'Tap a card to reveal the answer!')}
             </p>
             <div className="cards-grid grid grid-cols-1 gap-2.5 w-full">
               {Array.from({ length: 10 }, (_, i) => i + 1).map((groupCount) => {

@@ -1,6 +1,7 @@
 'use client';
 
 import { memo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { CHARACTERS } from '@/lib/constants';
 
 interface IllustrationPanelProps {
@@ -16,7 +17,9 @@ function IllustrationPanelInner({
   onToggleSpeak,
   isSpeaking,
 }: IllustrationPanelProps) {
+  const { t } = useTranslation();
   const character = CHARACTERS[currentTable] || { name: `Table of ${currentTable}`, emoji: '✨' };
+  const characterName = CHARACTERS[currentTable]?.name ?? t('tables.illustrationPanel.fallbackCharacterName', { table: currentTable });
 
   const btnClass = `border-none bg-coral cursor-pointer text-white py-2 px-4 rounded-full flex items-center gap-1.5 font-display text-[13px] hover:bg-coral-hover active:bg-coral-active`;
 
@@ -29,13 +32,13 @@ function IllustrationPanelInner({
           </div>
         </div>
         <div className="equation-badge font-display text-[clamp(22px,5vw,30px)] text-castle text-center py-2 px-10 bg-card rounded-full border-[2.5px] border-mist">
-          {currentTable} × ?
+          {t('tables.illustrationPanel.equationPlaceholder', { table: currentTable })}
         </div>
         <p className="character-name font-display text-sm text-ink text-center">
-          {character.name}
+          {characterName}
         </p>
         <div className="story-placeholder hidden md:block text-sm leading-[1.75] text-text-secondary bg-card rounded-[14px] p-[14px_16px] border-2 border-mist shadow-[0_4px_12px_rgba(0,0,0,0.08)] w-full max-w-[460px]">
-          👆 Tap any card above to reveal its illustration and story!
+          {t('tables.illustrationPanel.placeholderStory', '👆 Tap any card above to reveal its illustration and story!')}
         </div>
       </aside>
     );
@@ -46,19 +49,19 @@ function IllustrationPanelInner({
   return (
     <aside className="illustration-panel w-full md:w-[320px] shrink-0 flex flex-col items-center gap-3 md:sticky md:top-5">
       <div className="equation-badge font-display text-[clamp(22px,5vw,30px)] text-castle text-center py-2 px-10 bg-card rounded-full border-[2.5px] border-mist">
-        {currentTable} × {groupCount} = {currentTable * groupCount}
+        {t('tables.illustrationPanel.equationSolved', { table: currentTable, group: groupCount, answer: currentTable * groupCount })}
       </div>
       <p className="character-name font-display text-sm text-ink text-center">
-        {character.name}
+        {characterName}
       </p>
       <div className="audio-controls flex gap-2 items-center">
         <button
-          onClick={() => onToggleSpeak(`${currentTable} times ${groupCount} equals ${currentTable * groupCount}`)}
+          onClick={() => onToggleSpeak(t('tables.factCard.ariaRevealed', { table: currentTable, group: groupCount, answer: currentTable * groupCount }))}
           className={`listen-btn ${btnClass}`}
-          aria-label={isSpeaking ? 'Stop reading aloud' : 'Read equation aloud'}
+          aria-label={isSpeaking ? t('tables.illustrationPanel.ariaStop', 'Stop reading aloud') : t('tables.illustrationPanel.ariaListen', 'Read equation aloud')}
         >
           <span className="btn-icon text-base">{isSpeaking ? '🔇' : '🔊'}</span>
-          <span className="btn-label text-xs">{isSpeaking ? 'Stop' : 'Listen'}</span>
+          <span className="btn-label text-xs">{isSpeaking ? t('tables.illustrationPanel.stop', 'Stop') : t('tables.illustrationPanel.listen', 'Listen')}</span>
         </button>
       </div>
     </aside>

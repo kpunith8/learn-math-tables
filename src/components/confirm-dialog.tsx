@@ -1,5 +1,7 @@
 'use client';
 
+import { useTranslation } from 'react-i18next';
+
 interface ConfirmDialogProps {
   isOpen: boolean;
   title: string;
@@ -9,6 +11,7 @@ interface ConfirmDialogProps {
 }
 
 export function ConfirmDialog({ isOpen, title, message, onConfirm, onCancel }: ConfirmDialogProps) {
+  const { t } = useTranslation();
   if (!isOpen) return null;
 
   return (
@@ -25,13 +28,13 @@ export function ConfirmDialog({ isOpen, title, message, onConfirm, onCancel }: C
             onClick={onConfirm}
             className="confirm-yes font-display text-sm py-2 px-5 rounded-full border-none bg-coral text-white cursor-pointer transition-all duration-150 shadow-[0_4px_12px_rgba(255,107,82,0.3)] hover:scale-105 hover:bg-coral-hover active:scale-95"
           >
-            Yes, sure!
+            {t('common.buttons.yesSure')}
           </button>
           <button
             onClick={onCancel}
             className="confirm-no font-display text-sm py-2 px-5 rounded-full border-none bg-mist text-text-secondary cursor-pointer transition-all duration-150 hover:scale-105 active:scale-95"
           >
-            No, go back
+            {t('common.buttons.noGoBack')}
           </button>
         </div>
       </div>

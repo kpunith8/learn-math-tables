@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono, Baloo_2, Nunito } from "next/font/google";
 import "./globals.css";
 import { AppProvider } from "@/lib/contexts/AppContext";
+import { I18nProvider } from "@/i18n/I18nProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -64,14 +65,14 @@ export default function RootLayout({
             __html: JSON.stringify({
               "@context": "https://schema.org",
               "@type": "WebApplication",
-              name: "Multiplication Tables Adventure",
-              url: "https://punithk.com/multiplication-tables-adventure/",
-              description: "Free interactive multiplication tables adventure for kids under 8. Learn times tables 1 to 10 with fun stories, colourful illustrations, and progressive unlocking.",
+              name: "Math Adventure",
+              url: "https://punithk.com/math-adventure/",
+              description: "Free interactive math adventure for kids under 8. Learn addition, subtraction, multiplication, and division — plus times tables 1 to 10 — with fun stories, colourful characters, and progressive unlocking.",
               applicationCategory: "EducationalApplication",
               operatingSystem: "Any",
               browserRequirements: "Requires JavaScript",
               educationalLevel: "beginner",
-              teaches: ["Multiplication", "Times Tables", "Repeated Addition", "Maths for kids"],
+              teaches: ["Addition", "Subtraction", "Multiplication", "Division", "Times Tables", "Maths for kids"],
               audience: {
                 "@type": "EducationalAudience",
                 educationalRole: "student",
@@ -87,7 +88,7 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className="min-h-full flex flex-col bg-paper"><AppProvider>{children}</AppProvider></body>
+      <body className="min-h-full flex flex-col bg-paper"><I18nProvider><AppProvider>{children}</AppProvider></I18nProvider></body>
     </html>
   );
 }

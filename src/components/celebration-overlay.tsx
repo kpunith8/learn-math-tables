@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { CHARACTERS, CONFETTI_CONFIG, SPARKLE_EMOJIS } from '@/lib/constants';
 import { getRandomFunFact, getMaxAllowedTable } from '@/lib/utils';
 import { Difficulty } from '@/lib/constants';
@@ -36,12 +37,20 @@ export function CelebrationOverlay({
 }: CelebrationOverlayProps) {
   const completedRef = useRef(false);
   const [sparkles] = useState(generateSparkles);
+  const { t } = useTranslation();
 
   const character = CHARACTERS[tableNumber];
   const nextTableNumber = tableNumber + 1;
   const maxAllowedTable = getMaxAllowedTable(practiceMode, difficulty);
   const hasUnlock = nextTableNumber <= maxAllowedTable && !practiceMode;
   const starDisplay = '⭐'.repeat(starRating);
+
+  const [funFact] = useState(() => {
+    const pool = t('facts.funFacts', { returnObjects: true }) as unknown as string[];
+    return Array.isArray(pool) && pool.length > 0
+      ? pool[Math.floor(Math.random() * pool.length)]
+      : getRandomFunFact();
+  });
 
   useEffect(() => {
     onPlayConfettiSound();
@@ -65,11 +74,13 @@ export function CelebrationOverlay({
   };
 
   const formatTime = (totalSeconds: number) => {
-    if (totalSeconds < 60) return `${totalSeconds} seconds`;
+    if (totalSeconds < 60) return t('tables.celebrationOverlay.timeSeconds', { count: totalSeconds });
     const minutes = Math.floor(totalSeconds / 60);
     const remainingSeconds = totalSeconds % 60;
-    return `${minutes} min ${remainingSeconds} sec`;
+    return t('tables.celebrationOverlay.timeMinutes', { minutes, seconds: remainingSeconds });
   };
+
+  const characterName = t(`characters.${tableNumber}.name`, { defaultValue: character?.name ?? '' });
 
   return (
     <div
@@ -77,24 +88,24 @@ export function CelebrationOverlay({
       className="celebration-overlay fixed inset-0 flex items-center justify-center bg-black/40 z-[1000] cursor-pointer animate-[fade-in_0.3s_ease-out_forwards]"
     >
       <div className="celebration-card font-display text-[clamp(22px,5vw,36px)] text-white text-center shadow-[2px_2px_8px_rgba(0,0,0,0.4)] bg-gradient-to-br from-ink to-[#2E2572] py-7 px-9 rounded-[24px] animate-[pop-in_0.4s_cubic-bezier(0.175,0.885,0.32,1.275)] leading-relaxed max-w-[440px]">
-        🎉✨ Incredible! ✨🎉
+        {t('tables.celebrationOverlay.headline')}
         <span className="celebration-message block font-body text-base font-bold mt-2 opacity-90">
-          You conquered the {tableNumber} times table!
+          {t('tables.celebrationOverlay.conqueredTable', { table: tableNumber })}
           <br />
-          {character ? `${character.emoji} ${character.name}` : ''}
+          {character ? `${character.emoji} ${characterName}` : ''}
         </span>
         <span className="celebration-stars block text-[28px] mt-1.5 tracking-widest">
           {starDisplay}
         </span>
         <span className="celebration-time block font-body text-[13px] font-bold mt-1.5 opacity-90">
-          Completed in {formatTime(elapsedSeconds)}
+          {t('tables.celebrationOverlay.completedIn', { time: formatTime(elapsedSeconds) })}
         </span>
         <span className="celebration-fact block font-body text-[13px] font-normal mt-3 opacity-85 leading-normal py-2.5 px-3.5 bg-white/15 rounded-xl">
-          💡 {getRandomFunFact()}
+          💡 {funFact}
         </span>
         {hasUnlock && (
           <span className="celebration-unlock inline-block mt-3 py-1.5 px-7 rounded-full bg-white/25 font-display text-lg">
-            🔓 {nextTableNumber}&apos;s table unlocked!
+            {t('tables.celebrationOverlay.unlocked', { table: nextTableNumber })}
           </span>
         )}
       </div>
