@@ -56,3 +56,9 @@ Multi-language* for the full workflow and a key-parity verification command.
   generates the discovery view dynamically, fixing tables 12+ rendering blank.
 - **Mission tasks use translated `descriptionKey`** with a legacy `description`
   fallback; stored missions are migrated via `ensureDescriptionKeys()`.
+- **SEO**: unique `title`/`description`/`canonical` per route via server
+  `layout.tsx` files (operations + tables + per-table `/tables/1..20`),
+  `metadataBase` (`src/lib/site.ts` → `https://learn-math-tables.vercel.app`),
+  generated `sitemap.xml` (38 URLs) and `robots.txt`, plus OG/Twitter share
+  images via `next/og` (`opengraph-image.tsx` / `twitter-image.tsx`). `/tables/[table]`
+  deep-links seed the tables app to that table.

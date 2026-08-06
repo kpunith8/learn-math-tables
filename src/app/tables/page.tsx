@@ -21,7 +21,7 @@ const ConfirmDialog = dynamic(() => import('@/components/confirm-dialog').then((
 const PatternDiscovery = dynamic(() => import('@/components/pattern-discovery').then((m) => m.PatternDiscovery), { ssr: false });
 const RetrievalPractice = dynamic(() => import('@/components/retrieval-practice').then((m) => m.RetrievalPractice), { ssr: false });
 
-export default function TablesPage() {
+export default function TablesPage({ initialTable }: { initialTable?: number } = {}) {
   const {
     state,
     isLoaded,
@@ -87,6 +87,13 @@ export default function TablesPage() {
       startTransition(() => setShowPatternDiscovery(true));
     }
   }, [state.currentTable, engine.isEngineLoaded, isLoaded, engine.engineState.discoveredPatterns]);
+
+  // Seed the table from the URL (e.g. /tables/5) once state has hydrated
+  useEffect(() => {
+    if (!isLoaded || !initialTable) return;
+    if (initialTable === state.currentTable) return;
+    switchToTable(initialTable);
+  }, [initialTable, isLoaded, state.currentTable, switchToTable]);
 
   // Check table completion using ref to avoid cascading setState
   useEffect(() => {

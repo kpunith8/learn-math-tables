@@ -97,7 +97,15 @@ sets `document.documentElement.lang` on language change. Use `useTranslation()` 
 
 ### Tables module (`/tables`)
 
-Legacy feature with its own components in `src/components/` (app-header, celebration, certificate, leaderboard, fact-card, illustration-panel, table-selector, progress-bar, pattern-discovery). Has audio (Web Speech), SVG generation, hamburger drawer. No name modal.
+Legacy feature with its own components in `src/components/` (app-header, celebration, certificate, leaderboard, fact-card, illustration-panel, table-selector, progress-bar, pattern-discovery). Has audio (Web Speech), SVG generation, hamburger drawer. No name modal. Also has a `/tables/[table]` deep-link route (1–20) that seeds the app to that table; its metadata is generated in `tables/[table]/layout.tsx`.
+
+### SEO metadata
+
+- Site URL lives in `src/lib/site.ts` (`SITE_URL`, `SITE_NAME`, `SITE_DESCRIPTION`) — change the domain there, never hardcode it.
+- Pages are client components, so per-route metadata lives in **server `layout.tsx`** files (one per operation, `tables/layout.tsx`, `tables/[table]/layout.tsx`).
+- **When adding a new route**: add a `layout.tsx` exporting `Metadata` (unique `title`, `description`, `alternates.canonical`) and add the URL to `src/app/sitemap.ts`.
+- OG/Twitter images are generated with `next/og` in `src/app/opengraph-image.tsx` / `twitter-image.tsx` (shared design in `og-image.tsx`). `robots.ts` and `sitemap.ts` live in `src/app/`.
+- `generateMetadata` plain-string `title`s do NOT get the root `title.template` suffix applied — append `| Math Adventure` explicitly (see `tables/[table]/layout.tsx`).
 
 ## Key conventions
 

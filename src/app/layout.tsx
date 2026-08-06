@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Baloo_2, Nunito } from "next/font/google";
 import "./globals.css";
+import { SITE_URL, SITE_NAME, SITE_DESCRIPTION } from "@/lib/site";
 import { AppProvider } from "@/lib/contexts/AppContext";
 import { I18nProvider } from "@/i18n/I18nProvider";
 
@@ -29,22 +30,30 @@ const nunito = Nunito({
 });
 
 export const metadata: Metadata = {
-  title: "Math Adventure - Fun Math Learning for Kids",
-  description: "Free interactive math learning app for kids. Learn addition, subtraction, multiplication, and division with fun examples, practice problems, and quizzes. Perfect for children aged 5-8.",
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: "Math Adventure - Fun Math Learning for Kids",
+    template: "%s | Math Adventure",
+  },
+  description: SITE_DESCRIPTION,
   keywords: "math for kids, addition, subtraction, multiplication, division, learn math, free math game for kids, educational math game, times tables",
+  alternates: {
+    canonical: SITE_URL,
+  },
   icons: {
     icon: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧮</text></svg>",
   },
   openGraph: {
     title: "Math Adventure - Fun Math Learning for Kids",
-    description: "Free interactive math learning app for kids. Learn addition, subtraction, multiplication, and division with fun examples, practice problems, and quizzes.",
-    url: "https://punithk.com/multiplication-tables-adventure/",
+    description: SITE_DESCRIPTION,
+    url: SITE_URL,
+    siteName: SITE_NAME,
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
     title: "Math Adventure - Fun Math Learning for Kids",
-    description: "Free interactive math learning app for kids. Learn addition, subtraction, multiplication, and division with fun examples, practice problems, and quizzes.",
+    description: SITE_DESCRIPTION,
   },
 };
 
@@ -66,7 +75,7 @@ export default function RootLayout({
               "@context": "https://schema.org",
               "@type": "WebApplication",
               name: "Math Adventure",
-              url: "https://punithk.com/math-adventure/",
+              url: SITE_URL,
               description: "Free interactive math adventure for kids under 8. Learn addition, subtraction, multiplication, and division — plus times tables 1 to 10 — with fun stories, colourful characters, and progressive unlocking.",
               applicationCategory: "EducationalApplication",
               operatingSystem: "Any",
