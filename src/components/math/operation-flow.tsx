@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { useRouter, useParams } from 'next/navigation';
 import { Toast } from '@base-ui/react/toast';
 import { useAppContext } from '@/lib/contexts/AppContext';
+import { useDifficulty } from '@/lib/contexts/DifficultyContext';
 import { useEngineState } from '@/lib/hooks/useEngineState';
 import { useAudio } from '@/lib/hooks/useAudio';
 import {
@@ -14,7 +15,8 @@ import {
 } from '@/lib/operations/types';
 import { Button } from '@/components/ui/button';
 import { resetEmojiPool } from '@/lib/operations/emoji-pool';
-import { DifficultySelector } from './difficulty-selector';
+import { isOperationFullyCompleted } from '@/lib/engines/star-economy';
+import { STAR_CAPS } from '@/lib/engines/types';
 import { ConceptIntroCard } from './concept-intro-card';
 import { WorkedExample } from './worked-example';
 import { PracticeProblemView } from './practice-problem';
@@ -70,28 +72,48 @@ export function OperationFlow({
   const { playSound } = useAudio();
   const engine = useEngineState();
   const { t } = useTranslation();
+  const { difficulty } = useDifficulty();
 
   const segments = params.segments as string[] | undefined;
-  const urlDifficulty = segments?.[0] as DifficultyLevel | undefined;
-  const urlStage = !segments || segments.length === 0
-    ? 'difficulty'
-    : segments.length >= 2
-      ? (segments[1] as 'learn' | 'practice' | 'quiz')
-      : 'learn';
+  const STAGES = ['learn', 'practice', 'quiz'] as const;
+  const DIFFICULTIES = ['easy', 'medium', 'hard'] as const;
+
+  // Legacy URLs like /addition/easy/practice carried the difficulty in the path.
+  // Today difficulty is global (context), so rewrite any such segment away.
+  const legacyDifficulty = segments && segments.length > 0 && (DIFFICULTIES as readonly string[]).includes(segments[0])
+    ? (segments[0] as DifficultyLevel)
+    : null;
+  const legacyStage = legacyDifficulty
+    ? segments && segments.length > 1 && (STAGES as readonly string[]).includes(segments[1])
+      ? (segments[1] as (typeof STAGES)[number])
+      : 'learn'
+    : 'learn';
+
+  const urlStage: (typeof STAGES)[number] =
+    segments && segments.length > 0 && (STAGES as readonly string[]).includes(segments[0])
+      ? (segments[0] as (typeof STAGES)[number])
+      : legacyStage;
+
+  const activeDifficulty = legacyDifficulty ?? difficulty;
+
+  useEffect(() => {
+    if (!legacyDifficulty) return;
+    const target = urlStage === 'learn' ? `/${operation}` : `/${operation}/${urlStage}`;
+    router.replace(target);
+  }, [legacyDifficulty, urlStage, operation, router]);
 
   const meta = OPERATION_META[operation];
   const metaName = t(`operations.meta.${operation}.name`, meta.name);
-  const metaDescription = t(`operations.meta.${operation}.description`, meta.description);
 
   const generatedContent = useMemo(() => {
-    if (!urlDifficulty) return null;
+    if (!activeDifficulty) return null;
     resetEmojiPool();
-    const examples = genExamples(urlDifficulty, t);
-    const problems = genPractice(urlDifficulty, t);
-    const quizzes = genQuiz(urlDifficulty, t);
-    const intro = getConceptIntro(urlDifficulty, t);
+    const examples = genExamples(activeDifficulty, t);
+    const problems = genPractice(activeDifficulty, t);
+    const quizzes = genQuiz(activeDifficulty, t);
+    const intro = getConceptIntro(activeDifficulty, t);
     return { examples, problems, quizzes, intro };
-  }, [urlDifficulty, genExamples, genPractice, genQuiz, getConceptIntro, t]);
+  }, [activeDifficulty, genExamples, genPractice, genQuiz, getConceptIntro, t]);
 
   const learnExamples: Example[] = generatedContent?.examples ?? [];
   const practiceProblems: PracticeProblem[] = generatedContent?.problems ?? [];
@@ -107,7 +129,7 @@ export function OperationFlow({
   const showConcept = conceptIntro != null && !conceptDismissed;
 
   useEffect(() => {
-    if (urlDifficulty) {
+    if (difficulty) {
       const id = setTimeout(() => {
         setCurrentExampleIndex(0);
         setCurrentProblemIndex(0);
@@ -118,7 +140,7 @@ export function OperationFlow({
       }, 0);
       return () => clearTimeout(id);
     }
-  }, [urlDifficulty]);
+  }, [difficulty]);
 
   useEffect(() => {
     const id = setTimeout(() => {
@@ -128,13 +150,6 @@ export function OperationFlow({
     }, 0);
     return () => clearTimeout(id);
   }, [urlStage]);
-
-  const handleSelectDifficulty = useCallback(
-    (d: DifficultyLevel) => {
-      router.push(`/${operation}/${d}`);
-    },
-    [router, operation]
-  );
 
   const handleConceptDone = useCallback(() => {
     setConceptDismissed(true);
@@ -149,14 +164,14 @@ export function OperationFlow({
         playSound('click');
       }, 200);
     } else {
-      engine.awardLessonComplete(`${operation}:${urlDifficulty}`);
-      router.push(`/${operation}/${urlDifficulty}/practice`);
+      engine.awardLessonComplete(`${operation}:${activeDifficulty}`);
+      router.push(`/${operation}/practice`);
     }
-  }, [currentExampleIndex, learnExamples.length, playSound, router, operation, urlDifficulty, engine]);
+  }, [currentExampleIndex, learnExamples.length, playSound, router, operation, activeDifficulty, engine]);
 
   const handlePracticeComplete = useCallback(
     (correct: boolean) => {
-      const key = `${operation}:${urlDifficulty}`;
+      const key = `${operation}:${activeDifficulty}`;
       engine.updateMission('practice', 1);
       if (correct) {
         setPracticeCorrectCount((c) => c + 1);
@@ -194,32 +209,35 @@ export function OperationFlow({
         }, 1500);
       }
     },
-    [currentProblemIndex, practiceProblems.length, engine, operation, urlDifficulty, t]
+    [currentProblemIndex, practiceProblems.length, engine, operation, activeDifficulty, t]
   );
 
   const handleSummaryContinue = useCallback(() => {
     setShowSummary(false);
-    engine.awardLessonComplete(`${operation}:${urlDifficulty}`);
-    router.push(`/${operation}/${urlDifficulty}/quiz`);
-  }, [router, operation, urlDifficulty, engine]);
+    engine.awardLessonComplete(`${operation}:${activeDifficulty}`);
+    router.push(`/${operation}/quiz`);
+  }, [router, operation, activeDifficulty, engine]);
 
   const handleQuizComplete = useCallback(
     (correct: number, total: number) => {
-      engine.awardQuizComplete(`${operation}:${urlDifficulty}`);
+      engine.awardQuizComplete(`${operation}:${activeDifficulty}`);
       engine.updateMission('challenge', 1);
       if (correct === total) {
         engine.unlockBadge('perfect-score');
       }
       engine.unlockBadge('first-quiz');
       engine.markOperationComplete(operation);
-      const allOps = ['addition', 'subtraction', 'multiplication', 'division'];
-      const completedOps = [...engine.engineState.completedOperations, operation];
-      if (allOps.every((op) => completedOps.includes(op))) {
+      const hypotheticalStars = {
+        ...engine.engineState.milestoneStars,
+        [`${operation}:${activeDifficulty}:quiz`]: STAR_CAPS.quiz,
+      };
+      const allOps: Operation[] = ['addition', 'subtraction', 'multiplication', 'division'];
+      if (allOps.every((op) => isOperationFullyCompleted(hypotheticalStars, op))) {
         engine.unlockBadge('math-explorer');
       }
       router.push(`/${operation}`);
     },
-    [router, operation, urlDifficulty, engine]
+    [router, operation, activeDifficulty, engine]
   );
 
   const handleQuizSkip = useCallback(() => {
@@ -236,8 +254,8 @@ export function OperationFlow({
   return (
     <Toast.Provider toastManager={practiceToastManager}>
     <div className="font-body min-h-screen bg-surface">
-      <div className="bg-header text-white px-4 py-3 flex items-center justify-between">
-        <div className="flex items-center gap-2">
+      <div className="bg-header text-white px-3 py-2 sm:px-4 sm:py-3 flex items-center justify-between gap-1 flex-wrap">
+        <div className="flex items-center gap-1">
           <button
             onClick={handleBackToMenu}
             className="text-white/70 text-xl p-1.5 min-w-[44px] min-h-[44px] flex items-center justify-center hover:text-white transition-colors cursor-pointer"
@@ -253,12 +271,7 @@ export function OperationFlow({
             {metaName}
           </button>
         </div>
-        <div className="flex items-center gap-2">
-          {urlStage !== 'difficulty' && urlDifficulty && (
-            <span className="font-display text-sm text-white">
-              {t(`common.difficulty.${urlDifficulty}.badge`, urlDifficulty)}
-            </span>
-          )}
+        <div className="flex items-center justify-end gap-1.5 flex-wrap">
           {engine.isEngineLoaded && (
             <span className="font-display text-sm text-yellow-300">⭐{engine.engineState.stars}</span>
           )}
@@ -297,15 +310,6 @@ export function OperationFlow({
                 />
               ))}
         </div>
-      )}
-
-      {urlStage === 'difficulty' && !showConcept && (
-        <DifficultySelector
-          operationEmoji={meta.emoji}
-          operationName={metaName}
-          description={metaDescription}
-          onSelect={handleSelectDifficulty}
-        />
       )}
 
       {showConcept && conceptIntro && (

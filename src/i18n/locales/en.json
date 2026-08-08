@@ -443,6 +443,11 @@
       "showPatternButton": "Show Pattern →",
       "startTableButton": "Got it! Start Table {{table}} →",
       "patterns": {
+        "1": {
+          "discovery": "What do you notice?",
+          "example": "1 × 5 = 5 — the answer is always the number itself!",
+          "reveal": "Any number times 1 is itself. 1 × 9 = 9! So table 1 just counts up: 1, 2, 3 … 10."
+        },
         "2": {
           "discovery": "What do you notice?",
           "example": "4, 6, 8, 10 — look at the last digit!",

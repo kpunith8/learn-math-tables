@@ -35,8 +35,9 @@ No test framework is configured.
 
 The app is fully translated into **English (`en`), Hindi (`hi`), and Kannada (`kn`)**
 using client-side `i18next`. All UI strings live in `src/i18n/locales/{en,hi,kn}.json`.
-The language picker is a Base UI `Select` in the landing header and the tables
-app header/drawer.
+The language picker is a Base UI `Select` in the landing header only (single global
+place to switch); every other page auto-detects the language from the browser
+(`navigator`) on first load and persists the choice in localStorage.
 
 **Adding a new string**: add the key to **all three** locale files and keep key
 parity (only `_note` doc keys are English-only). See `AGENTS.md` → *i18n /
@@ -62,3 +63,18 @@ Multi-language* for the full workflow and a key-parity verification command.
   generated `sitemap.xml` (38 URLs) and `robots.txt`, plus OG/Twitter share
   images via `next/og` (`opengraph-image.tsx` / `twitter-image.tsx`). `/tables/[table]`
   deep-links seed the tables app to that table.
+- **Operation cards only show ✓/DONE once all three difficulties are
+  completed** (`isOperationFullyCompleted` in `star-economy.ts` requires the quiz
+  milestone for easy+medium+hard); a single difficulty quiz no longer completes the
+  trail card. The landing page derives completion from `milestoneStars`, and
+  `markOperationComplete` + the `math-explorer` badge are gated the same way.
+- **Universal difficulty** — a single difficulty level is chosen once via the
+  `UniversalDifficultySelector` (Base UI Select, mirroring the language selector) in
+  the landing header and applies everywhere. It lives in a global
+  `DifficultyProvider` (context) persisted to `localStorage['mathAdvDifficulty']`;
+  there is no per-operation difficulty chooser page anymore (operation URLs are now
+  `/addition`, `/addition/practice`, `/addition/quiz` — legacy `/addition/easy/...`
+  links client-redirect). The tables app maps `medium → normal` and mirrors the
+  universal level into its legacy `state.difficulty`; its old nav difficulty buttons
+  were removed. All app-wide context is composed in `src/lib/contexts/Providers.tsx`
+  (add future session/login providers there).

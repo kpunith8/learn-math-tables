@@ -2,8 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono, Baloo_2, Nunito } from "next/font/google";
 import "./globals.css";
 import { SITE_URL, SITE_NAME, SITE_DESCRIPTION } from "@/lib/site";
-import { AppProvider } from "@/lib/contexts/AppContext";
-import { I18nProvider } from "@/i18n/I18nProvider";
+import { Providers } from "@/lib/contexts/Providers";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -97,7 +96,7 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className="min-h-full flex flex-col bg-paper"><I18nProvider><AppProvider>{children}</AppProvider></I18nProvider></body>
+      <body className="min-h-full flex flex-col bg-paper"><Providers>{children}</Providers></body>
     </html>
   );
 }

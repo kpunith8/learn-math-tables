@@ -2,7 +2,7 @@
 
 import { useMemo, memo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { generateStoryText } from '@/lib/utils';
+import { generateStoryText, toSpokenMath } from '@/lib/utils';
 
 interface FactCardProps {
   groupCount: number;
@@ -53,6 +53,7 @@ function FactCardInner({ groupCount, currentTable, isRevealed, isActive, onRevea
       {storyHtml && (
         <div
           className="fact-explainer mt-1 text-[13px] leading-[1.7] text-text-primary bg-warm-bg rounded-[10px] p-[10px_14px] border-2 border-warm-border shadow-[0_4px_12px_rgba(0,0,0,0.08)] animate-[popup-in_0.25s_ease-out] [&_strong]:text-castle [&_strong]:font-bold"
+          aria-label={toSpokenMath(storyHtml.replace(/<[^>]*>/g, ' '))}
           dangerouslySetInnerHTML={{ __html: storyHtml }}
         />
       )}

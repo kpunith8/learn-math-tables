@@ -2,7 +2,7 @@ import type { MetadataRoute } from 'next';
 import { SITE_URL } from '@/lib/site';
 
 const OPERATIONS = ['addition', 'subtraction', 'multiplication', 'division'] as const;
-const DIFFICULTIES = ['easy', 'medium', 'hard'] as const;
+const OP_STAGES = ['learn', 'practice', 'quiz'] as const;
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const entries: MetadataRoute.Sitemap = [
@@ -12,12 +12,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   for (const op of OPERATIONS) {
     entries.push({ url: `${SITE_URL}/${op}`, changeFrequency: 'weekly', priority: 0.8 });
-    for (const difficulty of DIFFICULTIES) {
-      entries.push({
-        url: `${SITE_URL}/${op}/${difficulty}`,
-        changeFrequency: 'weekly',
-        priority: 0.6,
-      });
+    for (const stage of OP_STAGES) {
+      entries.push({ url: `${SITE_URL}/${op}/${stage}`, changeFrequency: 'weekly', priority: 0.5 });
     }
   }
 

@@ -7,8 +7,9 @@ import { useAppContext } from '@/lib/contexts/AppContext';
 import { useEngineState } from '@/lib/hooks/useEngineState';
 import { NameModal } from '@/components/name-modal';
 import { LanguageSelector } from '@/components/language-selector';
+import { UniversalDifficultySelector } from '@/components/universal-difficulty-selector';
 
-import { getStarsToNextMilestone } from '@/lib/engines/star-economy';
+import { getStarsToNextMilestone, isOperationFullyCompleted } from '@/lib/engines/star-economy';
 
 const TRAIL = [
   { id: 'addition' as const, emoji: '🏝️', route: '/addition', accent: '#4FA8F5' },
@@ -28,13 +29,16 @@ export default function LandingPage() {
   const mission = isEngineLoaded ? engineState.dailyMission : null;
   const starProgress = isEngineLoaded ? getStarsToNextMilestone(engineState.stars) : 0;
   const newBadges = isEngineLoaded ? getNewBadges() : [];
-  const completedOps = isEngineLoaded ? engineState.completedOperations : [];
+  const completedOps = isEngineLoaded
+    ? TRAIL.flatMap((w) => w.id !== 'tables' && isOperationFullyCompleted(engineState.milestoneStars, w.id) ? [w.id] : [])
+    : [];
 
   return (
     <div className="font-body min-h-screen bg-paper flex flex-col">
-      <header className="bg-ink text-white px-4 py-3 flex items-center justify-between gap-2">
-        <span className="font-display text-base">{t('home.header.title')}</span>
-        <div className="flex items-center gap-2">
+      <header className="bg-ink text-white px-4 py-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+        <span className="font-display text-base shrink-0 text-center sm:text-left">{t('home.header.title')}</span>
+        <div className="flex items-center justify-center gap-1.5 flex-wrap sm:justify-end">
+          <UniversalDifficultySelector dark />
           <LanguageSelector dark />
           <button
             onClick={() => setShowNameModal(true)}
@@ -51,18 +55,20 @@ export default function LandingPage() {
         <div className="max-w-[600px] mx-auto px-4">
 
           {/* Hero */}
-          <section className="text-center pt-6 pb-2">
-            <div className="text-[40px] mb-1 animate-[pop-in_0.3s_ease-out]">🧭</div>
-            <h1 className="font-display text-[clamp(24px,6vw,36px)] text-ink leading-tight">
-              {t('home.hero.welcome')}
-            </h1>
-            <p className="font-body text-sm text-text-tertiary mt-1 max-w-[400px] mx-auto">
+          <section className="text-center pt-5 pb-2">
+            <div className="flex items-center justify-center gap-2">
+              <span className="text-[28px] animate-[pop-in_0.3s_ease-out]">🧭</span>
+              <h1 className="font-display text-[clamp(22px,6vw,32px)] text-ink leading-tight">
+                {t('home.hero.welcome')}
+              </h1>
+            </div>
+            <p className="font-body text-sm text-text-tertiary mt-1.5 max-w-[400px] mx-auto">
               <Trans
                 i18nKey="home.hero.subtitle"
                 components={[<span key="stars" className="text-coral font-bold" />]}
               />
             </p>
-            <div className="inline-flex items-center gap-1.5 mt-4 border-2 border-mist bg-card rounded-full px-4 py-2 shadow-[0_2px_6px_rgba(27,20,71,0.06)]">
+            <div className="inline-flex items-center gap-1.5 mt-3 border-2 border-mist bg-card rounded-full px-4 py-2 shadow-[0_2px_6px_rgba(27,20,71,0.06)]">
               <span className="text-lg">⭐</span>
               <span className="font-display text-sm text-ink font-bold">{starProgress}</span>
               <span className="font-body text-xs font-semibold text-text-dim">{t('home.hero.starsToNextMilestone')}</span>
@@ -104,7 +110,7 @@ export default function LandingPage() {
           {/* Passport stamps */}
           {isEngineLoaded && (
             <section className="mb-6">
-              <div className="grid grid-cols-4 gap-2">
+              <div className="grid grid-cols-3 gap-2">
                 <div className="bg-card rounded-xl border-2 border-mist p-3 text-center">
                   <div className="text-xl">⭐</div>
                   <div className="font-display text-lg font-bold text-ink">{engineState.stars}</div>
@@ -119,11 +125,6 @@ export default function LandingPage() {
                   <div className="text-xl">{engineState.streak > 0 ? '🔥' : '⏳'}</div>
                   <div className="font-display text-lg font-bold text-ink">{engineState.streak}</div>
                   <div className="font-body text-[11px] font-semibold text-text-muted">{t('home.stats.dayStreak')}</div>
-                </div>
-                <div className="bg-card rounded-xl border-2 border-mist p-3 text-center">
-                  <div className="text-xl">🎯</div>
-                  <div className="font-display text-lg font-bold text-coral">{starProgress}</div>
-                  <div className="font-body text-[11px] font-semibold text-text-muted">{t('home.stats.toNextStar')}</div>
                 </div>
               </div>
             </section>

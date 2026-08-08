@@ -1,5 +1,16 @@
 import { STAR_REWARDS, STAR_CAPS } from './types';
 
+export const OPERATION_DIFFICULTIES = ['easy', 'medium', 'hard'] as const;
+
+export function isOperationFullyCompleted(
+  milestoneStars: Record<string, number>,
+  operation: string,
+): boolean {
+  return OPERATION_DIFFICULTIES.every(
+    (difficulty) => (milestoneStars[`${operation}:${difficulty}:quiz`] ?? 0) >= STAR_CAPS.quiz,
+  );
+}
+
 export function awardStarsForCorrectAnswer(
   milestoneStars: Record<string, number>,
   key: string,

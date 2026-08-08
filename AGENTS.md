@@ -40,7 +40,27 @@ No test framework is configured — no test commands exist.
 /tables              Legacy tables app (separate codebase)
 ```
 
-Operation catch-all pattern: `/[operation]`, `/[operation]/[difficulty]`, `/[operation]/[difficulty]/practice`, `/[operation]/[difficulty]/quiz`.
+Operation catch-all pattern: `/[operation]` (learn), `/[operation]/learn`, `/[operation]/practice`, `/[operation]/quiz`.
+There is **no per-operation difficulty chooser page** — difficulty is global (see **Universal difficulty** below). Legacy URLs
+like `/addition/easy/practice` are client-redirected (in `OperationFlow`) to `/addition/practice`.
+
+### Provider composition (`src/lib/contexts/Providers.tsx`)
+
+All app-wide client context is composed in one `Providers` component (used in root `layout.tsx`):
+`I18nProvider` → `AppProvider` → `DifficultyProvider` → `children`. **Add future providers here**
+(session, login, etc.) instead of nesting per-page. Hooks: `useAppContext()`, `useDifficulty()`.
+
+### Universal difficulty
+
+- **`DifficultyProvider` + `useDifficulty()`** (`src/lib/contexts/DifficultyContext.tsx`) — single global
+  `'easy' | 'medium' | 'hard'`, persisted in `localStorage['mathAdvDifficulty']`. Do NOT store difficulty
+  in each page's own state.
+- **`UniversalDifficultySelector`** (`src/components/universal-difficulty-selector.tsx`) — Base UI `Select`,
+  mirrors `LanguageSelector` styling, shows `common.difficulty.{level}.badge`. Rendered **only in the landing
+  header** — operations and `/tables` headers have no difficulty UI (the old tables difficulty buttons are gone).
+- Operations read the level via `useDifficulty()` in `OperationFlow`; the tables app maps `medium → normal`
+  and mirrors it into its legacy `state.difficulty` (two effects in `tables/page.tsx`: one-time hydration for
+  returning players + universal→app sync gated on a ref so it never fires on first render).
 
 ### Module structure (addition, subtraction, multiplication, division)
 
@@ -60,8 +80,8 @@ Each route's page.tsx is a thin Client Component wrapper importing `OperationFlo
 
 ### Component tree
 
-- `OperationFlow` (state machine driven by `useParams()` URL segments)
-- `DifficultySelector` → `ConceptIntroCard` (optional) → `WorkedExample` (5) → `PracticeProblemView` (6) → `ProblemSummaryList` → `QuizOverlay`
+- `OperationFlow` (state machine driven by `useParams()` URL segments: optional first segment = stage)
+- `ConceptIntroCard` (optional) → `WorkedExample` (5) → `PracticeProblemView` (6) → `ProblemSummaryList` → `QuizOverlay`
 - **`QuizOverlay` is conditionally mounted** (no `isOpen` prop — render it only when quiz starts to avoid cascade warning)
 - `NameModal` only shows on landing page when `isLoaded && !state.playerName`
 
@@ -92,7 +112,7 @@ sets `document.documentElement.lang` on language change. Use `useTranslation()` 
 - **`TFunction` type is imported from `i18next`, NOT `react-i18next`** (v17 doesn't export it).
 - `getMascotHint(t, operation?)` — `t` is the FIRST argument.
 - Difficulty key is `common.difficulty.${level}.desc` (NOT `.description`).
-- `LanguageSelector` (`src/components/language-selector.tsx`) is a **Base UI `Select`** (portaled popup, `z-50`) — keep the `dark`/`className` props. Rendered in the landing header and in `AppHeader` (desktop top row + mobile drawer → two instances coexist in the DOM on desktop).
+- `LanguageSelector` (`src/components/language-selector.tsx`) is a **Base UI `Select`** (portaled popup, `z-50`) — keep the `dark`/`className` props. Rendered **only in the landing header** — the tables `AppHeader` (desktop row + mobile drawer) and operations headers have no language UI; language is detected from the browser (`navigator`) on first load.
 - **+2px font bump**: `globals.css` remaps common `text-*` size utilities (10px→12 … 28px→30, `text-xs`→14, `text-sm`→16, etc.) under `@media (max-width:767px)` (all languages) and `html[lang='hi'], html[lang='kn']` (desktop, hi/kn only) — Devanagari/Kannada glyphs render smaller at the same px. If you introduce a new small text class (below ~30px), add it to those two scoped blocks.
 
 ### Tables module (`/tables`)
@@ -112,6 +132,7 @@ Legacy feature with its own components in `src/components/` (app-header, celebra
 - **Scroll to top** on stage change with `window.scrollTo({ top: 0, behavior: 'instant' })`
 - **State reset** for practice problems via `key={currentProblemIndex}` on the component
 - **Stars** are tracked per operation+difficulty via `milestoneStars` (keys like `addition:easy:practice`). Each milestone category has a cap (lesson: 2, practice: 7, quiz: 3). Revisiting the same topic uses `Math.max()` — never adds on top. Total stars = sum of all `milestoneStars`.
+- **Operation completion** (`completedOperations`, trail-card ✓/DONE badge + `math-explorer` badge) requires the **quiz** milestone for **all three** difficulties — `isOperationFullyCompleted(milestoneStars, op)` in `star-economy.ts` checks every `op:{easy,medium,hard}:quiz` ≥ cap 3. `markOperationComplete` is gated on this inside its persist updater (reads the post-award `milestoneStars`); the landing card derives completion from `milestoneStars` too, never from the stored flag alone (so a single easy quiz does not complete the card).
 - **Negative numbers** display as `-10` not `(-10)` — `padNumber` returns `String(n)`
 - **Emoji rendering** only when all operands and result > 0 and each ≤ `EMOJI_SAFE_LIMIT` (10); multiplication/division show horizontal equation, addition/subtraction show right-aligned vertical stacked
 - **Practice problems**: 5 per session, 3 attempts before revealing answer; all content (examples, practice, quiz) uses `randInt` so it's different each visit — no fixed pools and no `generatedForRef` caching

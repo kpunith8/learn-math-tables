@@ -3,6 +3,7 @@
 import { memo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CHARACTERS } from '@/lib/constants';
+import { toSpokenMath } from '@/lib/utils';
 
 interface IllustrationPanelProps {
   currentTable: number;
@@ -48,7 +49,10 @@ function IllustrationPanelInner({
 
   return (
     <aside className="illustration-panel w-full md:w-[320px] shrink-0 flex flex-col items-center gap-3 md:sticky md:top-5">
-      <div className="equation-badge font-display text-[clamp(22px,5vw,30px)] text-castle text-center py-2 px-10 bg-card rounded-full border-[2.5px] border-mist">
+      <div
+        className="equation-badge font-display text-[clamp(22px,5vw,30px)] text-castle text-center py-2 px-10 bg-card rounded-full border-[2.5px] border-mist"
+        aria-label={toSpokenMath(t('tables.illustrationPanel.equationSolved', { table: currentTable, group: groupCount, answer: currentTable * groupCount }))}
+      >
         {t('tables.illustrationPanel.equationSolved', { table: currentTable, group: groupCount, answer: currentTable * groupCount })}
       </div>
       <p className="character-name font-display text-sm text-ink text-center">

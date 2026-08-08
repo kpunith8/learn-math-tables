@@ -4,20 +4,16 @@ import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Difficulty } from '@/lib/constants';
 import { TableSelector } from './table-selector';
-import { LanguageSelector } from './language-selector';
 
 interface AppHeaderProps {
   currentTable: number;
   completedTables: Set<number>;
   difficulty: Difficulty;
   practiceMode: boolean;
-  playerName: string;
   isMuted: boolean;
   onSelectTable: (table: number) => void;
-  onSetDifficulty: (level: Difficulty) => void;
   onTogglePractice: () => void;
   onShowLeaderboard: () => void;
-  onShowPlayerName: () => void;
   onReset: () => void;
   onToggleMute: () => void;
   onHome?: () => void;
@@ -30,13 +26,10 @@ export function AppHeader({
   completedTables,
   difficulty,
   practiceMode,
-  playerName,
   isMuted,
   onSelectTable,
-  onSetDifficulty,
   onTogglePractice,
   onShowLeaderboard,
-  onShowPlayerName,
   onReset,
   onToggleMute,
   onHome,
@@ -117,13 +110,6 @@ export function AppHeader({
           >
             {isMuted ? '🔇' : '🔊'}
           </button>
-          <button
-            onClick={onShowPlayerName}
-            className={`${btnBase} border-coral-soft bg-coral-soft text-white hover:bg-coral-soft-hover active:scale-95 max-w-[100px] overflow-hidden text-ellipsis whitespace-nowrap min-w-[44px]`}
-          >
-            {playerName || t('common.nav.addName')}
-          </button>
-          <LanguageSelector />
         </div>
       </div>
 
@@ -140,23 +126,6 @@ export function AppHeader({
 
       {/* Desktop difficulty row */}
       <div className="hidden md:flex items-center gap-2 flex-wrap justify-center md:justify-start">
-        <div className="difficulty-selector flex items-center gap-1 bg-white/70 py-1 px-2 rounded-full shadow-[inset_0_1px_3px_rgba(0,0,0,0.05)]">
-          <span className="font-display text-[11px] text-ink/70 mr-0.5">{t('common.difficulty.label')}</span>
-          {(['easy', 'normal', 'hard'] as Difficulty[]).map((level) => (
-            <button
-              key={level}
-              onClick={() => onSetDifficulty(level)}
-              aria-pressed={difficulty === level}
-              className={`font-display text-[11px] py-[5px] px-3 rounded-full border-none cursor-pointer transition-all duration-150
-                ${difficulty === level
-                  ? 'bg-coral-soft text-white shadow-[0_2px_6px_rgba(244,124,107,0.3)]'
-                  : 'bg-white text-ink/70 hover:bg-mist/60'
-                }`}
-            >
-              {t(`common.difficulty.${level === 'normal' ? 'medium' : level}.title`)}
-            </button>
-          ))}
-        </div>
         <button
           onClick={onReset}
           className={`${btnBase} flex items-center gap-1.5 border-[#DED5F0] bg-white/80 text-ink hover:bg-white active:scale-95`}
@@ -193,12 +162,6 @@ export function AppHeader({
               </button>
             </div>
             <button
-              onClick={() => { onShowPlayerName(); closeMenu(); }}
-              className="drawer-avatar font-display text-xs py-3 px-4 rounded-xl border-2 border-coral-soft bg-coral-soft text-white cursor-pointer self-end hover:bg-coral-soft-hover max-w-full overflow-hidden text-ellipsis whitespace-nowrap"
-            >
-              {playerName || t('common.nav.addNameShort')}
-            </button>
-            <button
               onClick={() => { onTogglePractice(); closeMenu(); }}
               aria-pressed={practiceMode}
               className={`drawer-practice ${btnBase} w-full text-center
@@ -209,31 +172,12 @@ export function AppHeader({
             >
               {t('header.practice')}
             </button>
-            <button
-              onClick={() => { onShowLeaderboard(); closeMenu(); }}
+<button
+              onClick={onShowLeaderboard}
               className={`drawer-scores ${btnBase} w-full text-center border-gold bg-gold text-ink hover:bg-kingdom`}
             >
               {t('header.scores')}
             </button>
-            <div className="drawer-difficulty flex flex-col gap-2 pt-2 border-t border-[#E9E3F3]">
-              <span className="font-display text-[11px] text-ink/70 uppercase tracking-wider">{t('header.drawer.difficulty')}</span>
-              <div className="flex items-center gap-2">
-                {(['easy', 'normal', 'hard'] as Difficulty[]).map((level) => (
-                  <button
-                    key={level}
-                    onClick={() => { onSetDifficulty(level); closeMenu(); }}
-                    aria-pressed={difficulty === level}
-                    className={`flex-1 font-display text-[11px] py-[5px] px-3 rounded-full border-none cursor-pointer transition-all duration-150
-                      ${difficulty === level
-                        ? 'bg-coral-soft text-white shadow-[0_2px_6px_rgba(244,124,107,0.3)]'
-                        : 'bg-white border-2 border-[#E9E3F3] text-ink/70 hover:bg-[#F3EFFB]'
-                      }`}
-                  >
-                    {t(`common.difficulty.${level === 'normal' ? 'medium' : level}.title`)}
-                  </button>
-                ))}
-              </div>
-            </div>
             <button
               onClick={() => { onReset(); closeMenu(); }}
               className={`drawer-reset ${btnBase} w-full text-center flex items-center justify-center gap-1.5 border-[#DED5F0] bg-white/80 text-ink hover:bg-white`}
@@ -246,7 +190,6 @@ export function AppHeader({
             >
               {isMuted ? '🔇 ' + t('common.nav.unmute') : '🔊 ' + t('common.nav.mute')}
             </button>
-            <LanguageSelector className="w-full justify-center" />
           </aside>
       </div>
     </header>

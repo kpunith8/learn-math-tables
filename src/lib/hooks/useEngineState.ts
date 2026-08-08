@@ -20,6 +20,7 @@ import {
   awardStarsForQuizComplete,
   awardStarsForDailyMission,
   computeTotalStars,
+  isOperationFullyCompleted,
 } from '@/lib/engines/star-economy';
 
 interface EngineState {
@@ -256,6 +257,7 @@ export function useEngineState() {
   const markOperationComplete = useCallback(
     (operation: string) => {
       persist((prev) => {
+        if (!isOperationFullyCompleted(prev.milestoneStars, operation)) return prev;
         if (prev.completedOperations.includes(operation)) return prev;
         return { ...prev, completedOperations: [...prev.completedOperations, operation] };
       });

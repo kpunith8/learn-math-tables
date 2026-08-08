@@ -5,6 +5,9 @@ import { useRouter } from 'next/navigation';
 import dynamic from 'next/dynamic';
 import { useTranslation } from 'react-i18next';
 import { useAppContext } from '@/lib/contexts/AppContext';
+import { useDifficulty } from '@/lib/contexts/DifficultyContext';
+import { Difficulty } from '@/lib/constants';
+import { DifficultyLevel } from '@/lib/operations/types';
 import { useAudio } from '@/lib/hooks/useAudio';
 import { useEngineState } from '@/lib/hooks/useEngineState';
 import { calculateStarRating, getMaxAllowedTable, calculateLeaderboardStats, speakStoryText, cancelSpeech, generateQuizQuestions, toQuizQuestions } from '@/lib/utils';
@@ -42,6 +45,11 @@ export default function TablesPage({ initialTable }: { initialTable?: number } =
   const engine = useEngineState();
   const router = useRouter();
   const { t } = useTranslation();
+  const {
+    difficulty: universalDifficulty,
+    isLoaded: difficultyLoaded,
+    setDifficulty: setUniversalDifficulty,
+  } = useDifficulty();
 
   // UI state
   const [showCelebration, setShowCelebration] = useState(false);
@@ -94,6 +102,28 @@ export default function TablesPage({ initialTable }: { initialTable?: number } =
     if (initialTable === state.currentTable) return;
     switchToTable(initialTable);
   }, [initialTable, isLoaded, state.currentTable, switchToTable]);
+
+  // Hydrate the universal difficulty from the legacy tables difficulty once,
+  // but only for returning players (so first-time visitors keep the saved pick).
+  const difficultyHydratedRef = useRef(false);
+  useEffect(() => {
+    if (!difficultyLoaded || !isLoaded || difficultyHydratedRef.current) return;
+    if (state.completedTables.size === 0 && !state.playerName) return;
+    difficultyHydratedRef.current = true;
+    setUniversalDifficulty(state.difficulty === 'normal' ? 'medium' : state.difficulty);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isLoaded, difficultyLoaded]);
+
+  // Mirror the universal difficulty into the legacy tables difficulty state.
+  const prevUniversalDifficultyRef = useRef<DifficultyLevel | null>(null);
+  useEffect(() => {
+    if (!difficultyLoaded || !isLoaded) return;
+    const prev = prevUniversalDifficultyRef.current;
+    prevUniversalDifficultyRef.current = universalDifficulty;
+    if (prev === null) return;
+    const mapped = universalDifficulty === 'medium' ? ('normal' as Difficulty) : (universalDifficulty as Difficulty);
+    if (mapped !== state.difficulty) setDifficulty(mapped);
+  }, [universalDifficulty, state.difficulty, setDifficulty, difficultyLoaded, isLoaded]);
 
   // Check table completion using ref to avoid cascading setState
   useEffect(() => {
@@ -353,16 +383,13 @@ export default function TablesPage({ initialTable }: { initialTable?: number } =
         completedTables={state.completedTables}
         difficulty={state.difficulty}
         practiceMode={state.practiceMode}
-        playerName={state.playerName}
         isMuted={isMuted}
         onSelectTable={(table) => {
           switchToTable(table);
           window.scrollTo({ top: 0, behavior: 'smooth' });
         }}
-        onSetDifficulty={setDifficulty}
         onTogglePractice={togglePracticeMode}
         onShowLeaderboard={() => setShowLeaderboard(true)}
-        onShowPlayerName={() => router.push('/')}
         onReset={handleReset}
         onToggleMute={toggleMute}
         onHome={() => router.push('/')}

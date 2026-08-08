@@ -260,8 +260,18 @@ export const cancelSpeech = (): void => {
   }
 };
 
-export const speakStoryText = (plainText: string, onEnd?: () => void): void => {
+export const toSpokenMath = (text: string): string =>
+  text
+    .replace(/\s*\u00D7\s*/g, ' times ')
+    .replace(/\s*\u00F7\s*/g, ' divided by ')
+    .replace(/\s*\u00B1\s*/g, ' plus minus ')
+    .replace(/\s*=\s*/g, ' equals ')
+    .replace(/\s+/g, ' ')
+    .trim();
+
+export const speakStoryText = (rawText: string, onEnd?: () => void): void => {
   if (typeof window === 'undefined' || !window.speechSynthesis) return;
+  const plainText = toSpokenMath(rawText);
   window.speechSynthesis.cancel();
   const utterance = new SpeechSynthesisUtterance(plainText);
   utterance.lang = 'en-US';

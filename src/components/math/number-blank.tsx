@@ -57,7 +57,7 @@ export function NumberBlank({ value, onChange, onSubmit, disabled, placeholder }
         disabled={disabled}
         type="button"
         aria-label="Toggle negative number"
-        className="font-display text-base text-coral bg-coral/10 border-2 border-coral/20 rounded-lg w-9 h-9 flex items-center justify-center cursor-pointer transition-colors duration-150 hover:bg-coral/20 active:bg-coral/30 disabled:opacity-40 disabled:cursor-not-allowed shrink-0"
+        className="font-display text-base text-coral bg-coral/10 border-2 border-coral/20 rounded-lg w-9 h-9 flex items-center justify-center cursor-pointer transition-colors duration-150 hover:bg-coral/20 active:bg-coral/30 disabled:opacity-40 disabled:cursor-not-allowed shrink-0 md:hidden"
       >
         +/−
       </button>

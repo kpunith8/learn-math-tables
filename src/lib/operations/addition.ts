@@ -1,8 +1,29 @@
 import { Example, PracticeProblem, QuizQuestion, ConceptIntro, DifficultyLevel, EMOJI_SAFE_LIMIT, Translate } from './types';
 import { pickEmojis } from './emoji-pool';
+import { pickUniquePair, levelMax, Pair } from './unique-pair';
 
 function randInt(min: number, max: number): number {
   return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function pickOperands(difficulty: DifficultyLevel): Pair {
+  if (difficulty === 'easy') {
+    const a = randInt(1, 10);
+    const b = randInt(1, 10);
+    return { a, b };
+  }
+  if (difficulty === 'medium') {
+    while (true) {
+      const a = randInt(11, 40);
+      const b = randInt(11, 40);
+      if (a + b <= levelMax('medium')) return { a, b };
+    }
+  }
+  while (true) {
+    const a = randInt(-60, 60);
+    const b = randInt(-60, 60);
+    if (Math.abs(a + b) <= levelMax('hard') && !(a === 0 && b === 0)) return { a, b };
+  }
 }
 
 function shuffleArray<T>(arr: T[]): T[] {
@@ -28,20 +49,10 @@ function getHint(t: Translate): string {
 export function generateLearnExamples(difficulty: DifficultyLevel, t: Translate): Example[] {
   const emojis = pickEmojis(5);
   const examples: Example[] = [];
+  const used = new Set<string>();
 
   for (let i = 0; i < 5; i++) {
-    let a: number;
-    let b: number;
-    if (difficulty === 'easy') {
-      a = randInt(1, 9);
-      b = randInt(1, 9);
-    } else if (difficulty === 'medium') {
-      a = randInt(10, 50);
-      b = randInt(10, 50);
-    } else {
-      a = randInt(-8, 8);
-      b = randInt(-8, 8);
-    }
+    const { a, b } = pickUniquePair(difficulty, used, pickOperands);
     const result = a + b;
     const emoji = emojis[i];
     const safe = isEmojiSafe(a, b, result);
@@ -86,20 +97,10 @@ export function generateLearnExamples(difficulty: DifficultyLevel, t: Translate)
 export function generatePracticeProblems(difficulty: DifficultyLevel, t: Translate): PracticeProblem[] {
   const emojis = pickEmojis(5);
   const problems: PracticeProblem[] = [];
+  const used = new Set<string>();
 
   for (let i = 0; i < 5; i++) {
-    let a: number;
-    let b: number;
-    if (difficulty === 'easy') {
-      a = randInt(1, 9);
-      b = randInt(1, 9);
-    } else if (difficulty === 'medium') {
-      a = randInt(10, 50);
-      b = randInt(10, 50);
-    } else {
-      a = randInt(-8, 8);
-      b = randInt(-8, 8);
-    }
+    const { a, b } = pickUniquePair(difficulty, used, pickOperands);
     const result = a + b;
     const emoji = emojis[i];
     const safe = isEmojiSafe(a, b, result);
@@ -123,25 +124,11 @@ export function generatePracticeProblems(difficulty: DifficultyLevel, t: Transla
 export function generateQuizQuestions(difficulty: DifficultyLevel, t: Translate): QuizQuestion[] {
   const questions: QuizQuestion[] = [];
   const qs: Array<{ a: number; b: number }> = [];
+  const used = new Set<string>();
 
-  if (difficulty === 'easy') {
-    for (let i = 0; i < 5; i++) {
-      const a = randInt(1, 9);
-      const b = randInt(1, 9);
-      qs.push({ a, b });
-    }
-  } else if (difficulty === 'medium') {
-    for (let i = 0; i < 5; i++) {
-      const a = randInt(10, 50);
-      const b = randInt(10, 50);
-      qs.push({ a, b });
-    }
-  } else {
-    for (let i = 0; i < 5; i++) {
-      const a = randInt(-8, 8);
-      const b = randInt(-8, 8);
-      qs.push({ a, b });
-    }
+  for (let i = 0; i < 5; i++) {
+    const { a, b } = pickUniquePair(difficulty, used, pickOperands);
+    qs.push({ a, b });
   }
 
   for (const { a, b } of qs) {
