@@ -9,18 +9,18 @@ function randInt(min: number, max: number): number {
 function pickOperands(difficulty: DifficultyLevel): Pair {
   if (difficulty === 'easy') {
     const a = randInt(2, 10);
-    const b = randInt(1, a);
+    const b = randInt(1, a - 1);
     return { a, b };
   }
   if (difficulty === 'medium') {
     const a = randInt(10, 50);
-    const b = randInt(0, 50);
+    const b = randInt(1, a - 1);
     return { a, b };
   }
   while (true) {
-    const a = randInt(-60, 99);
-    const b = randInt(-20, 40);
-    if (Math.abs(a - b) <= levelMax('hard')) return { a, b };
+    const a = randInt(20, 99);
+    const b = randInt(1, a - 1);
+    if (a - b <= levelMax('hard')) return { a, b };
   }
 }
 
@@ -67,21 +67,11 @@ export function generateLearnExamples(difficulty: DifficultyLevel, t: Translate)
         explanation = t(`${h}.explanations.easyNotSafe`, opts);
       }
     } else if (difficulty === 'medium') {
-      if (result < 0) {
-        hint = t(`${h}.hints.mediumNegative`);
-        explanation = t(`${h}.explanations.mediumNegative`, opts);
-      } else {
-        hint = t(`${h}.hints.mediumPositive`);
-        explanation = t(`${h}.explanations.mediumPositive`, opts);
-      }
+      hint = t(`${h}.hints.mediumPositive`);
+      explanation = t(`${h}.explanations.mediumPositive`, opts);
     } else {
-      if (a < 0) {
-        hint = t(`${h}.hints.hardNegativeStart`);
-        explanation = t(`${h}.explanations.hardNegativeStart`, opts);
-      } else {
-        hint = t(`${h}.hints.hardPositiveStart`);
-        explanation = t(`${h}.explanations.hardPositiveStart`, opts);
-      }
+      hint = t(`${h}.hints.hardPositiveStart`);
+      explanation = t(`${h}.explanations.hardPositiveStart`, opts);
     }
 
     examples.push({ operand1: a, operand2: b, operation: 'subtraction', result, emojiSafe: safe, hint, explanation, emoji });
