@@ -25,6 +25,8 @@ No test framework is configured — no test commands exist.
 - **PostCSS** with `@tailwindcss/postcss` v4 plugin
 - **TypeScript** (strict mode, `@/*` maps to `src/*`)
 - **i18n**: `i18next` + `react-i18next` + `i18next-browser-languagedetector` — client-side only, en/hi/kn (see **i18n / Multi-language** below)
+- **Auth**: `@kinde-oss/kinde-auth-nextjs` — Kinde for social sign-in/sign-out (Google **and** Facebook, both enabled in the Kinde dashboard; the hosted login screen shows both providers — no code-level difference between them). `useKindeBrowserClient()` gives `{ isAuthenticated, isLoading, user }`; `<LoginLink>` / `<LogoutLink>` from `@kinde-oss/kinde-auth-nextjs/components`. Session name shown from `user?.given_name`; guests use the "Add Name" modal (session name is never persisted to localStorage).
+- **Icons**: `lucide-react` for all icons (prefer SVG icons over emoji). Import per-icon, e.g. `import { House, Check, ArrowRight } from 'lucide-react'`. Do NOT add emoji icons; use lucide equivalents.
 - `cn()` helper: `import { cn } from '@/lib/utils'` (wraps `tailwind-merge` + `clsx`)
 
 ## Architecture
@@ -140,6 +142,7 @@ Legacy feature with its own components in `src/components/` (app-header, celebra
 - **Practice feedback**: Correct answer fires a base-ui `Toast` (stacked, `type='success'`, `timeout=2000`) at top-center with ✅ check mark — not inline banners or Nova dialog
 - **Concept intro** and practice content are mutually exclusive (`!showConcept` guards the practice section)
 - **Use shadcn components for generic UI** — import from `@/components/ui/` (`Button`, `Dialog` + `DialogContent/Header/Title/Description/Footer`, `Input`, `Card`, `Badge`, `Progress`) instead of hand-rolling raw JSX (`<button>`, custom modal `<div>`s). Add missing ones with `npx shadcn@latest add <item>`. Base UI is also fine for low-level primitives already in use (Toast, Select).
+- **Use lucide-react icons for all glyphs** — buttons, feedback, and decorative marks use lucide SVGs (`Check`, `ArrowRight`, `RefreshCcw`, `BicepsFlexed`, `ThumbsUp`, `User`, `Plus`/`Minus`/`X`/`Divide`, etc.). Avoid emoji characters. `OPERATION_META` stores each operation's `icon: LucideIcon` (see `src/lib/operations/types.ts`).
 - **shadcn `@acme` registries in docs are placeholders** — no public ACME registry exists
 - **Mission tasks** carry a translated `descriptionKey` (i18n key in all 3 locales) plus a legacy English `description` fallback. New mission templates in `src/lib/engines/daily-mission.ts` must set `descriptionKey`; `ensureDescriptionKeys()` migrates old stored missions in `useEngineState.ts`.
 - **Table pattern discovery** (`pattern-discovery.tsx`) is generated dynamically via `buildPattern(tableNumber)` — there is NO fixed table map (the old 2–11 hardcoded map caused tables 12+ to render blank). Tables go up to 20 (practice/hard), 15 normal, 10 easy.

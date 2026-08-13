@@ -10,14 +10,22 @@ function LanguageSync() {
       document.documentElement.lang = i18n.language.split('-')[0] || 'en';
     };
 
-    const detected = i18n.services.languageDetector?.detect();
     const supported = (i18n.options.supportedLngs ?? []) as string[];
     const normalize = (code: unknown) => {
       if (typeof code !== 'string') return null;
       const base = code.split('-')[0].toLowerCase();
       return supported.includes(base) ? base : null;
     };
-    const detectedBase = normalize(detected);
+
+    let detectedBase: string | null = null;
+    try {
+      const saved = window.localStorage.getItem('math-adventure-language');
+      detectedBase = normalize(saved);
+    } catch {}
+    if (!detectedBase) {
+      const detected = i18n.services.languageDetector?.detect();
+      detectedBase = normalize(detected);
+    }
 
     if (detectedBase && detectedBase !== i18n.language) {
       i18n.changeLanguage(detectedBase);

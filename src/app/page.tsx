@@ -3,6 +3,9 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useTranslation, Trans } from 'react-i18next';
+import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs';
+import { LoginLink, LogoutLink } from '@kinde-oss/kinde-auth-nextjs/components';
+import { LogIn, LogOut, User, ArrowRight, Check } from 'lucide-react';
 import { useAppContext } from '@/lib/contexts/AppContext';
 import { useEngineState } from '@/lib/hooks/useEngineState';
 import { NameModal } from '@/components/name-modal';
@@ -22,9 +25,12 @@ const TRAIL = [
 export default function LandingPage() {
   const router = useRouter();
   const { t } = useTranslation();
+  const { isAuthenticated, isLoading, user } = useKindeBrowserClient();
   const { state, setPlayerName } = useAppContext();
   const { engineState, isEngineLoaded, getNewBadges } = useEngineState();
   const [showNameModal, setShowNameModal] = useState(false);
+
+  const sessionName = user?.given_name || '';
 
   const mission = isEngineLoaded ? engineState.dailyMission : null;
   const starProgress = isEngineLoaded ? getStarsToNextMilestone(engineState.stars) : 0;
@@ -40,14 +46,38 @@ export default function LandingPage() {
         <div className="flex items-center justify-center gap-1.5 flex-wrap sm:justify-end">
           <UniversalDifficultySelector dark />
           <LanguageSelector dark />
-          <button
-            onClick={() => setShowNameModal(true)}
-            className="font-display text-sm bg-coral text-white py-1.5 px-4 rounded-full border-none cursor-pointer hover:bg-coral-hover transition-colors min-h-[44px] flex items-center"
-          >
-            <span className="max-w-[180px] overflow-hidden text-ellipsis whitespace-nowrap" title={state.playerName}>
-              {state.playerName || t('common.nav.addNameShort')}
-            </span>
-          </button>
+          {isAuthenticated ? (
+            <>
+              <span
+                className="inline-flex items-center justify-center font-display text-xs font-bold text-white/90 bg-white/15 border-2 border-white/25 rounded-full px-3 min-h-[44px] max-w-[140px] overflow-hidden text-ellipsis whitespace-nowrap"
+                title={sessionName}
+              >
+                {sessionName}
+              </span>
+              <LogoutLink className="inline-flex items-center justify-center gap-1.5 font-display text-sm bg-coral text-white py-1.5 px-4 rounded-full hover:bg-coral-hover transition-colors min-h-[44px]">
+                <LogOut className="w-4 h-4" />
+                {t('common.auth.signOut')}
+              </LogoutLink>
+            </>
+          ) : (
+            <>
+              <button
+                onClick={() => setShowNameModal(true)}
+                className="inline-flex items-center justify-center gap-1.5 font-display text-sm bg-coral text-white py-1.5 px-4 rounded-full border-none cursor-pointer hover:bg-coral-hover transition-colors min-h-[44px]"
+              >
+                <User className="w-4 h-4" />
+                <span className="max-w-[180px] overflow-hidden text-ellipsis whitespace-nowrap" title={state.playerName}>
+                  {state.playerName || t('common.nav.addNameShort')}
+                </span>
+              </button>
+              {!isLoading && (
+                <LoginLink className="inline-flex items-center justify-center gap-1.5 font-display text-sm text-white border-2 border-white/40 py-1.5 px-4 rounded-full hover:bg-white/10 transition-colors min-h-[44px]">
+                  <LogIn className="w-4 h-4" />
+                  {t('common.auth.signIn')}
+                </LoginLink>
+              )}
+            </>
+          )}
         </div>
       </header>
 
@@ -85,7 +115,10 @@ export default function LandingPage() {
                 <div className="flex items-center justify-between mb-2">
                   <h2 className="font-display text-sm font-bold text-ink">{t('home.mission.todaysMission')}</h2>
                   {mission.completed ? (
-                    <span className="font-display text-xs text-leaf font-semibold">{t('home.mission.complete')}</span>
+                    <span className="inline-flex items-center gap-1 font-display text-xs text-leaf font-semibold">
+                      <Check className="w-4 h-4" strokeWidth={2.5} />
+                      {t('home.mission.complete')}
+                    </span>
                   ) : (
                     <span className="font-display text-xs text-coral">{t('home.mission.reward')}</span>
                   )}
@@ -93,7 +126,13 @@ export default function LandingPage() {
                 <div className="space-y-1.5">
                   {mission.tasks.map((task, i) => (
                     <div key={i} className="flex items-center gap-2">
-                      <span className="text-sm shrink-0">{task.completed ? '✅' : '⭐'}</span>
+                      <span className="w-4 h-4 shrink-0 flex items-center justify-center">
+                        {task.completed ? (
+                          <Check className="w-4 h-4 text-leaf" strokeWidth={2.5} />
+                        ) : (
+                          <span className="text-sm leading-none">⭐</span>
+                        )}
+                      </span>
                       <span className={`font-body text-xs flex-1 ${task.completed ? 'text-leaf line-through' : 'text-text-secondary'}`}>
                         {task.descriptionKey ? t(task.descriptionKey) : task.description}
                       </span>
@@ -175,7 +214,10 @@ export default function LandingPage() {
                           </div>
                           <div className="font-body text-xs font-semibold text-text-muted mt-0.5">{t(`home.trail.worlds.${world.id}.tagline`)}</div>
                         </div>
-                        <span className="font-body text-[11px] font-semibold text-text-dim shrink-0">{t('common.buttons.explore')}</span>
+                        <span className="inline-flex items-center gap-0.5 font-body text-[11px] font-semibold text-text-dim shrink-0">
+                          {t('common.buttons.explore')}
+                          <ArrowRight className="w-3 h-3" strokeWidth={3} />
+                        </span>
                       </div>
                     </button>
                   </div>

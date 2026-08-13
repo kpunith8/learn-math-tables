@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback, useMemo, useRef, startTransition } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
+import { Check } from 'lucide-react';
 import { getWrongAnswerMessage } from '@/components/celebration-message';
 import { CelebrationMessage } from '@/components/celebration-message';
 
@@ -146,7 +147,10 @@ export function RetrievalPractice({ tableNumber, weakFacts, onComplete }: Retrie
               className="mt-3"
               disabled={inputValue === ''}
             >
-              {t('tables.retrievalPractice.checkAnswer')}
+              <span className="inline-flex items-center justify-center gap-1.5">
+                {t('tables.retrievalPractice.checkAnswer')}
+                <Check className="w-4 h-4" strokeWidth={2.5} />
+              </span>
             </Button>
           </div>
         )}

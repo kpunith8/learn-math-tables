@@ -10,6 +10,8 @@ badges, and a daily mission system. Available in **English, Hindi, and Kannada**
 - **Tailwind CSS v4** + **shadcn v4** (`base-nova` style)
 - **Base UI** (`@base-ui/react`) for menus, toasts, and the language select
 - **i18next** + **react-i18next** for client-side i18n (en/hi/kn)
+- **Kinde** (`@kinde-oss/kinde-auth-nextjs`) for Google **and** Facebook sign-in/sign-out (both enabled on the Kinde dashboard)
+- **lucide-react** for all icons (SVG icons instead of emoji)
 - **TypeScript** (strict), `@/*` → `src/*`
 
 ## Getting started
@@ -78,3 +80,12 @@ Multi-language* for the full workflow and a key-parity verification command.
   universal level into its legacy `state.difficulty`; its old nav difficulty buttons
   were removed. All app-wide context is composed in `src/lib/contexts/Providers.tsx`
   (add future session/login providers there).
+- **Google & Facebook sign-in (Kinde)** — `@kinde-oss/kinde-auth-nextjs` provides sign-in/sign-out
+  via `useKindeBrowserClient()` + `<LoginLink>`/`<LogoutLink>`. Both providers are enabled in the
+  Kinde dashboard; the hosted login screen shows them together (no code-level difference). The
+  authenticated name comes from `user?.given_name`; guests use the "Add Name" modal instead. The
+  session name is never persisted to localStorage.
+- **All icons use lucide-react** — buttons, feedback, and decorative marks render
+  lucide SVGs (`Check`, `ArrowRight`, `RefreshCcw`, `BicepsFlexed`, `ThumbsUp`,
+  `User`, `Plus`/`Minus`/`X`/`Divide`) instead of emoji; `OPERATION_META` stores each
+  operation's `icon: LucideIcon`.

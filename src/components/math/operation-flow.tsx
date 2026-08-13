@@ -5,6 +5,7 @@ import { useState, useCallback, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useRouter, useParams } from 'next/navigation';
 import { Toast } from '@base-ui/react/toast';
+import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs';
 import { useAppContext } from '@/lib/contexts/AppContext';
 import { useDifficulty } from '@/lib/contexts/DifficultyContext';
 import { useEngineState } from '@/lib/hooks/useEngineState';
@@ -14,6 +15,7 @@ import {
   QuizQuestion, ConceptIntro, OPERATION_META, Translate,
 } from '@/lib/operations/types';
 import { Button } from '@/components/ui/button';
+import { House, User, ArrowRight, BicepsFlexed, Check } from 'lucide-react';
 import { resetEmojiPool } from '@/lib/operations/emoji-pool';
 import { isOperationFullyCompleted } from '@/lib/engines/star-economy';
 import { STAR_CAPS } from '@/lib/engines/types';
@@ -40,7 +42,7 @@ function PracticeToastList() {
     <Toast.Root key={toast.id} toast={toast} swipeDirection="up" className="group">
       <Toast.Content className="overflow-hidden">
         <div className="bg-green/10 border-2 border-green/30 rounded-xl px-4 py-3 shadow-lg flex items-center gap-2.5">
-          <span className="text-lg shrink-0">✅</span>
+          <Check className="w-5 h-5 shrink-0 text-green" strokeWidth={2.5} />
           <div>
             <Toast.Title className="font-display text-sm font-bold text-green" />
             <Toast.Description className="font-body text-xs text-text-secondary" />
@@ -59,6 +61,11 @@ interface OperationFlowProps {
   getConceptIntro: (d: DifficultyLevel, t: Translate) => ConceptIntro | null;
 }
 
+function OperationIcon({ operation, className }: { operation: Operation; className?: string }) {
+  const Icon = OPERATION_META[operation].icon;
+  return <Icon className={className} strokeWidth={2.5} aria-hidden="true" />;
+}
+
 export function OperationFlow({
   operation,
   generateLearnExamples: genExamples,
@@ -73,6 +80,8 @@ export function OperationFlow({
   const engine = useEngineState();
   const { t } = useTranslation();
   const { difficulty } = useDifficulty();
+  const { isAuthenticated, user } = useKindeBrowserClient();
+  const sessionName = isAuthenticated ? user?.given_name || '' : '';
 
   const segments = params.segments as string[] | undefined;
   const STAGES = ['learn', 'practice', 'quiz'] as const;
@@ -261,13 +270,13 @@ export function OperationFlow({
             className="text-white/70 text-xl p-1.5 min-w-[44px] min-h-[44px] flex items-center justify-center hover:text-white transition-colors cursor-pointer"
             aria-label={t('common.aria.home', 'Home')}
           >
-            🏠
+            <House className="w-6 h-6 text-white/80" strokeWidth={2} />
           </button>
           <button
             onClick={() => router.push(`/${operation}`)}
             className="font-display text-base text-white p-1.5 min-h-[44px] flex items-center gap-1 hover:text-white/80 transition-colors cursor-pointer"
           >
-            <span style={{ filter: 'brightness(0) invert(1)' }}>{meta.emoji}</span>
+            <OperationIcon operation={operation} className="w-6 h-6 text-white" />
             {metaName}
           </button>
         </div>
@@ -280,11 +289,12 @@ export function OperationFlow({
             variant="indigo"
             size="sm"
           >
+            {!sessionName && !state.playerName && <User className="w-4 h-4" />}
             <span
               className="max-w-[180px] overflow-hidden text-ellipsis whitespace-nowrap"
-              title={state.playerName}
+              title={sessionName || state.playerName}
             >
-              {state.playerName || t('common.nav.addNameShort', '👤 Add Name')}
+              {sessionName || state.playerName || t('common.nav.addNameShort')}
             </span>
           </Button>
         </div>
@@ -322,10 +332,10 @@ export function OperationFlow({
         <div className="flex flex-col items-center p-6">
           <div className="flex items-center gap-3 mb-4">
             <h2 className="font-display text-[20px] text-orange">
-              {t('operations.screen.letsLearn', { name: metaName, emoji: meta.emoji })}
+              {t('operations.screen.letsLearn', { name: metaName })}
             </h2>
           </div>
-          <MascotMessage message={getMascotHint(t, operation)} mood="happy" className="mb-4" />
+          <MascotMessage message={getMascotHint(t, operation)} className="mb-4" />
           <div className={`transition-opacity duration-200 ${fadeOut ? 'opacity-0' : 'opacity-100'}`}>
             <WorkedExample example={currentExample} />
           </div>
@@ -335,7 +345,17 @@ export function OperationFlow({
             size="xl"
             className="mt-5"
           >
-            {currentExampleIndex < learnExamples.length - 1 ? t('common.buttons.next', 'Next →') : t('operations.screen.letsGoPractice', "Let's Practice! 💪")}
+            {currentExampleIndex < learnExamples.length - 1 ? (
+              <>
+                {t('common.buttons.next')}
+                <ArrowRight className="w-4 h-4" />
+              </>
+            ) : (
+              <>
+                {t('operations.screen.letsGoPractice')}
+                <BicepsFlexed className="w-4 h-4" />
+              </>
+            )}
           </Button>
 
           {currentExampleIndex < learnExamples.length - 1 && (
@@ -348,8 +368,9 @@ export function OperationFlow({
 
       {urlStage === 'practice' && !showConcept && !showSummary && currentProblem && (
         <div className="flex flex-col items-center p-4 sm:p-6">
-          <h2 className="font-display text-[20px] text-orange mb-2">
-            {t('operations.screen.timeToPractice', 'Time to Practice! 💪')}
+          <h2 className="font-display text-[20px] text-orange mb-2 flex items-center gap-1.5">
+            {t('operations.screen.timeToPractice')}
+            <BicepsFlexed className="w-5 h-5" />
           </h2>
           <div className={`w-full max-w-[420px] transition-opacity duration-200 ${fadeOut ? 'opacity-0' : 'opacity-100'}`}>
             <PracticeProblemView

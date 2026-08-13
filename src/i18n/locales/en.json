@@ -11,20 +11,24 @@
       "mute": "Mute sounds",
       "unmute": "Unmute sounds",
       "addName": "Add Name",
-      "addNameShort": "👤 Add Name"
+      "addNameShort": "Add Name"
+    },
+    "auth": {
+      "signIn": "Sign in",
+      "signOut": "Log out"
     },
     "buttons": {
-      "next": "Next →",
+      "next": "Next",
       "continue": "Continue",
-      "gotIt": "Got it! 👍",
-      "checkAnswer": "Check Answer ✅",
+      "gotIt": "Got it!",
+      "checkAnswer": "Check Answer",
       "letsGo": "Let's Go!",
       "skip": "Skip",
       "yesSure": "Yes, sure!",
       "noGoBack": "No, go back",
       "close": "Close",
-      "playAgain": "🔄 Play Again",
-      "explore": "Explore →",
+      "playAgain": "Play Again",
+      "explore": "Explore",
       "startLearning": "🚀 Start Learning!"
     },
     "difficulty": {
@@ -71,7 +75,7 @@
     "mission": {
       "postcardFrom": "Postcard from Nova",
       "todaysMission": "Today's Mission",
-      "complete": "✅ Complete!",
+      "complete": "Complete!",
       "reward": "Reward: +15 ⭐"
     },
     "stats": {
@@ -124,38 +128,34 @@
     "_note": "Explanation/hint strings below use {{var}} interpolation placeholders matching the variable names in src/lib/operations/*.ts. Some source strings branch on the chosen emoji (e.g. 'apples' vs 'cookies' vs 'items') or embed literal emoji equation lines (e.g. 🍎🍎+🍎=🍎🍎🍎) which are numeral/emoji-only and don't need translation — those are marked skipTranslation.",
     "meta": {
       "addition": {
-        "emoji": "➕",
         "name": "Addition",
         "tagline": "Put numbers together!",
         "description": "Addition is putting two groups together to find the total!"
       },
       "subtraction": {
-        "emoji": "➖",
         "name": "Subtraction",
         "tagline": "Take some away!",
         "description": "Subtraction is taking some away to see what's left!"
       },
       "multiplication": {
-        "emoji": "✖️",
         "name": "Multiplication",
         "tagline": "Count in groups!",
         "description": "Multiplication is counting in equal groups — a fast way to add!"
       },
       "division": {
-        "emoji": "➗",
         "name": "Division",
         "tagline": "Share things fairly!",
         "description": "Division is sharing a total equally into groups!"
       }
     },
     "screen": {
-      "letsLearn": "Let's Learn {{name}} {{emoji}}",
-      "nextExample": "Next →",
-      "letsGoPractice": "Let's Practice! 💪",
+      "letsLearn": "Let's Learn {{name}}",
+      "nextExample": "Next",
+      "letsGoPractice": "Let's Practice!",
       "viewAllToUnlock": "View all examples to unlock practice",
-      "timeToPractice": "Time to Practice! 💪",
+      "timeToPractice": "Time to Practice!",
       "problemOf": "Problem {{index}} of {{total}}",
-      "correctFeedback": "✅ Yes! Great job! 🌟",
+      "correctFeedback": "Yes! Great job!",
       "incorrectFeedback": "Not quite — try again! 💡",
       "revealedIntro": "Here's how we solve it! Let's look together 👀",
       "letsDoQuiz": "Let's do the quiz! 🎉",
@@ -355,7 +355,7 @@
     },
     "mascot": {
       "name": "Nova",
-      "speaksAs": "Nova says {{moodEmoji}}",
+      "speaksAs": "Nova says",
       "hints": {
         "addition": [
           "Try counting all the objects together!",
@@ -414,8 +414,8 @@
       "keepPractisingLine": "Keep practising! {{correct}}/{{total}}"
     },
     "tryAgain": "Try Again 💪",
-    "seeResults": "See Results →",
-    "next": "Next →"
+    "seeResults": "See Results",
+    "next": "Next"
   },
   "tables": {
     "page": {
@@ -440,8 +440,8 @@
     },
     "patternDiscovery": {
       "title": "Pattern Discovery: Table {{table}}",
-      "showPatternButton": "Show Pattern →",
-      "startTableButton": "Got it! Start Table {{table}} →",
+      "showPatternButton": "Show Pattern",
+      "startTableButton": "Got it! Start Table {{table}}",
       "patterns": {
         "1": {
           "discovery": "What do you notice?",
@@ -572,7 +572,7 @@
       "badgesEarned": "Badges Earned",
       "starsEarned": "Stars Earned: {{stars}} ⭐",
       "starsExplanation": "Each star shows how fast you finished",
-      "playAgain": "🔄 Play Again"
+      "playAgain": "Play Again"
     },
     "confirmDialogs": {
       "resetTitle": "Reset Progress?",
@@ -708,7 +708,6 @@
     ]
   },
   "characters": {
-    "_note": "emoji and color are NOT translated — only name and item. Used by src/lib/constants.ts CHARACTERS and the story generator in src/lib/utils.ts (generateStoryText).",
     "1": {
       "name": "Una the Unicorn",
       "item": "horn"
@@ -789,6 +788,7 @@
       "name": "Zara the Zebra",
       "item": "stripes"
     },
+    "_note": "emoji and color are NOT translated — only name and item. Used by src/lib/constants.ts CHARACTERS and the story generator in src/lib/utils.ts (generateStoryText).",
     "storyTemplates": [
       "Meet <1>{{name}} {{emoji}}</1>! Every single one has exactly <1>{{table}} {{item}}</1>. With just <1>1</1>, that's <1>{{table}} × 1 = {{result}}</1>. Easy peasy!",
       "Now there are <1>2</1> of {{name}}! Each has <1>{{table}} {{item}}</1>. Count together: <1>{{sequence}}</1>. So <1>{{table}} × 2 = {{result}}</1>!",

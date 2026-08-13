@@ -1,6 +1,7 @@
 'use client';
 
 import { ReactNode } from 'react';
+import { KindeProvider } from '@kinde-oss/kinde-auth-nextjs';
 import { I18nProvider } from '@/i18n/I18nProvider';
 import { AppProvider } from './AppContext';
 import { DifficultyProvider } from './DifficultyContext';
@@ -12,9 +13,13 @@ import { DifficultyProvider } from './DifficultyContext';
 export function Providers({ children }: { children: ReactNode }) {
   return (
     <I18nProvider>
-      <AppProvider>
-        <DifficultyProvider>{children}</DifficultyProvider>
-      </AppProvider>
+      <KindeProvider>
+        <AppProvider>
+          <DifficultyProvider>
+            {children}
+          </DifficultyProvider>
+        </AppProvider>
+      </KindeProvider>
     </I18nProvider>
   );
 }

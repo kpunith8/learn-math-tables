@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, memo } from 'react';
 import { useTranslation, Trans } from 'react-i18next';
+import { RefreshCcw } from 'lucide-react';
 import { useEngineState } from '@/lib/hooks/useEngineState';
 
 interface CertificateOverlayProps {
@@ -111,8 +112,9 @@ function CertificateOverlayInner({
 
         <button
           onClick={onPlayAgain}
-          className="font-display text-lg py-3.5 px-10 rounded-full border-none bg-coral text-white cursor-pointer mt-4 transition-all duration-150 shadow-[0_4px_16px_rgba(255,107,82,0.4)] hover:scale-105 hover:bg-coral-hover active:scale-95"
+          className="inline-flex items-center justify-center gap-2 font-display text-lg py-3.5 px-10 rounded-full border-none bg-coral text-white cursor-pointer mt-4 transition-all duration-150 shadow-[0_4px_16px_rgba(255,107,82,0.4)] hover:scale-105 hover:bg-coral-hover active:scale-95"
         >
+          <RefreshCcw className="w-5 h-5" strokeWidth={2.5} />
           {t('tables.certificateOverlay.playAgain')}
         </button>
       </div>

@@ -11,20 +11,24 @@
       "mute": "ಶಬ್ದ ಮುಚ್ಚಿ",
       "unmute": "ಶಬ್ದ ಚಾಲನೆ ಮಾಡಿ",
       "addName": "ಹೆಸರು ಸೇರಿಸಿ",
-      "addNameShort": "👤 ಹೆಸರು ಸೇರಿಸಿ"
+      "addNameShort": "ಹೆಸರು ಸೇರಿಸಿ"
+    },
+    "auth": {
+      "signIn": "ಸೈನ್ ಇನ್ ಮಾಡಿ",
+      "signOut": "ಲಾಗ್ ಔಟ್ ಮಾಡಿ"
     },
     "buttons": {
-      "next": "ಮುಂದೆ →",
+      "next": "ಮುಂದೆ",
       "continue": "ಮುಂದುವರಿಸಿ",
-      "gotIt": "ಅರ್ಥವಾಯಿತು! 👍",
-      "checkAnswer": "ಉತ್ತರ ಪರೀಕ್ಷಿಸಿ ✅",
+      "gotIt": "ಅರ್ಥವಾಯಿತು!",
+      "checkAnswer": "ಉತ್ತರ ಪರೀಕ್ಷಿಸಿ",
       "letsGo": "ಪ್ರಾರಂಭಿಸೋಣ!",
       "skip": "ಬಿಟ್ಟುಬಿಡಿ",
       "yesSure": "ಹೌದು, ಖಂಡಿತ!",
       "noGoBack": "ಇಲ್ಲ, ಹಿಂತಿರುಗಿ",
       "close": "ಮುಚ್ಚಿ",
-      "playAgain": "🔄 ಮತ್ತೆ ಆಡಿ",
-      "explore": "ಅನ್ವೇಷಿಸಿ →",
+      "playAgain": "ಮತ್ತೆ ಆಡಿ",
+      "explore": "ಅನ್ವೇಷಿಸಿ",
       "startLearning": "🚀 ಕಲಿಕೆ ಪ್ರಾರಂಭಿಸಿ!"
     },
     "difficulty": {
@@ -71,7 +75,7 @@
     "mission": {
       "postcardFrom": "ನೋವಾ ಪೋಸ್ಟ್‌ಕಾರ್ಡ್",
       "todaysMission": "ಇಂದಿನ ಮಿಷನ್",
-      "complete": "✅ ಪೂರ್ಣಗೊಂಡಿದೆ!",
+      "complete": "ಪೂರ್ಣಗೊಂಡಿದೆ!",
       "reward": "ಬಹುಮಾನ: +15 ⭐"
     },
     "stats": {
@@ -123,38 +127,34 @@
   "operations": {
     "meta": {
       "addition": {
-        "emoji": "➕",
         "name": "ಸಂಕಲನ",
         "tagline": "ಸಂಖ್ಯೆಗಳನ್ನು ಒಟ್ಟುಗೂಡಿಸಿ!",
         "description": "ಸಂಕಲನ ಎಂದರೆ ಒಟ್ಟು ಮೊತ್ತವನ್ನು ಕಂಡುಹಿಡಿಯಲು ಎರಡು ಗುಂಪುಗಳನ್ನು ಒಟ್ಟುಗೂಡಿಸುವುದು!"
       },
       "subtraction": {
-        "emoji": "➖",
         "name": "ವ್ಯವಕಲನ",
         "tagline": "ಸ್ವಲ್ಪ ಕಳೆಯಿರಿ!",
         "description": "ವ್ಯವಕಲನ ಎಂದರೆ ಎಷ್ಟು ಉಳಿದಿದೆ ಎಂದು ನೋಡಲು ಕೆಲವನ್ನು ತೆಗೆದುಹಾಕುವುದು!"
       },
       "multiplication": {
-        "emoji": "✖️",
         "name": "ಗುಣಾಕಾರ",
         "tagline": "ಗುಂಪುಗಳಲ್ಲಿ ಎಣಿಸಿ!",
         "description": "ಗುಣಾಕಾರ ಎಂದರೆ ಸಮಾನ ಗುಂಪುಗಳಲ್ಲಿ ಎಣಿಸುವುದು — ಇದು ಕೂಡಿಸಲು ವೇಗವಾದ ಮಾರ್ಗ!"
       },
       "division": {
-        "emoji": "➗",
         "name": "ಭಾಗಾಕಾರ",
         "tagline": "ವಸ್ತುಗಳನ್ನು ಸಮವಾಗಿ ಹಂಚಿ!",
         "description": "ಭಾಗಾಕಾರ ಎಂದರೆ ಒಟ್ಟು ಪ್ರಮಾಣವನ್ನು ಗುಂಪುಗಳಾಗಿ ಸಮವಾಗಿ ಹಂಚುವುದು!"
       }
     },
     "screen": {
-      "letsLearn": "{{name}} ಕಲಿಯೋಣ {{emoji}}",
-      "nextExample": "ಮುಂದೆ →",
-      "letsGoPractice": "ಅಭ್ಯಾಸ ಮಾಡೋಣ! 💪",
+      "letsLearn": "{{name}} ಕಲಿಯೋಣ",
+      "nextExample": "ಮುಂದೆ",
+      "letsGoPractice": "ಅಭ್ಯಾಸ ಮಾಡೋಣ!",
       "viewAllToUnlock": "ಅಭ್ಯಾಸವನ್ನು ಅನ್‌ಲಾಕ್ ಮಾಡಲು ಎಲ್ಲಾ ಉದಾಹರಣೆಗಳನ್ನು ವೀಕ್ಷಿಸಿ",
-      "timeToPractice": "ಅಭ್ಯಾಸ ಮಾಡುವ ಸಮಯ! 💪",
+      "timeToPractice": "ಅಭ್ಯಾಸ ಮಾಡುವ ಸಮಯ!",
       "problemOf": "ಸಮಸ್ಯೆ {{index}} / {{total}}",
-      "correctFeedback": "✅ ಹೌದು! ಅದ್ಭುತ ಕೆಲಸ! 🌟",
+      "correctFeedback": "ಹೌದು! ಅದ್ಭುತ ಕೆಲಸ!",
       "incorrectFeedback": "ಸರಿಯಾಗಿಲ್ಲ — ಮತ್ತೊಮ್ಮೆ ಪ್ರಯತ್ನಿಸಿ! 💡",
       "revealedIntro": "ನಾವು ಅದನ್ನು ಹೇಗೆ ಬಿಡಿಸುತ್ತೇವೆ ಎಂಬುದು ಇಲ್ಲಿದೆ! ಒಟ್ಟಿಗೆ ನೋಡೋಣ 👀",
       "letsDoQuiz": "ಕ್ವಿಜ್ ಮಾಡೋಣ! 🎉",
@@ -353,7 +353,7 @@
     },
     "mascot": {
       "name": "ನೋವಾ",
-      "speaksAs": "ನೋವಾ ಹೇಳುತ್ತಾರೆ {{moodEmoji}}",
+      "speaksAs": "ನೋವಾ ಹೇಳುತ್ತಾರೆ",
       "hints": {
         "addition": [
           "ಎಲ್ಲಾ ವಸ್ತುಗಳನ್ನು ಒಟ್ಟಿಗೆ ಎಣಿಸಲು ಪ್ರಯತ್ನಿಸಿ!",
@@ -412,8 +412,8 @@
       "keepPractisingLine": "ಅಭ್ಯಾಸ ಮುಂದುವರಿಸಿ! {{correct}}/{{total}}"
     },
     "tryAgain": "ಮತ್ತೊಮ್ಮೆ ಪ್ರಯತ್ನಿಸಿ 💪",
-    "seeResults": "ಫಲಿತಾಂಶಗಳನ್ನು ನೋಡಿ →",
-    "next": "ಮುಂದೆ →"
+    "seeResults": "ಫಲಿತಾಂಶಗಳನ್ನು ನೋಡಿ",
+    "next": "ಮುಂದೆ"
   },
   "tables": {
     "page": {
@@ -438,8 +438,8 @@
     },
     "patternDiscovery": {
       "title": "ಪ್ಯಾಟರ್ನ್ ಅನ್ವೇಷಣೆ: ಮಗ್ಗಿ {{table}}",
-      "showPatternButton": "ಪ್ಯಾಟರ್ನ್ ತೋರಿಸಿ →",
-      "startTableButton": "ಅರ್ಥವಾಯಿತು! ಮಗ್ಗಿ {{table}} ಪ್ರಾರಂಭಿಸಿ →",
+      "showPatternButton": "ಪ್ಯಾಟರ್ನ್ ತೋರಿಸಿ",
+      "startTableButton": "ಅರ್ಥವಾಯಿತು! ಮಗ್ಗಿ {{table}} ಪ್ರಾರಂಭಿಸಿ",
       "patterns": {
         "1": {
           "discovery": "ನೀವೇನು ಗಮನಿಸುತ್ತೀರಿ?",
@@ -570,7 +570,7 @@
       "badgesEarned": "ಗಳಿಸಿದ ಬ್ಯಾಡ್ಜ್‌ಗಳು",
       "starsEarned": "ಗಳಿಸಿದ ನಕ್ಷತ್ರಗಳು: {{stars}} ⭐",
       "starsExplanation": "ಪ್ರತಿ ನಕ್ಷತ್ರವೂ ನೀವು ಎಷ್ಟು ವೇಗವಾಗಿ ಮುಗಿಸಿದ್ದೀರಿ ಎಂದು ತೋರಿಸುತ್ತದೆ",
-      "playAgain": "🔄 ಮತ್ತೆ ಆಡಿ"
+      "playAgain": "ಮತ್ತೆ ಆಡಿ"
     },
     "confirmDialogs": {
       "resetTitle": "ಪ್ರಗತಿಯನ್ನು ಮರುಹೊಂದಿಸಬೇಕೇ?",

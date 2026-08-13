@@ -2,6 +2,9 @@
 
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs';
+import { LoginLink, LogoutLink } from '@kinde-oss/kinde-auth-nextjs/components';
+import { House, LogIn, LogOut } from 'lucide-react';
 import { Difficulty } from '@/lib/constants';
 import { TableSelector } from './table-selector';
 
@@ -36,6 +39,8 @@ export function AppHeader({
 }: AppHeaderProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { t } = useTranslation();
+  const { isAuthenticated, isLoading, user } = useKindeBrowserClient();
+  const sessionName = user?.given_name || '';
 
   const closeMenu = () => setIsMenuOpen(false);
 
@@ -60,7 +65,7 @@ export function AppHeader({
           className="text-ink/70 text-xl p-1.5 min-w-[44px] min-h-[44px] flex items-center justify-center hover:text-ink"
           aria-label={t('common.nav.home')}
         >
-          🏠
+          <House className="w-6 h-6 text-ink" strokeWidth={2} />
         </button>
         <button
           onClick={() => setIsMenuOpen(true)}
@@ -79,7 +84,7 @@ export function AppHeader({
             className="text-ink/70 text-xl p-1.5 min-w-[44px] min-h-[44px] flex items-center justify-center hover:text-ink transition-colors"
             aria-label={t('common.nav.home')}
           >
-            🏠
+            <House className="w-6 h-6 text-ink" strokeWidth={2} />
           </button>
           <h1 className="font-display text-xl text-ink font-normal">
             {t('header.title')}
@@ -110,6 +115,27 @@ export function AppHeader({
           >
             {isMuted ? '🔇' : '🔊'}
           </button>
+          {isAuthenticated ? (
+            <>
+              <span
+                className="inline-flex items-center justify-center font-display text-xs font-bold text-ink bg-white/80 border-2 border-[#DED5F0] rounded-full px-3 min-h-[44px] max-w-[140px] overflow-hidden text-ellipsis whitespace-nowrap"
+                title={sessionName}
+              >
+                {sessionName}
+              </span>
+              <LogoutLink className={`${btnBase} inline-flex items-center justify-center gap-1.5 px-2.5 md:px-3.5 border-coral bg-coral text-white hover:bg-coral-hover`}>
+                <LogOut className="w-4 h-4" />
+                {t('common.auth.signOut')}
+              </LogoutLink>
+            </>
+          ) : (
+            !isLoading && (
+              <LoginLink className={`${btnBase} inline-flex items-center justify-center gap-1.5 px-2.5 md:px-3.5 border-coral bg-coral text-white hover:bg-coral-hover`}>
+                <LogIn className="w-4 h-4" />
+                {t('common.auth.signIn')}
+              </LoginLink>
+            )
+          )}
         </div>
       </div>
 
@@ -151,7 +177,7 @@ export function AppHeader({
                 className="text-ink/70 text-xl p-1.5 min-w-[44px] min-h-[44px] flex items-center justify-center hover:text-ink transition-colors"
                 aria-label={t('common.nav.home')}
               >
-                🏠
+                <House className="w-6 h-6 text-ink" strokeWidth={2} />
               </button>
               <button
                 onClick={closeMenu}
@@ -190,6 +216,33 @@ export function AppHeader({
             >
               {isMuted ? '🔇 ' + t('common.nav.unmute') : '🔊 ' + t('common.nav.mute')}
             </button>
+            {isAuthenticated ? (
+              <>
+                <span
+                  className="inline-flex items-center justify-center font-display text-sm font-bold text-ink bg-white/80 border-2 border-[#DED5F0] rounded-full px-4 min-h-[44px] max-w-full overflow-hidden text-ellipsis whitespace-nowrap"
+                  title={sessionName}
+                >
+                  {sessionName}
+                </span>
+                <LogoutLink
+                  onClick={closeMenu}
+                  className={`drawer-logout ${btnBase} inline-flex items-center justify-center gap-1.5 w-full text-center border-coral bg-coral text-white hover:bg-coral-hover`}
+                >
+                  <LogOut className="w-4 h-4" />
+                  {t('common.auth.signOut')}
+                </LogoutLink>
+              </>
+            ) : (
+              !isLoading && (
+                <LoginLink
+                  onClick={closeMenu}
+                  className={`drawer-login ${btnBase} inline-flex items-center justify-center gap-1.5 w-full text-center border-coral bg-coral text-white hover:bg-coral-hover`}
+                >
+                  <LogIn className="w-4 h-4" />
+                  {t('common.auth.signIn')}
+                </LoginLink>
+              )
+            )}
           </aside>
       </div>
     </header>

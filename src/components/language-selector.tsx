@@ -20,7 +20,12 @@ export function LanguageSelector({ dark = false, className = '' }: LanguageSelec
       items={items}
       value={current}
       onValueChange={(value) => {
-        if (value) i18n.changeLanguage(value);
+        if (value) {
+          i18n.changeLanguage(value);
+          try {
+            localStorage.setItem('math-adventure-language', value);
+          } catch {}
+        }
       }}
     >
       <Select.Trigger

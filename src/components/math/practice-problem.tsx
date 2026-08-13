@@ -2,6 +2,7 @@
 
 import { useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Check } from 'lucide-react';
 import { PracticeProblem as PracticeProblemType, Operation, OPERATION_META } from '@/lib/operations/types';
 import { EmojiGroup } from './emoji-group';
 import { NumberBlank } from './number-blank';
@@ -141,14 +142,16 @@ export function PracticeProblemView({ problem, index, total, onComplete }: Pract
           <button
             onClick={handleSubmit}
             disabled={answer === ''}
-            className="w-full font-display text-base py-2.5 rounded-xl border-none bg-indigo text-white cursor-pointer transition-colors duration-150 hover:bg-indigo-hover active:bg-indigo-active disabled:opacity-40 disabled:cursor-not-allowed"
+            className="w-full inline-flex items-center justify-center gap-1.5 font-display text-base py-2.5 rounded-xl border-none bg-indigo text-white cursor-pointer transition-colors duration-150 hover:bg-indigo-hover active:bg-indigo-active disabled:opacity-40 disabled:cursor-not-allowed"
           >
-            Check Answer ✅
+            {t('common.buttons.checkAnswer')}
+            <Check className="w-5 h-5" strokeWidth={2.5} />
           </button>
         )}
         {status === 'correct' && (
-          <div className="text-center font-display text-lg text-green animate-[popup-in_0.25s_ease-out]" role="status">
-            {t('operations.screen.correctFeedback', '✅ Yes! Great job! 🌟')}
+          <div className="inline-flex items-center justify-center gap-1.5 font-display text-lg text-green animate-[popup-in_0.25s_ease-out]" role="status">
+            <Check className="w-6 h-6" strokeWidth={2.5} />
+            {t('operations.screen.correctFeedback')}
           </div>
         )}
         {status === 'incorrect' && (

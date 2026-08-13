@@ -11,20 +11,24 @@
       "mute": "आवाज बंद करें",
       "unmute": "आवाज चालू करें",
       "addName": "नाम जोड़ें",
-      "addNameShort": "👤 नाम जोड़ें"
+      "addNameShort": "नाम जोड़ें"
+    },
+    "auth": {
+      "signIn": "साइन इन करें",
+      "signOut": "लॉग आउट करें"
     },
     "buttons": {
-      "next": "आगे →",
+      "next": "आगे",
       "continue": "जारी रखें",
-      "gotIt": "समझ गया! 👍",
-      "checkAnswer": "उत्तर जांचें ✅",
+      "gotIt": "समझ गया!",
+      "checkAnswer": "उत्तर जांचें",
       "letsGo": "चलिए शुरू करें!",
       "skip": "छोड़ें",
       "yesSure": "हाँ, बिल्कुल!",
       "noGoBack": "नहीं, वापस जाएं",
       "close": "बंद करें",
-      "playAgain": "🔄 फिर से खेलें",
-      "explore": "एक्सप्लोर करें →",
+      "playAgain": "फिर से खेलें",
+      "explore": "एक्सप्लोर करें",
       "startLearning": "🚀 सीखना शुरू करें!"
     },
     "difficulty": {
@@ -71,7 +75,7 @@
     "mission": {
       "postcardFrom": "नोवा का पोस्टकार्ड",
       "todaysMission": "आज का मिशन",
-      "complete": "✅ पूरा हुआ!",
+      "complete": "पूरा हुआ!",
       "reward": "इनाम: +15 ⭐"
     },
     "stats": {
@@ -123,38 +127,34 @@
   "operations": {
     "meta": {
       "addition": {
-        "emoji": "➕",
         "name": "जोड़",
         "tagline": "संख्याओं को एक साथ लाएं!",
         "description": "जोड़ का मतलब कुल संख्या खोजने के लिए दो समूहों को एक साथ मिलाना है!"
       },
       "subtraction": {
-        "emoji": "➖",
         "name": "घटाव",
         "tagline": "कुछ कम करें!",
         "description": "घटाव का मतलब यह देखना है कि कुछ निकालने के बाद कितना बचा है!"
       },
       "multiplication": {
-        "emoji": "✖️",
         "name": "गुणा",
         "tagline": "समूहों में गिनें!",
         "description": "गुणा का मतलब बराबर समूहों में गिनना है — यह जोड़ने का एक तेज़ तरीका है!"
       },
       "division": {
-        "emoji": "➗",
         "name": "भाग",
         "tagline": "चीजों को बराबर बांटें!",
         "description": "भाग का मतलब कुल चीज़ों को समूहों में बराबर-बराबर बांटना है!"
       }
     },
     "screen": {
-      "letsLearn": "आइए सीखें {{name}} {{emoji}}",
-      "nextExample": "आगे →",
-      "letsGoPractice": "आइए अभ्यास करें! 💪",
+      "letsLearn": "आइए सीखें {{name}}",
+      "nextExample": "आगे",
+      "letsGoPractice": "आइए अभ्यास करें!",
       "viewAllToUnlock": "अभ्यास को अनलॉक करने के लिए सभी उदाहरण देखें",
-      "timeToPractice": "अभ्यास का समय! 💪",
+      "timeToPractice": "अभ्यास का समय!",
       "problemOf": "प्रश्न {{index}} / {{total}}",
-      "correctFeedback": "✅ शानदार! बहुत बढ़िया काम! 🌟",
+      "correctFeedback": "शानदार! बहुत बढ़िया काम!",
       "incorrectFeedback": "सही नहीं है — फिर से प्रयास करें! 💡",
       "revealedIntro": "यहाँ देखें कि हम इसे कैसे हल करते हैं! आइए मिलकर देखें 👀",
       "letsDoQuiz": "आइए क्विज़ करें! 🎉",
@@ -353,7 +353,7 @@
     },
     "mascot": {
       "name": "नोवा",
-      "speaksAs": "नोवा कहता है {{moodEmoji}}",
+      "speaksAs": "नोवा कहता है",
       "hints": {
         "addition": [
           "सभी वस्तुओं को एक साथ गिनने का प्रयास करें!",
@@ -412,8 +412,8 @@
       "keepPractisingLine": "अभ्यास जारी रखें! {{correct}}/{{total}}"
     },
     "tryAgain": "फिर से प्रयास करें 💪",
-    "seeResults": "परिणाम देखें →",
-    "next": "आगे →"
+    "seeResults": "परिणाम देखें",
+    "next": "आगे"
   },
   "tables": {
     "page": {
@@ -438,8 +438,8 @@
     },
     "patternDiscovery": {
       "title": "पैटर्न की खोज: पहाड़ा {{table}}",
-      "showPatternButton": "पैटर्न दिखाएं →",
-      "startTableButton": "समझ गया! पहाड़ा {{table}} शुरू करें →",
+      "showPatternButton": "पैटर्न दिखाएं",
+      "startTableButton": "समझ गया! पहाड़ा {{table}} शुरू करें",
       "patterns": {
         "1": {
           "discovery": "आप क्या ध्यान देते हैं?",
@@ -570,7 +570,7 @@
       "badgesEarned": "अर्जित बैज",
       "starsEarned": "अर्जित सितारे: {{stars}} ⭐",
       "starsExplanation": "प्रत्येक सितारा दिखाता है कि आपने कितनी तेजी से पूरा किया",
-      "playAgain": "🔄 फिर से खेलें"
+      "playAgain": "फिर से खेलें"
     },
     "confirmDialogs": {
       "resetTitle": "प्रगति रीसेट करें?",

@@ -4,6 +4,7 @@ import { useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
+import { ArrowRight } from 'lucide-react';
 import { MascotMessage, getMascotCelebration } from '@/components/mascot-message';
 import { getWrongAnswerMessage } from '@/components/celebration-message';
 
@@ -88,7 +89,6 @@ export function QuizOverlay({ questions, onComplete, onSkip, onPlaySound }: Quiz
                   ? t('quiz.results.good')
                   : t('quiz.results.keepTrying')
               }
-              mood={correctAnswers === questions.length ? 'excited' : 'happy'}
               className="mb-4"
             />
             <div className="font-display text-[24px] text-orange my-3">
@@ -170,7 +170,7 @@ export function QuizOverlay({ questions, onComplete, onSkip, onPlaySound }: Quiz
 
             {phase === 'correct' && (
               <div className="mt-3 animate-[pop-in_0.3s_ease-out]">
-                <MascotMessage message={getMascotCelebration(t)} mood="excited" className="mx-auto" />
+                <MascotMessage message={getMascotCelebration(t)} className="mx-auto" />
               </div>
             )}
 
@@ -182,7 +182,10 @@ export function QuizOverlay({ questions, onComplete, onSkip, onPlaySound }: Quiz
                 disabled={phase !== 'correct'}
                 className="w-full"
               >
-                {currentIndex + 1 >= questions.length ? t('quiz.seeResults') : t('quiz.next')}
+                <span className="inline-flex items-center justify-center gap-1.5">
+                  {currentIndex + 1 >= questions.length ? t('quiz.seeResults') : t('quiz.next')}
+                  <ArrowRight className="w-4 h-4" />
+                </span>
               </Button>
             </div>
           </div>

@@ -5,14 +5,12 @@ import type { TFunction } from 'i18next';
 
 interface MascotMessageProps {
   message: string;
-  mood?: 'happy' | 'encouraging' | 'excited';
   className?: string;
 }
 
 const MASCOT = '🐉';
-const MOOD_EMOJIS = { happy: '😊', encouraging: '💪', excited: '🎉' };
 
-export function MascotMessage({ message, mood = 'happy', className = '' }: MascotMessageProps) {
+export function MascotMessage({ message, className = '' }: MascotMessageProps) {
   const { t } = useTranslation();
   return (
     <div
@@ -23,7 +21,7 @@ export function MascotMessage({ message, mood = 'happy', className = '' }: Masco
       <span className="text-[28px] leading-none shrink-0" aria-hidden="true">{MASCOT}</span>
       <div className="flex-1 min-w-0">
         <p className="font-display text-sm text-ink font-semibold">
-          {t('messages.mascot.speaksAs', { moodEmoji: MOOD_EMOJIS[mood] })}
+          {t('messages.mascot.speaksAs')}
         </p>
         <p className="font-body text-sm text-text-secondary mt-0.5">{message}</p>
       </div>

@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
+import { ArrowRight } from 'lucide-react';
 
 const buildPattern = (tableNumber: number): string =>
   Array.from({ length: 10 }, (_, i) => (i + 1) * tableNumber).join(', ');
@@ -40,7 +41,10 @@ export function PatternDiscovery({ tableNumber, onComplete }: PatternDiscoveryPr
               variant="indigo"
               size="sm"
             >
-              {t('tables.patternDiscovery.showPatternButton')}
+              <span className="inline-flex items-center justify-center gap-1.5">
+                {t('tables.patternDiscovery.showPatternButton')}
+                <ArrowRight className="w-4 h-4" />
+              </span>
             </Button>
           </>
         )}
@@ -54,7 +58,10 @@ export function PatternDiscovery({ tableNumber, onComplete }: PatternDiscoveryPr
               onClick={onComplete}
               variant="indigo"
             >
-              {t('tables.patternDiscovery.startTableButton', { table: tableNumber })}
+              <span className="inline-flex items-center justify-center gap-1.5">
+                {t('tables.patternDiscovery.startTableButton', { table: tableNumber })}
+                <ArrowRight className="w-4 h-4" />
+              </span>
             </Button>
           </div>
         )}

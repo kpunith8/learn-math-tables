@@ -1,6 +1,8 @@
 'use client';
 
-import { useRef, useCallback, useState } from 'react';
+import { useRef, useCallback, useState, useEffect } from 'react';
+
+const MUTE_STORAGE_KEY = 'mathAdvMuted';
 
 export function useAudio() {
   const audioContextRef = useRef<AudioContext | null>(null);
@@ -11,7 +13,23 @@ export function useAudio() {
   const songTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const [isMuted, setIsMuted] = useState(false);
 
-  const toggleMute = useCallback(() => setIsMuted((prev) => !prev), []);
+  useEffect(() => {
+    let muted = false;
+    try {
+      muted = window.localStorage.getItem(MUTE_STORAGE_KEY) === 'true';
+    } catch {}
+    setIsMuted(muted); // eslint-disable-line react-hooks/set-state-in-effect
+  }, []);
+
+  const toggleMute = useCallback(() => {
+    setIsMuted((prev) => {
+      const next = !prev;
+      try {
+        window.localStorage.setItem(MUTE_STORAGE_KEY, String(next));
+      } catch {}
+      return next;
+    });
+  }, []);
 
   const getAudioContext = useCallback((): AudioContext | null => {
     if (typeof window === 'undefined') return null;

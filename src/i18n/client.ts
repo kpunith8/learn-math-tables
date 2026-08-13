@@ -31,7 +31,7 @@ void i18n
     load: 'languageOnly',
     detection: {
       order: ['localStorage', 'navigator'],
-      caches: ['localStorage'],
+      caches: [],
       lookupLocalStorage: 'math-adventure-language',
     },
     interpolation: {
