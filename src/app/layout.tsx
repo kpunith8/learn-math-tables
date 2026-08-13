@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Baloo_2, Nunito } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 import { SITE_URL, SITE_NAME, SITE_DESCRIPTION } from "@/lib/site";
 import { Providers } from "@/lib/contexts/Providers";
@@ -96,7 +97,7 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className="min-h-full flex flex-col bg-paper"><Providers>{children}</Providers></body>
+      <body className="min-h-full flex flex-col bg-paper"><Providers>{children}</Providers><Analytics /></body>
     </html>
   );
 }
