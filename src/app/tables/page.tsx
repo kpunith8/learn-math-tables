@@ -5,9 +5,8 @@ import { useRouter } from 'next/navigation';
 import dynamic from 'next/dynamic';
 import { useTranslation } from 'react-i18next';
 import { useAppContext } from '@/lib/contexts/AppContext';
-import { useDifficulty } from '@/lib/contexts/DifficultyContext';
+import { useDifficulty, DIFFICULTY_STORAGE_KEY } from '@/lib/contexts/DifficultyContext';
 import { Difficulty } from '@/lib/constants';
-import { DifficultyLevel } from '@/lib/operations/types';
 import { useAudio } from '@/lib/hooks/useAudio';
 import { useEngineState } from '@/lib/hooks/useEngineState';
 import { calculateStarRating, getMaxAllowedTable, calculateLeaderboardStats, speakStoryText, cancelSpeech, generateQuizQuestions, toQuizQuestions } from '@/lib/utils';
@@ -103,24 +102,28 @@ export default function TablesPage({ initialTable }: { initialTable?: number } =
     switchToTable(initialTable);
   }, [initialTable, isLoaded, state.currentTable, switchToTable]);
 
-  // Hydrate the universal difficulty from the legacy tables difficulty once,
-  // but only for returning players (so first-time visitors keep the saved pick).
+  // Seed the universal difficulty from the legacy tables difficulty once, but
+  // only for returning players who have never explicitly chosen a universal
+  // difficulty (no `mathAdvDifficulty` key). This preserves old tables difficulty
+  // on first load without ever clobbering a difficulty the player picks later.
   const difficultyHydratedRef = useRef(false);
   useEffect(() => {
     if (!difficultyLoaded || !isLoaded || difficultyHydratedRef.current) return;
     if (state.completedTables.size === 0 && !state.playerName) return;
     difficultyHydratedRef.current = true;
+    let alreadyChosen = false;
+    try {
+      alreadyChosen = localStorage.getItem(DIFFICULTY_STORAGE_KEY) !== null;
+    } catch {}
+    if (alreadyChosen) return;
     setUniversalDifficulty(state.difficulty === 'normal' ? 'medium' : state.difficulty);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoaded, difficultyLoaded]);
 
   // Mirror the universal difficulty into the legacy tables difficulty state.
-  const prevUniversalDifficultyRef = useRef<DifficultyLevel | null>(null);
+  // Always sync on mount (and on change) so the universal pick actually applies.
   useEffect(() => {
     if (!difficultyLoaded || !isLoaded) return;
-    const prev = prevUniversalDifficultyRef.current;
-    prevUniversalDifficultyRef.current = universalDifficulty;
-    if (prev === null) return;
     const mapped = universalDifficulty === 'medium' ? ('normal' as Difficulty) : (universalDifficulty as Difficulty);
     if (mapped !== state.difficulty) setDifficulty(mapped);
   }, [universalDifficulty, state.difficulty, setDifficulty, difficultyLoaded, isLoaded]);
