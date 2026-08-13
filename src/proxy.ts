@@ -9,6 +9,7 @@ export default withAuth(
     publicPaths: [
       '/',
       '/api/auth',
+      '/api/name',
       '/addition',
       '/subtraction',
       '/multiplication',

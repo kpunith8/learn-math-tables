@@ -11,6 +11,7 @@ badges, and a daily mission system. Available in **English, Hindi, and Kannada**
 - **Base UI** (`@base-ui/react`) for menus, toasts, and the language select
 - **i18next** + **react-i18next** for client-side i18n (en/hi/kn)
 - **Kinde** (`@kinde-oss/kinde-auth-nextjs`) for Google **and** Facebook sign-in/sign-out (both enabled on the Kinde dashboard)
+- **Cloudflare Turnstile** — bot protection on the guest "Add Name" flow, verified server-side in `src/app/api/name/route.ts`
 - **lucide-react** for all icons (SVG icons instead of emoji)
 - **TypeScript** (strict), `@/*` → `src/*`
 
@@ -89,3 +90,12 @@ Multi-language* for the full workflow and a key-parity verification command.
   lucide SVGs (`Check`, `ArrowRight`, `RefreshCcw`, `BicepsFlexed`, `ThumbsUp`,
   `User`, `Plus`/`Minus`/`X`/`Divide`) instead of emoji; `OPERATION_META` stores each
   operation's `icon: LucideIcon`.
+- **Cloudflare Turnstile bot protection** — the guest "Add Name" flow is gated by a
+  Turnstile widget that pre-solves on the landing page (guests only; skipped when
+  signed in). The widget loads via `next/script` (`afterInteractive`, explicit
+  render, action `addname`) and the token is verified server-side in
+  `src/app/api/name/route.ts` via canonical siteverify (requires `success === true`,
+  the expected action, and a hostname in the `TURNSTILE_HOSTNAMES` allowlist) before
+  the name is saved. Env vars: `TURNSTILE_SECRET`, `NEXT_PUBLIC_TURNSTILE_SITEKEY`,
+  `TURNSTILE_HOSTNAMES` (add all three to Vercel; the Cloudflare API credentials used
+  at setup are not needed at runtime).

@@ -16,6 +16,7 @@ interface NameModalProps {
 export function NameModal({ isOpen, initialName, onSave, onCancel }: NameModalProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [name, setName] = useState(initialName);
+  const [submitting, setSubmitting] = useState(false);
   const { t } = useTranslation();
 
   useEffect(() => {
@@ -29,8 +30,32 @@ export function NameModal({ isOpen, initialName, onSave, onCancel }: NameModalPr
     }
   }, [isOpen, initialName]);
 
-  const handleSave = () => {
-    onSave(name);
+  const handleSave = async () => {
+    if (submitting) return;
+    const trimmed = name.trim();
+    if (!trimmed) return;
+
+    const widget = document.querySelector<HTMLElement>('[data-turnstile-name]');
+    const widgetId = widget?.getAttribute('data-turnstile-widget-id') ?? '';
+    const token = window.turnstile?.getResponse(widgetId);
+
+    if (!token) return;
+
+    setSubmitting(true);
+    try {
+      const res = await fetch('/api/name', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: trimmed, 'cf-turnstile-response': token }),
+      });
+      if (!res.ok) {
+        window.turnstile?.reset(widgetId);
+        return;
+      }
+      onSave(trimmed);
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -64,6 +89,7 @@ export function NameModal({ isOpen, initialName, onSave, onCancel }: NameModalPr
         <DialogFooter className="flex-row justify-center gap-3 border-none bg-transparent p-0 -mb-2">
           <Button
             onClick={handleSave}
+            disabled={submitting}
             className="font-display text-base py-2.5 px-7 rounded-full bg-coral text-white hover:bg-coral-hover active:bg-coral-active shadow-[0_4px_12px_rgba(255,107,82,0.35)]"
           >
             {t('modals.nameModal.save')}

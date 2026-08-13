@@ -1,7 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import Script from 'next/script';
 import { useTranslation, Trans } from 'react-i18next';
 import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs';
 import { LoginLink, LogoutLink } from '@kinde-oss/kinde-auth-nextjs/components';
@@ -29,6 +30,30 @@ export default function LandingPage() {
   const { state, setPlayerName } = useAppContext();
   const { engineState, isEngineLoaded, getNewBadges } = useEngineState();
   const [showNameModal, setShowNameModal] = useState(false);
+  const [scriptLoaded, setScriptLoaded] = useState(false);
+
+  // Render + pre-solve the Turnstile widget as soon as the landing page loads.
+  useEffect(() => {
+    if (!scriptLoaded) return;
+    const container = document.querySelector<HTMLElement>('[data-turnstile-name]');
+    if (!container || container.getAttribute('data-turnstile-rendered') === '1') return;
+    const widgetId = window.turnstile?.render(container, {
+      sitekey: process.env.NEXT_PUBLIC_TURNSTILE_SITEKEY,
+      action: 'addname',
+    });
+    if (widgetId) {
+      container.setAttribute('data-turnstile-rendered', '1');
+      container.setAttribute('data-turnstile-widget-id', String(widgetId));
+    }
+  }, [scriptLoaded]);
+
+  // Reset for a fresh token in the open handler (tokens are single-use and expire).
+  const openNameModal = () => {
+    const widget = document.querySelector<HTMLElement>('[data-turnstile-name]');
+    const widgetId = widget?.getAttribute('data-turnstile-widget-id') ?? '';
+    window.turnstile?.reset(widgetId);
+    setShowNameModal(true);
+  };
 
   const sessionName = user?.given_name || '';
 
@@ -62,7 +87,7 @@ export default function LandingPage() {
           ) : (
             <>
               <button
-                onClick={() => setShowNameModal(true)}
+                onClick={openNameModal}
                 className="inline-flex items-center justify-center gap-1.5 font-display text-sm bg-coral text-white py-1.5 px-4 rounded-full border-none cursor-pointer hover:bg-coral-hover transition-colors min-h-[44px]"
               >
                 <User className="w-4 h-4" />
@@ -249,6 +274,25 @@ export default function LandingPage() {
 
         </div>
       </div>
+
+      {!isAuthenticated && (
+        <>
+          <Script
+            src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit"
+            strategy="afterInteractive"
+            onLoad={() => setScriptLoaded(true)}
+          />
+
+          <div className="mt-6 flex w-full justify-center">
+            <div
+              data-turnstile-name
+              className="cf-turnstile"
+              data-sitekey={process.env.NEXT_PUBLIC_TURNSTILE_SITEKEY}
+              data-action="addname"
+            />
+          </div>
+        </>
+      )}
 
       <NameModal
         isOpen={showNameModal}
