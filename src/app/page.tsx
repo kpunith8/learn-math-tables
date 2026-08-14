@@ -40,6 +40,11 @@ export default function LandingPage() {
     const widgetId = window.turnstile?.render(container, {
       sitekey: process.env.NEXT_PUBLIC_TURNSTILE_SITEKEY,
       action: 'addname',
+      callback: () => {
+        container.style.display = 'none';
+        const wrapper = container.parentElement;
+        if (wrapper) wrapper.style.display = 'none';
+      },
     });
     if (widgetId) {
       container.setAttribute('data-turnstile-rendered', '1');
