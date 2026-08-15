@@ -88,20 +88,24 @@ export const Turnstile = forwardRef<TurnstileHandle, TurnstileProps>(function Tu
 
   return (
     <>
-      <Script
-        src={TURNSTILE_SCRIPT_SRC}
-        strategy="afterInteractive"
-        onLoad={() => setScriptLoaded(true)}
-      />
-      <div className={`flex w-full justify-center ${className ?? ''}`}>
-        <div
-          ref={containerRef}
-          data-turnstile-name
-          className="cf-turnstile"
-          data-sitekey={sitekey ?? process.env.NEXT_PUBLIC_TURNSTILE_SITEKEY}
-          data-action={action}
-        />
-      </div>
+      {enabled && (
+        <>
+          <Script
+            src={TURNSTILE_SCRIPT_SRC}
+            strategy="afterInteractive"
+            onLoad={() => setScriptLoaded(true)}
+          />
+          <div className={`flex w-full justify-center ${className ?? ''}`}>
+            <div
+              ref={containerRef}
+              data-turnstile-name
+              className="cf-turnstile"
+              data-sitekey={sitekey ?? process.env.NEXT_PUBLIC_TURNSTILE_SITEKEY}
+              data-action={action}
+            />
+          </div>
+        </>
+      )}
     </>
   );
 });
