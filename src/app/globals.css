@@ -278,8 +278,8 @@
   }
 }
 
-/* Cloudflare Turnstile: keep the auto-passing badge centered at the bottom of the
-   page instead of the default bottom-left corner of the viewport. */
+/* Cloudflare Turnstile: keep the auto-passing badge centered inside the modal
+   instead of the default bottom-left corner of the viewport. */
 [data-turnstile-name] {
   margin: 0 auto;
   width: fit-content;

@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import { Turnstile, type TurnstileHandle } from '@/components/turnstile';
 
 interface NameModalProps {
   isOpen: boolean;
@@ -15,6 +16,7 @@ interface NameModalProps {
 
 export function NameModal({ isOpen, initialName, onSave, onCancel }: NameModalProps) {
   const inputRef = useRef<HTMLInputElement>(null);
+  const turnstileRef = useRef<TurnstileHandle>(null);
   const [name, setName] = useState(initialName);
   const [submitting, setSubmitting] = useState(false);
   const { t } = useTranslation();
@@ -35,9 +37,7 @@ export function NameModal({ isOpen, initialName, onSave, onCancel }: NameModalPr
     const trimmed = name.trim();
     if (!trimmed) return;
 
-    const widget = document.querySelector<HTMLElement>('[data-turnstile-name]');
-    const widgetId = widget?.getAttribute('data-turnstile-widget-id') ?? '';
-    const token = window.turnstile?.getResponse(widgetId);
+    const token = turnstileRef.current?.getToken();
 
     if (!token) return;
 
@@ -49,7 +49,7 @@ export function NameModal({ isOpen, initialName, onSave, onCancel }: NameModalPr
         body: JSON.stringify({ name: trimmed, 'cf-turnstile-response': token }),
       });
       if (!res.ok) {
-        window.turnstile?.reset(widgetId);
+        turnstileRef.current?.reset();
         return;
       }
       onSave(trimmed);
@@ -86,6 +86,7 @@ export function NameModal({ isOpen, initialName, onSave, onCancel }: NameModalPr
             className="font-display text-lg text-center h-11"
           />
         </div>
+        <Turnstile ref={turnstileRef} action="addname" />
         <DialogFooter className="flex-row justify-center gap-3 border-none bg-transparent p-0 -mb-2">
           <Button
             onClick={handleSave}

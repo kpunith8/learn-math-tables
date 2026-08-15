@@ -12,6 +12,7 @@ declare global {
         },
       ) => string | undefined;
       reset: (widgetId?: string) => void;
+      remove: (widgetId?: string) => void;
       getResponse: (widgetId?: string) => string | undefined;
     };
   }
