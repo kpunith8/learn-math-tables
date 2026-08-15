@@ -20,6 +20,13 @@ const securityHeaders = [
 ];
 
 const nextConfig: NextConfig = {
+  logging: {
+    // Forward only errors to the terminal. The dev server relays browser
+    // console output (default `'warn'`), which turns intentional fault-injection
+    // in tests (storage error paths log via console.warn) into noisy warnings
+    // during `npm test`.
+    browserToTerminal: "error",
+  },
   async headers() {
     return [
       {

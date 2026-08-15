@@ -12,9 +12,22 @@ Heed deprecation notices — APIs, conventions, file structure may differ.
 npm run dev        # dev server at localhost:3000
 npm run build      # production build (catches type errors too)
 npm run lint       # ESLint (eslint.config.mjs)
+npm test           # Playwright E2E suite (auto-starts the dev server)
+npm run test:coverage   # regenerate coverage reports from the last run
 ```
 
-No test framework is configured — no test commands exist.
+## Testing (Playwright)
+
+- **Config**: `playwright.config.ts` — `testDir: ./tests`, Chromium-only, `baseURL: http://localhost:3000`, and a `webServer` that runs `npm run dev` (dev server is required because coverage maps V8 data back to `src/` via Turbopack source maps). A `globalTeardown` runs `scripts/generate-coverage.mjs` after the suite (even on failure) so reports always regenerate.
+- **Test fixture**: `tests/fixtures.ts` extends `page` to start/stop `page.coverage` (`resetOnNavigation: false`) and persist raw V8 coverage + per-chunk `.map` files to `coverage/raw/<test>.json`. Set `PW_DISABLE_COVERAGE=1` to skip.
+- **Coverage merge**: `scripts/generate-coverage.mjs` groups raw entries by chunk URL, converts each via `v8-to-istanbul` + `@jridgewell/trace-mapping` (`FlattenMap` for sectioned maps), filters to files under `<cwd>/src/`, merges with `istanbul-lib-coverage`, and emits `text`, `text-summary`, `html`, `lcovonly`, `json` into `coverage/`.
+- **Test files**: `tests/landing.spec.ts` (hero/trail/stats/mission, difficulty + language selectors, name modal skip/save with mocked Turnstile), `tests/operations.spec.ts` (learn→practice→quiz full flow, legacy `/op/easy/practice` redirect, wrong-answer reveal — parameterized over all 4 operations), `tests/tables.spec.ts` (table switch → pattern discovery → card reveal, `/tables/[n]` deep-link), `tests/api-name.spec.ts` (403 without a verifiable Turnstile token). Coverage-driver specs (localStorage seeding + auth + storage edge cases) live in `tests/landing-advanced.spec.ts` (seeded engine → mission/badges/trail, authenticated header, guest sign-in) and `tests/tables-advanced.spec.ts` (state sanitization + garbage storage, table completion → celebration → quiz → leaderboard, retrieval practice, reset, leaderboard overlay, mobile drawer + Escape, mute, drawer buttons, localStorage write-failure, `switchToTable` saved-state restore, tables auth branches). Shared DOM parsing and seeding helpers live in `tests/helpers.ts` (`seedAppState`, `seedEngineState`, `seedName`, `mockKindeAuth`, `solveTablesQuiz`, `revealAllCards`).
+- **Mocking Kinde auth in tests**: mock `**/api/auth/setup` (via `mockKindeAuth`) — `{ message: 'OK', env: {...} }` for guests, plus 3-part base64url fake JWTs (`@kinde/jwt-decoder` skips signature validation; claims need `sub`/`given_name`/`iat`/`exp`) for authenticated sessions. Without the mock, `useKindeBrowserClient` stays `isLoading` forever and the session branches never render. LoginLink/LogoutLink render as `<a>` (use `getByRole('link', ...)`); on tables the desktop row + drawer both render the same controls — use `.first()`.
+- **Selectors you'll rely on**: practice equation is parsed from the input's ancestors (horizontal ×/÷ is `getByLabel('Answer').locator('..').locator('..')`; vertical +/− is three `.locator('..')` up) — read it, compute the answer, fill and submit. Quiz options are `role="radio"` buttons; the question label matches `/-?\d+\s*[+\u2212×÷]\s*-?\d+\s*=\s*\?/`. Base UI Select triggers are `role="combobox"`, items `role="option"`.
+- **Name-save test** stubs `window.turnstile` via `addInitScript` (`render`/`getResponse`/`reset`/`remove`), route-aborts `challenges.cloudflare.com/**`, and route-fulfills `POST /api/name`.
+- **Storage keys used by tests**: `mathAdvDifficulty`, `math-adventure-language`, `mathAdvName`, `mathAdventure` (`STORAGE_KEY`), `mathAdvEngine`, `mathAdvLeaderboard`.
+- **Deprecated `page.coverage`** (Chromium-only) is used intentionally for coverage; it logs a deprecation warning — that's expected.
+- Artifacts: `playwright-report/`, `test-results/`, `coverage/` are git-ignored.
 
 ## Stack
 

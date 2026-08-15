@@ -24,7 +24,31 @@ npm run build      # production build (also type-checks)
 npm run lint       # ESLint
 ```
 
-No test framework is configured.
+## Testing
+
+End-to-end tests run with **Playwright** (Chromium) against the dev server, so a
+local dev server is *not* required — Playwright starts one automatically.
+
+```bash
+npm test           # run the full suite (Playwright starts the dev server)
+npm run test:ui    # Playwright UI mode (watch, step through tests)
+npm run test:headed   # run tests in a visible browser
+npm run test:report   # open the HTML report
+```
+
+**Coverage** is collected automatically on every run (raw V8 data saved under
+`coverage/raw/`) and converted to Istanbul reports by a global teardown step. To
+regenerate the reports from an existing run:
+
+```bash
+npm run test:coverage
+```
+
+Reports land in `coverage/` (`text` summary in the terminal, `coverage/html/`
+for a browsable report, `lcov.info`, `coverage-final.json`). The merge pipeline
+(`tests/fixtures.ts` → `scripts/generate-coverage.mjs`) maps V8 coverage back to
+the original `src/` sources using the dev server's source maps. Set
+`PW_DISABLE_COVERAGE=1` to skip collection.
 
 ## Routes
 
