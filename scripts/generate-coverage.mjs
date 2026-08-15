@@ -1,4 +1,4 @@
-import { mkdirSync, readdirSync, readFileSync } from 'node:fs';
+import { mkdirSync, readdirSync, readFileSync, rmSync } from 'node:fs';
 import path from 'node:path';
 import istanbulLibCoverage from 'istanbul-lib-coverage';
 import istanbulLibReport from 'istanbul-lib-report';
@@ -68,11 +68,13 @@ for (const entry of entries) {
   }
 
   for (const [filePath, data] of Object.entries(converted)) {
-    if (!filePath.startsWith(srcPrefix)) continue;
+    const cleanPath = sanitizeSourcePath(filePath);
+    if (!cleanPath.startsWith(srcPrefix)) continue;
     try {
+      data.path = cleanPath;
       coverageMap.addFileCoverage(createFileCoverage(data));
     } catch (err) {
-      console.error(`[coverage] failed to add ${filePath}: ${err.message}`);
+      console.error(`[coverage] failed to add ${cleanPath}: ${err.message}`);
     }
   }
 }
@@ -103,6 +105,10 @@ reports.create('text-summary', {}).execute(textSummaryCtx);
 
 mkdirSync(outDir, { recursive: true });
 
+// istanbul's HTML reporter writes files in place without removing stale
+// entries from earlier runs (e.g. pre-sanitization paths) — wipe first.
+rmSync(path.join(outDir, 'html'), { recursive: true, force: true });
+
 const htmlCtx = createContext({ dir: path.join(outDir, 'html'), coverageMap, watermarks });
 reports.create('html', {}).execute(htmlCtx);
 
@@ -113,6 +119,19 @@ const jsonCtx = createContext({ dir: outDir, coverageMap, watermarks });
 reports.create('json', { file: 'coverage-final.json' }).execute(jsonCtx);
 
 console.log(`[coverage] reports written to ${outDir}`);
+
+function sanitizeSourcePath(p) {
+  // v8-to-istanbul nests scheme-prefixed Turbopack sources (e.g.
+  // "turbopack:/src/i18n/locales/en.json") under the chunk directory, leaking
+  // a ":" into the path that makes the HTML report filenames invalid on
+  // upload. Strip the scheme and resolve to a clean filesystem path.
+  const m = p.match(/^(.+)\/([a-z][a-z0-9+.-]*):(\/.*)$/i);
+  if (!m) return p;
+  const rest = m[3];
+  // "file:///Users/..." (authority form) is already an absolute filesystem path.
+  if (rest.startsWith('//')) return rest.slice(1);
+  return path.join(root, rest.replace(/^\/+/, ''));
+}
 
 function exists(p) {
   try {
