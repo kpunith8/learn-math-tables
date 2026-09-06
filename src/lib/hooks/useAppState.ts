@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useCallback, useRef } from 'react';
 import {
   STORAGE_KEY,
   NAME_STORAGE_KEY,
@@ -134,24 +134,26 @@ const loadPlayerNameFromStorage = (): string => {
   return '';
 };
 
-export function useAppState() {
-  const [state, setState] = useState<AppState>(getInitialState);
-  const [isLoaded, setIsLoaded] = useState(false);
-  const [showLanding, setShowLanding] = useState(true);
-  const lastWasNewRevealRef = useRef(false);
+function loadHydration(): { state: AppState; showLanding: boolean } {
+  const savedName = loadPlayerNameFromStorage();
+  const savedState = loadAppStateFromStorage();
+  if (savedState) {
+    return {
+      state: savedName ? { ...savedState, playerName: savedName } : savedState,
+      showLanding: false,
+    };
+  }
+  if (savedName) {
+    return { state: { ...getInitialState(), playerName: savedName }, showLanding: true };
+  }
+  return { state: getInitialState(), showLanding: true };
+}
 
-  useEffect(() => {
-    const savedName = loadPlayerNameFromStorage();
-    const savedState = loadAppStateFromStorage();
-    if (savedState) {
-      setState(savedState); // eslint-disable-line react-hooks/set-state-in-effect
-      setShowLanding(false);
-    }
-    if (savedName) {
-      setState((prev) => ({ ...prev, playerName: savedName }));
-    }
-    setIsLoaded(true);
-  }, []);
+export function useAppState() {
+  const [hydrated] = useState(loadHydration);
+  const [state, setState] = useState<AppState>(hydrated.state);
+  const [showLanding, setShowLanding] = useState(hydrated.showLanding);
+  const lastWasNewRevealRef = useRef(false);
 
   const save = useCallback((newState: AppState) => {
     saveAppStateToStorage(newState);
@@ -394,7 +396,7 @@ export function useAppState() {
 
   return {
     state,
-    isLoaded,
+    isLoaded: true,
     showLanding,
     setShowLanding,
     updateState,

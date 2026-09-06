@@ -103,7 +103,7 @@ Each route's page.tsx is a thin Client Component wrapper importing `OperationFlo
 ### State management
 
 `AppContext` via `useAppState()` hook (`src/lib/hooks/useAppState.ts`).
-- `isLoaded` signals localStorage hydration complete — **must wait for it** before reading `state.playerName`.
+- Hydration is **synchronous** via `useState` lazy initializers (no hydration effect) — `state` is correct on first render; `isLoaded` is always `true` (kept for API compatibility).
 - Exports `state`, `setPlayerName`, and other app state.
 
 ### Design tokens (Tailwind `@theme inline` in `src/app/globals.css`)

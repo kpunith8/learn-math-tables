@@ -2,16 +2,6 @@ import { DifficultyLevel } from './types';
 
 export type Pair = { a: number; b: number };
 
-const LEVEL_MAX: Record<DifficultyLevel, number> = {
-  easy: 20,
-  medium: 50,
-  hard: 99,
-};
-
-export function levelMax(difficulty: DifficultyLevel): number {
-  return LEVEL_MAX[difficulty];
-}
-
 export function pickUniquePair(
   difficulty: DifficultyLevel,
   used: Set<string>,

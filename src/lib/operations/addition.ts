@@ -1,10 +1,7 @@
-import { Example, PracticeProblem, QuizQuestion, ConceptIntro, DifficultyLevel, EMOJI_SAFE_LIMIT, Translate } from './types';
+import { Example, PracticeProblem, QuizQuestion, ConceptIntro, DifficultyLevel, Translate } from './types';
 import { pickEmojis } from './emoji-pool';
-import { pickUniquePair, levelMax, Pair } from './unique-pair';
-
-function randInt(min: number, max: number): number {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
-}
+import { pickUniquePair, Pair } from './unique-pair';
+import { randInt, shuffleArray, isEmojiSafe, levelMax } from './utils';
 
 function pickOperands(difficulty: DifficultyLevel): Pair {
   if (difficulty === 'easy') {
@@ -26,21 +23,11 @@ function pickOperands(difficulty: DifficultyLevel): Pair {
   }
 }
 
-function shuffleArray<T>(arr: T[]): T[] {
-  return [...arr].sort(() => Math.random() - 0.5);
-}
-
-function isEmojiSafe(a: number, b: number, result: number): boolean {
-  return Math.abs(a) <= EMOJI_SAFE_LIMIT && Math.abs(b) <= EMOJI_SAFE_LIMIT && Math.abs(result) <= EMOJI_SAFE_LIMIT && a >= 0 && b >= 0 && result >= 0;
-}
-
 function emojiLine(a: number, b: number, result: number, emoji: string): string {
   const groupA = emoji.repeat(a);
   const groupB = emoji.repeat(b);
   return `${groupA} + ${groupB} = ${emoji.repeat(result)}`;
 }
-
-const pad = (n: number): string | number => (n < 0 ? `(${n})` : n);
 
 function getHint(t: Translate): string {
   return t('operations.practiceTip.addition');
@@ -133,7 +120,7 @@ export function generateQuizQuestions(difficulty: DifficultyLevel, t: Translate)
 
   for (const { a, b } of qs) {
     const result = a + b;
-    const label = `${pad(a)} + ${pad(b)} = ?`;
+    const label = `${String(a)} + ${String(b)} = ?`;
     const options = new Set<number>();
     options.add(result);
     const distractors = [
@@ -147,7 +134,7 @@ export function generateQuizQuestions(difficulty: DifficultyLevel, t: Translate)
       if (options.size >= 4) break;
       if (d !== result && d >= -100 && d <= 100) options.add(d);
     }
-    const hint = t('operations.addition.quizHint', { result, a: pad(a), b: pad(b) });
+    const hint = t('operations.addition.quizHint', { result, a: String(a), b: String(b) });
     questions.push({ label, correctAnswer: result, options: shuffleArray(Array.from(options)), hint });
   }
 

@@ -1,14 +1,7 @@
-import { Example, PracticeProblem, QuizQuestion, ConceptIntro, DifficultyLevel, EMOJI_SAFE_LIMIT, Translate } from './types';
+import { Example, PracticeProblem, QuizQuestion, ConceptIntro, DifficultyLevel, Translate } from './types';
 import { pickEmojis } from './emoji-pool';
-import { pickUniquePair, levelMax, Pair } from './unique-pair';
-
-function randInt(min: number, max: number): number {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
-}
-
-function shuffleArray<T>(arr: T[]): T[] {
-  return [...arr].sort(() => Math.random() - 0.5);
-}
+import { pickUniquePair, Pair } from './unique-pair';
+import { randInt, shuffleArray, isEmojiSafe, levelMax } from './utils';
 
 function pickOperands(difficulty: DifficultyLevel): Pair {
   if (difficulty === 'easy') {
@@ -30,10 +23,6 @@ function pickOperands(difficulty: DifficultyLevel): Pair {
     const result = randInt(3, 12);
     if (b * result <= levelMax('hard')) return { a: b * result, b };
   }
-}
-
-function isEmojiSafe(a: number, b: number, result: number): boolean {
-  return a >= 0 && b >= 0 && result >= 0 && a <= EMOJI_SAFE_LIMIT && b <= EMOJI_SAFE_LIMIT && result <= EMOJI_SAFE_LIMIT;
 }
 
 function emojiSplit(total: number, groups: number, emoji: string): string {
@@ -141,7 +130,7 @@ export function generateQuizQuestions(difficulty: DifficultyLevel, t: Translate)
       result + 1,
       result - 1,
       a * b,
-      b / a,
+      result + b,
       result + 2,
     ];
     for (const d of shuffleArray(distractors)) {
