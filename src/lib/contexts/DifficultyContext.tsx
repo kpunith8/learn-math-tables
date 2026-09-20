@@ -3,7 +3,9 @@
 import { createContext, useCallback, useContext, useEffect, useState, ReactNode } from 'react';
 import { DifficultyLevel } from '@/lib/operations/types';
 
-export const DIFFICULTY_STORAGE_KEY = 'mathAdvDifficulty';
+import { STORAGE_KEYS } from '@/lib/storage-keys';
+
+export const DIFFICULTY_STORAGE_KEY = STORAGE_KEYS.difficulty;
 
 const VALID_LEVELS = ['easy', 'medium', 'hard'] as const;
 

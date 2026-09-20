@@ -1,8 +1,9 @@
 'use client';
 
 import { useRef, useCallback, useState, useEffect } from 'react';
+import { STORAGE_KEYS } from '@/lib/storage-keys';
 
-const MUTE_STORAGE_KEY = 'mathAdvMuted';
+const MUTE_STORAGE_KEY = STORAGE_KEYS.muted;
 
 export function useAudio() {
   const audioContextRef = useRef<AudioContext | null>(null);

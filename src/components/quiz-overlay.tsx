@@ -4,7 +4,7 @@ import { useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, Lightbulb } from 'lucide-react';
 import { MascotMessage, getMascotCelebration } from '@/components/mascot-message';
 import { getWrongAnswerMessage } from '@/components/celebration-message';
 
@@ -152,7 +152,7 @@ export function QuizOverlay({ questions, onComplete, onSkip, onPlaySound }: Quiz
             {phase === 'wrong-hint' && (
               <div className="mt-4 space-y-2">
                 <p className="font-body text-sm text-text-secondary bg-surface rounded-[10px] py-2 px-3.5 border border-border-card text-center">
-                  💡 {hintText}
+                  <Lightbulb className="w-4 h-4 inline-block mr-1 -mt-0.5" strokeWidth={2.5} aria-hidden="true" /> {hintText}
                 </p>
                 <p className="font-body text-sm text-orange">
                   {getWrongAnswerMessage(t)}

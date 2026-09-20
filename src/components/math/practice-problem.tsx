@@ -2,7 +2,7 @@
 
 import { useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Check } from 'lucide-react';
+import { Check, Lightbulb } from 'lucide-react';
 import { PracticeProblem as PracticeProblemType, Operation, OPERATION_META } from '@/lib/operations/types';
 import { EmojiGroup } from './emoji-group';
 import { NumberBlank } from './number-blank';
@@ -34,6 +34,7 @@ export function PracticeProblemView({ problem, index, total, onComplete }: Pract
 
   const { operand1, operand2, operation, result, emojiSafe, explanation, emoji, tip } = problem;
   const symbol = OP_SYMBOLS[operation];
+  const allowNegative = operand1 < 0 || operand2 < 0 || result < 0;
   const showEmoji = emojiSafe && operand1 > 0 && operand2 > 0 && result > 0;
   const isHorizontal = operation === 'multiplication' || operation === 'division';
 
@@ -58,7 +59,6 @@ export function PracticeProblemView({ problem, index, total, onComplete }: Pract
         setShowTip(true);
         setTimeout(() => {
           setStatus('waiting');
-          setShowTip(false);
         }, 1500);
       }
     }
@@ -84,6 +84,7 @@ export function PracticeProblemView({ problem, index, total, onComplete }: Pract
               onSubmit={handleSubmit}
               disabled={status === 'correct' || status === 'revealed'}
               placeholder="?"
+              allowNegative={allowNegative}
             />
           </div>
         ) : (
@@ -105,6 +106,7 @@ export function PracticeProblemView({ problem, index, total, onComplete }: Pract
                         onSubmit={handleSubmit}
                         disabled={status === 'correct' || status === 'revealed'}
                         placeholder="?"
+                        allowNegative={allowNegative}
                       />
                     </div>
                   </>
@@ -169,7 +171,7 @@ export function PracticeProblemView({ problem, index, total, onComplete }: Pract
 
       {showTip && (
         <div className="text-center font-body text-sm text-orange bg-warm-bg rounded-[10px] py-2 px-3.5 mt-2 border-[1.5px] border-warm-border animate-[popup-in_0.25s_ease-out]" role="status">
-          💡 {tip}
+          <Lightbulb className="w-4 h-4 inline-block mr-1 -mt-0.5" strokeWidth={2.5} aria-hidden="true" /> {tip}
         </div>
       )}
     </div>

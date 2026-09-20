@@ -3,6 +3,7 @@
 import { useTranslation } from 'react-i18next';
 import { Select } from '@base-ui/react/select';
 import { SUPPORTED_LANGUAGES } from '@/i18n/client';
+import { STORAGE_KEYS } from '@/lib/storage-keys';
 
 interface LanguageSelectorProps {
   dark?: boolean;
@@ -23,7 +24,7 @@ export function LanguageSelector({ dark = false, className = '' }: LanguageSelec
         if (value) {
           i18n.changeLanguage(value);
           try {
-            localStorage.setItem('math-adventure-language', value);
+            localStorage.setItem(STORAGE_KEYS.language, value);
           } catch {}
         }
       }}

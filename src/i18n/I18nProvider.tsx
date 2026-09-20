@@ -3,6 +3,7 @@
 import { useEffect } from 'react';
 import { I18nextProvider } from 'react-i18next';
 import i18n from '@/i18n/client';
+import { STORAGE_KEYS } from '@/lib/storage-keys';
 
 function LanguageSync() {
   useEffect(() => {
@@ -19,7 +20,7 @@ function LanguageSync() {
 
     let detectedBase: string | null = null;
     try {
-      const saved = window.localStorage.getItem('math-adventure-language');
+      const saved = window.localStorage.getItem(STORAGE_KEYS.language);
       detectedBase = normalize(saved);
     } catch {}
     if (!detectedBase) {

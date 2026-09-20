@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import {
   STORAGE_KEY,
   NAME_STORAGE_KEY,
@@ -134,26 +134,27 @@ const loadPlayerNameFromStorage = (): string => {
   return '';
 };
 
-function loadHydration(): { state: AppState; showLanding: boolean } {
-  const savedName = loadPlayerNameFromStorage();
-  const savedState = loadAppStateFromStorage();
-  if (savedState) {
-    return {
-      state: savedName ? { ...savedState, playerName: savedName } : savedState,
-      showLanding: false,
-    };
-  }
-  if (savedName) {
-    return { state: { ...getInitialState(), playerName: savedName }, showLanding: true };
-  }
-  return { state: getInitialState(), showLanding: true };
-}
-
 export function useAppState() {
-  const [hydrated] = useState(loadHydration);
-  const [state, setState] = useState<AppState>(hydrated.state);
-  const [showLanding, setShowLanding] = useState(hydrated.showLanding);
+  // Initial state intentionally matches the server render (no localStorage
+  // access during render) so hydration never mismatches; stored state is
+  // merged in the mount-only effect below.
+  const [state, setState] = useState<AppState>(getInitialState);
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [showLanding, setShowLanding] = useState(true);
   const lastWasNewRevealRef = useRef(false);
+
+  useEffect(() => {
+    const savedName = loadPlayerNameFromStorage();
+    const savedState = loadAppStateFromStorage();
+    if (savedState) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- mount-only hydration from localStorage (external system)
+      setState(savedName ? { ...savedState, playerName: savedName } : savedState);
+      setShowLanding(false);
+    } else if (savedName) {
+      setState((prev) => ({ ...prev, playerName: savedName }));
+    }
+    setIsLoaded(true);
+  }, []);
 
   const save = useCallback((newState: AppState) => {
     saveAppStateToStorage(newState);
@@ -396,7 +397,7 @@ export function useAppState() {
 
   return {
     state,
-    isLoaded: true,
+    isLoaded,
     showLanding,
     setShowLanding,
     updateState,

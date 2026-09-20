@@ -15,7 +15,7 @@ import {
   QuizQuestion, ConceptIntro, OPERATION_META, Translate,
 } from '@/lib/operations/types';
 import { Button } from '@/components/ui/button';
-import { House, User, ArrowRight, BicepsFlexed, Check } from 'lucide-react';
+import { House, User, ArrowLeft, ArrowRight, BicepsFlexed, Check } from 'lucide-react';
 import { resetEmojiPool } from '@/lib/operations/emoji-pool';
 import { isOperationFullyCompleted } from '@/lib/engines/star-economy';
 import { STAR_CAPS } from '@/lib/engines/types';
@@ -164,6 +164,22 @@ export function OperationFlow({
     setConceptDismissed(true);
   }, []);
 
+  const goToExample = useCallback((index: number) => {
+    if (index === currentExampleIndex) return;
+    setFadeOut(true);
+    setTimeout(() => {
+      setCurrentExampleIndex(index);
+      setFadeOut(false);
+      playSound('click');
+    }, 200);
+  }, [currentExampleIndex, playSound]);
+
+  const handlePreviousExample = useCallback(() => {
+    if (currentExampleIndex > 0) {
+      goToExample(currentExampleIndex - 1);
+    }
+  }, [currentExampleIndex, goToExample]);
+
   const handleNextExample = useCallback(() => {
     if (currentExampleIndex < learnExamples.length - 1) {
       setFadeOut(true);
@@ -185,6 +201,7 @@ export function OperationFlow({
       if (correct) {
         setPracticeCorrectCount((c) => c + 1);
         engine.awardCorrectAnswer(key);
+        playSound('quiz-correct');
         practiceToastManager.add({
           title: getToastMessage(t),
           description: t('messages.practiceToast.description', 'Keep it up, Math Explorer!'),
@@ -218,7 +235,7 @@ export function OperationFlow({
         }, 1500);
       }
     },
-    [currentProblemIndex, practiceProblems.length, engine, operation, activeDifficulty, t]
+    [currentProblemIndex, practiceProblems.length, engine, operation, activeDifficulty, t, playSound]
   );
 
   const handleSummaryContinue = useCallback(() => {
@@ -304,12 +321,18 @@ export function OperationFlow({
         <div className="flex justify-center gap-2 py-3">
           {urlStage === 'learn'
             ? learnExamples.map((_, i) => (
-                <div
+                <button
                   key={i}
-                  className={`w-2.5 h-2.5 rounded-full transition-colors duration-200 ${
-                    i === currentExampleIndex ? 'bg-coral' : i < currentExampleIndex ? 'bg-leaf' : 'bg-mist'
-                  }`}
-                />
+                  onClick={() => goToExample(i)}
+                  aria-label={t('operations.screen.goToExample', { index: i + 1 })}
+                  className="flex items-center justify-center w-7 h-7 cursor-pointer"
+                >
+                  <span
+                    className={`w-2.5 h-2.5 rounded-full transition-colors duration-200 ${
+                      i === currentExampleIndex ? 'bg-coral' : i < currentExampleIndex ? 'bg-leaf' : 'bg-mist'
+                    }`}
+                  />
+                </button>
               ))
             : practiceProblems.map((_, i) => (
                 <div
@@ -322,7 +345,7 @@ export function OperationFlow({
         </div>
       )}
 
-      {showConcept && conceptIntro && (
+      {showConcept && conceptIntro && urlStage !== 'quiz' && (
         <div className="flex justify-center p-6">
           <ConceptIntroCard copy={conceptIntro.copy} onDone={handleConceptDone} />
         </div>
@@ -339,11 +362,21 @@ export function OperationFlow({
           <div className={`transition-opacity duration-200 ${fadeOut ? 'opacity-0' : 'opacity-100'}`}>
             <WorkedExample example={currentExample} />
           </div>
+          <div className="mt-5 flex items-center justify-center gap-3">
+            {currentExampleIndex > 0 && (
+              <Button
+                onClick={handlePreviousExample}
+                variant="secondary"
+                size="xl"
+              >
+                <ArrowLeft className="w-4 h-4" />
+                {t('common.buttons.back')}
+              </Button>
+            )}
           <Button
             onClick={handleNextExample}
             variant="indigo"
             size="xl"
-            className="mt-5"
           >
             {currentExampleIndex < learnExamples.length - 1 ? (
               <>
@@ -357,6 +390,7 @@ export function OperationFlow({
               </>
             )}
           </Button>
+          </div>
 
           {currentExampleIndex < learnExamples.length - 1 && (
             <p className="font-body text-sm text-text-dim mt-3">
@@ -405,7 +439,7 @@ export function OperationFlow({
     </div>
 
       <Toast.Portal>
-        <Toast.Viewport className="fixed top-20 right-4 z-50 flex-col items-end gap-2 max-w-[360px] hidden sm:flex">
+        <Toast.Viewport className="fixed top-20 inset-x-4 z-50 flex flex-col items-center gap-2 sm:left-auto sm:right-4 sm:items-end sm:max-w-[360px]">
           <PracticeToastList />
         </Toast.Viewport>
       </Toast.Portal>

@@ -19,6 +19,7 @@
     },
     "buttons": {
       "next": "आगे",
+      "back": "पीछे",
       "continue": "जारी रखें",
       "gotIt": "समझ गया!",
       "checkAnswer": "उत्तर जांचें",
@@ -154,6 +155,7 @@
       "viewAllToUnlock": "अभ्यास को अनलॉक करने के लिए सभी उदाहरण देखें",
       "timeToPractice": "अभ्यास का समय!",
       "problemOf": "प्रश्न {{index}} / {{total}}",
+      "goToExample": "उदाहरण {{index}} पर जाएं",
       "correctFeedback": "शानदार! बहुत बढ़िया काम!",
       "incorrectFeedback": "सही नहीं है — फिर से प्रयास करें! 💡",
       "revealedIntro": "यहाँ देखें कि हम इसे कैसे हल करते हैं! आइए मिलकर देखें 👀",

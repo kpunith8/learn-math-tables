@@ -1,6 +1,7 @@
 'use client';
 
 import { useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 
 interface NumberBlankProps {
   value: string;
@@ -8,9 +9,11 @@ interface NumberBlankProps {
   onSubmit: () => void;
   disabled?: boolean;
   placeholder?: string;
+  allowNegative?: boolean;
 }
 
-export function NumberBlank({ value, onChange, onSubmit, disabled, placeholder }: NumberBlankProps) {
+export function NumberBlank({ value, onChange, onSubmit, disabled, placeholder, allowNegative = false }: NumberBlankProps) {
+  const { t } = useTranslation();
   const handleChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const raw = e.target.value.replace(/[^0-9-]/g, '');
@@ -49,18 +52,20 @@ export function NumberBlank({ value, onChange, onSubmit, disabled, placeholder }
         placeholder={placeholder || '?'}
         inputMode="numeric"
         autoComplete="off"
-        aria-label="Answer"
+        aria-label={t('common.aria.answer')}
         className="number-blank-input w-[clamp(70px,25vw,100px)] text-center font-display text-[clamp(20px,4vw,24px)] text-ink bg-paper border-2 border-mist rounded-xl py-1.5 px-2 outline-none focus:border-coral focus:bg-card transition-colors duration-150 [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
       />
-      <button
-        onClick={toggleNegative}
-        disabled={disabled}
-        type="button"
-        aria-label="Toggle negative number"
-        className="font-display text-base text-coral bg-coral/10 border-2 border-coral/20 rounded-lg w-9 h-9 flex items-center justify-center cursor-pointer transition-colors duration-150 hover:bg-coral/20 active:bg-coral/30 disabled:opacity-40 disabled:cursor-not-allowed shrink-0 md:hidden"
-      >
-        +/−
-      </button>
+      {allowNegative && (
+        <button
+          onClick={toggleNegative}
+          disabled={disabled}
+          type="button"
+          aria-label={t('common.aria.toggleNegative')}
+          className="font-display text-base text-coral bg-coral/10 border-2 border-coral/20 rounded-lg w-9 h-9 flex items-center justify-center cursor-pointer transition-colors duration-150 hover:bg-coral/20 active:bg-coral/30 disabled:opacity-40 disabled:cursor-not-allowed shrink-0"
+        >
+          +/−
+        </button>
+      )}
     </div>
   );
 }

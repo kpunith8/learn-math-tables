@@ -19,6 +19,7 @@
     },
     "buttons": {
       "next": "ಮುಂದೆ",
+      "back": "ಹಿಂದೆ",
       "continue": "ಮುಂದುವರಿಸಿ",
       "gotIt": "ಅರ್ಥವಾಯಿತು!",
       "checkAnswer": "ಉತ್ತರ ಪರೀಕ್ಷಿಸಿ",
@@ -86,8 +87,8 @@
     },
     "trail": {
       "sectionTitle": "ಸಂಖ್ಯಾ ಹಾದಿ",
-      "sectionSubtitle": "ಐದೂ ಲೋಕಗಳ ಮೂಲಕ ಪ್ರಯಾಣಿಸಿ!",
-      "done": "ಪೂರ್ಣಗೊಂಡಿದೆ ✓",
+      "sectionSubtitle": "ಐದು ಲೋಕಗಳ ಮೂಲಕ ಪ್ರಯಾಣಿಸಿ!",
+      "done": "ಪೂರ್ಣಗೊಂಡಿದೆ!",
       "worlds": {
         "addition": {
           "name": "ಸಂಕಲನ ದ್ವೀಪ",
@@ -154,6 +155,7 @@
       "viewAllToUnlock": "ಅಭ್ಯಾಸವನ್ನು ಅನ್‌ಲಾಕ್ ಮಾಡಲು ಎಲ್ಲಾ ಉದಾಹರಣೆಗಳನ್ನು ವೀಕ್ಷಿಸಿ",
       "timeToPractice": "ಅಭ್ಯಾಸ ಮಾಡುವ ಸಮಯ!",
       "problemOf": "ಸಮಸ್ಯೆ {{index}} / {{total}}",
+      "goToExample": "ಉದಾಹರಣೆ {{index}} ಗೆ ಹೋಗಿ",
       "correctFeedback": "ಹೌದು! ಅದ್ಭುತ ಕೆಲಸ!",
       "incorrectFeedback": "ಸರಿಯಾಗಿಲ್ಲ — ಮತ್ತೊಮ್ಮೆ ಪ್ರಯತ್ನಿಸಿ! 💡",
       "revealedIntro": "ನಾವು ಅದನ್ನು ಹೇಗೆ ಬಿಡಿಸುತ್ತೇವೆ ಎಂಬುದು ಇಲ್ಲಿದೆ! ಒಟ್ಟಿಗೆ ನೋಡೋಣ 👀",

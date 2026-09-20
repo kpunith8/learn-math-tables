@@ -19,6 +19,7 @@
     },
     "buttons": {
       "next": "Next",
+      "back": "Back",
       "continue": "Continue",
       "gotIt": "Got it!",
       "checkAnswer": "Check Answer",
@@ -155,6 +156,7 @@
       "viewAllToUnlock": "View all examples to unlock practice",
       "timeToPractice": "Time to Practice!",
       "problemOf": "Problem {{index}} of {{total}}",
+      "goToExample": "Go to example {{index}}",
       "correctFeedback": "Yes! Great job!",
       "incorrectFeedback": "Not quite — try again! 💡",
       "revealedIntro": "Here's how we solve it! Let's look together 👀",

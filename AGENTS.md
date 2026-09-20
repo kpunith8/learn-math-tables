@@ -26,6 +26,8 @@ npm run test:coverage   # regenerate coverage reports from the last run
 - **Selectors you'll rely on**: practice equation is parsed from the input's ancestors (horizontal ×/÷ is `getByLabel('Answer').locator('..').locator('..')`; vertical +/− is three `.locator('..')` up) — read it, compute the answer, fill and submit. Quiz options are `role="radio"` buttons; the question label matches `/-?\d+\s*[+\u2212×÷]\s*-?\d+\s*=\s*\?/`. Base UI Select triggers are `role="combobox"`, items `role="option"`.
 - **Name-save test** stubs `window.turnstile` via `addInitScript` (`render`/`getResponse`/`reset`/`remove`), route-aborts `challenges.cloudflare.com/**`, and route-fulfills `POST /api/name`.
 - **Storage keys used by tests**: `mathAdvDifficulty`, `math-adventure-language`, `mathAdvName`, `mathAdventure` (`STORAGE_KEY`), `mathAdvEngine`, `mathAdvLeaderboard`.
+- **Storage keys (app code)**: canonical map in `src/lib/storage-keys.ts` (`STORAGE_KEYS` + `STORAGE_SCHEMA_VERSION`) — import from there, never hardcode key strings. Current values are the v1 schema; on an incompatible schema change, bump the version and read `versionedKey()` first with legacy fallback + migration (never orphan a kid's saved progress). Tests seed the raw v1 strings (see `tests/helpers.ts`).
+- **Hydration guardrail**: `tests/fixtures.ts` fails any test whose page logs a React hydration error (matches `/hydration/i` on console errors + pageerrors). If you touch first-render output or storage hydration, this suite catches SSR/client divergence — do NOT weaken the matcher to silence it; fix the divergence.
 - **Deprecated `page.coverage`** (Chromium-only) is used intentionally for coverage; it logs a deprecation warning — that's expected.
 - Artifacts: `playwright-report/`, `test-results/`, `coverage/` are git-ignored.
 
@@ -103,7 +105,7 @@ Each route's page.tsx is a thin Client Component wrapper importing `OperationFlo
 ### State management
 
 `AppContext` via `useAppState()` hook (`src/lib/hooks/useAppState.ts`).
-- Hydration is **synchronous** via `useState` lazy initializers (no hydration effect) — `state` is correct on first render; `isLoaded` is always `true` (kept for API compatibility).
+- `isLoaded` signals localStorage hydration complete — **must wait for it** before reading `state.playerName`. Hydration runs in a mount-only effect (never during render) so the first render matches the server HTML — do NOT read localStorage in a `useState` initializer here or `title`/name text will hydration-mismatch.
 - Exports `state`, `setPlayerName`, and other app state.
 
 ### Design tokens (Tailwind `@theme inline` in `src/app/globals.css`)
