@@ -21,8 +21,8 @@ test.describe('landing page', () => {
   test('trail cards navigate to operation routes', async ({ page }) => {
     await page.goto('/');
     await page.getByText('Addition Island').click();
-    await expect(page).toHaveURL(/\/addition$/);
-    await expect(page.getByRole('button', { name: /Got it!/ })).toBeVisible();
+    await expect(page).toHaveURL(/\/addition\/play$/, { timeout: 15000 });
+    await expect(page.getByTestId('play-equation')).toBeVisible();
   });
 
   test('difficulty selector switches level and persists to localStorage', async ({ page }) => {

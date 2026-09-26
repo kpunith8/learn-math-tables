@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs';
 import { LoginLink, LogoutLink } from '@kinde-oss/kinde-auth-nextjs/components';
-import { House, LogIn, LogOut } from 'lucide-react';
+import { House, LogIn, LogOut, Target, Trophy, Volume2, VolumeX } from 'lucide-react';
 import { Difficulty } from '@/lib/constants';
 import { TableSelector } from './table-selector';
 
@@ -54,22 +54,23 @@ export function AppHeader({
   }, [isMenuOpen]);
 
   return (
-    <header className="app-header bg-[#EFEBFB] border-b-2 border-[#DED5F0] px-3 py-2 md:p-4">
+    <>
+    <header className="app-header bg-header px-3 py-2 md:p-4">
       {/* Mobile top row: title + home + hamburger */}
       <div className="flex md:hidden items-center gap-2 mb-2">
-        <h1 className="font-display text-lg text-ink font-normal flex-1 leading-tight">
+        <h1 className="font-display text-lg text-white font-normal flex-1 leading-tight">
           {t('header.title')}
         </h1>
         <button
           onClick={onHome}
-          className="text-ink/70 text-xl p-1.5 min-w-[44px] min-h-[44px] flex items-center justify-center hover:text-ink"
+          className="text-white/70 text-xl p-1.5 min-w-[44px] min-h-[44px] flex items-center justify-center hover:text-white transition-colors"
           aria-label={t('common.nav.home')}
         >
-          <House className="w-6 h-6 text-ink" strokeWidth={2} />
+          <House className="w-6 h-6 text-white/80" strokeWidth={2} />
         </button>
         <button
           onClick={() => setIsMenuOpen(true)}
-          className="text-ink text-2xl p-1.5 min-w-[44px] min-h-[44px] flex items-center justify-center"
+          className="text-white text-2xl p-1.5 min-w-[44px] min-h-[44px] flex items-center justify-center"
           aria-label={t('common.nav.menu')}
         >
           ☰
@@ -81,12 +82,12 @@ export function AppHeader({
         <div className="flex items-center gap-2">
           <button
             onClick={onHome}
-            className="text-ink/70 text-xl p-1.5 min-w-[44px] min-h-[44px] flex items-center justify-center hover:text-ink transition-colors"
+            className="text-white/70 text-xl p-1.5 min-w-[44px] min-h-[44px] flex items-center justify-center hover:text-white transition-colors"
             aria-label={t('common.nav.home')}
           >
-            <House className="w-6 h-6 text-ink" strokeWidth={2} />
+            <House className="w-6 h-6 text-white/80" strokeWidth={2} />
           </button>
-          <h1 className="font-display text-xl text-ink font-normal">
+          <h1 className="font-display text-xl text-white font-normal">
             {t('header.title')}
           </h1>
         </div>
@@ -94,18 +95,20 @@ export function AppHeader({
           <button
             onClick={onTogglePractice}
             aria-pressed={practiceMode}
-            className={`${btnBase} px-2.5 md:px-3.5
+            className={`${btnBase} inline-flex items-center gap-1.5 px-2.5 md:px-3.5
               ${practiceMode
                 ? 'bg-leaf border-leaf text-white shadow-[0_2px_8px_rgba(63,166,100,0.4)]'
                 : 'bg-coral-soft border-coral-soft text-white hover:bg-coral-soft-hover active:scale-95'
               }`}
           >
+            <Target className="w-4 h-4" aria-hidden="true" />
             {t('header.practice')}
           </button>
           <button
             onClick={onShowLeaderboard}
-            className={`${btnBase} px-2.5 md:px-3.5 border-gold bg-gold text-ink hover:bg-kingdom active:scale-95`}
+            className={`${btnBase} inline-flex items-center gap-1.5 px-2.5 md:px-3.5 border-gold bg-gold text-ink hover:bg-kingdom active:scale-95`}
           >
+            <Trophy className="w-4 h-4" aria-hidden="true" />
             {t('header.scores')}
           </button>
           <button
@@ -113,7 +116,7 @@ export function AppHeader({
             className={`${btnBase} px-2.5 md:px-3.5 border-[#DED5F0] bg-white/80 text-ink hover:bg-white active:scale-95`}
             aria-label={isMuted ? t('common.nav.unmute') : t('common.nav.mute')}
           >
-            {isMuted ? '🔇' : '🔊'}
+            {isMuted ? <VolumeX className="w-4 h-4" aria-hidden="true" /> : <Volume2 className="w-4 h-4" aria-hidden="true" />}
           </button>
           {isAuthenticated ? (
             <>
@@ -137,27 +140,6 @@ export function AppHeader({
             )
           )}
         </div>
-      </div>
-
-      {/* Table selector — always visible */}
-      <div className="flex gap-1.5 flex-wrap items-center justify-center md:justify-start mb-1.5 md:mb-2.5">
-        <TableSelector
-          currentTable={currentTable}
-          completedTables={completedTables}
-          difficulty={difficulty}
-          practiceMode={practiceMode}
-          onSelectTable={onSelectTable}
-        />
-      </div>
-
-      {/* Desktop difficulty row */}
-      <div className="hidden md:flex items-center gap-2 flex-wrap justify-center md:justify-start">
-        <button
-          onClick={onReset}
-          className={`${btnBase} flex items-center gap-1.5 border-[#DED5F0] bg-white/80 text-ink hover:bg-white active:scale-95`}
-        >
-          <span className="text-base leading-none" aria-hidden="true">↻</span> {t('header.resetLabel')}
-        </button>
       </div>
 
       {/* Mobile drawer */}
@@ -214,7 +196,8 @@ export function AppHeader({
               onClick={() => { onToggleMute(); closeMenu(); }}
               className={`drawer-mute ${btnBase} w-full text-center flex items-center justify-center gap-1.5 border-[#DED5F0] bg-white/80 text-ink hover:bg-white`}
             >
-              {isMuted ? '🔇 ' + t('common.nav.unmute') : '🔊 ' + t('common.nav.mute')}
+              {isMuted ? <VolumeX className="w-4 h-4" aria-hidden="true" /> : <Volume2 className="w-4 h-4" aria-hidden="true" />}
+              {isMuted ? t('common.nav.unmute') : t('common.nav.mute')}
             </button>
             {isAuthenticated ? (
               <>
@@ -246,5 +229,28 @@ export function AppHeader({
           </aside>
       </div>
     </header>
+
+    {/* Table number strip — separate light section below the dark nav */}
+    <div className="table-strip bg-[#EFEBFB] border-b-2 border-[#DED5F0] px-3 py-2 md:px-4 md:py-3">
+      <div className="flex gap-1.5 flex-wrap items-center justify-center md:justify-start mb-1.5 md:mb-2.5">
+        <TableSelector
+          currentTable={currentTable}
+          completedTables={completedTables}
+          difficulty={difficulty}
+          practiceMode={practiceMode}
+          onSelectTable={onSelectTable}
+        />
+      </div>
+
+      <div className="hidden md:flex items-center gap-2 flex-wrap justify-center md:justify-start">
+        <button
+          onClick={onReset}
+          className={`${btnBase} flex items-center gap-1.5 border-[#DED5F0] bg-white/80 text-ink hover:bg-white active:scale-95`}
+        >
+          <span className="text-base leading-none" aria-hidden="true">↻</span> {t('header.resetLabel')}
+        </button>
+      </div>
+    </div>
+    </>
   );
 }

@@ -5,7 +5,13 @@ export function randInt(min: number, max: number): number {
 }
 
 export function shuffleArray<T>(arr: T[]): T[] {
-  return [...arr].sort(() => Math.random() - 0.5);
+  // Fisher-Yates: unbiased (unlike sort-by-random) and O(n).
+  const out = [...arr];
+  for (let i = out.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [out[i], out[j]] = [out[j], out[i]];
+  }
+  return out;
 }
 
 export function isEmojiSafe(a: number, b: number, result: number): boolean {

@@ -1,4 +1,4 @@
-import { Example, PracticeProblem, QuizQuestion, ConceptIntro, DifficultyLevel, Translate } from './types';
+import { PracticeProblem, QuizQuestion, DifficultyLevel, Translate } from './types';
 import { pickEmojis } from './emoji-pool';
 import { pickUniquePair, Pair } from './unique-pair';
 import { randInt, shuffleArray, isEmojiSafe, levelMax } from './utils';
@@ -30,43 +30,6 @@ function emojiLine(a: number, b: number, result: number, emoji: string): string 
 
 function getHint(t: Translate): string {
   return t('operations.practiceTip.subtraction');
-}
-
-export function generateLearnExamples(difficulty: DifficultyLevel, t: Translate): Example[] {
-  const emojis = pickEmojis(5);
-  const examples: Example[] = [];
-  const used = new Set<string>();
-
-  for (let i = 0; i < 5; i++) {
-    const { a, b } = pickUniquePair(difficulty, used, pickOperands);
-    const result = a - b;
-    const emoji = emojis[i];
-    const safe = isEmojiSafe(a, b, result);
-    const h = 'operations.subtraction';
-    const opts = { a, b, result, steps: Math.abs(b) };
-
-    let hint: string;
-    let explanation: string;
-
-    if (difficulty === 'easy') {
-      hint = t(emoji === '🐝' ? `${h}.hints.easyCountBees` : `${h}.hints.easyCountItems`);
-      if (safe) {
-        explanation = emojiLine(a, b, result, emoji);
-      } else {
-        explanation = t(`${h}.explanations.easyNotSafe`, opts);
-      }
-    } else if (difficulty === 'medium') {
-      hint = t(`${h}.hints.mediumPositive`);
-      explanation = t(`${h}.explanations.mediumPositive`, opts);
-    } else {
-      hint = t(`${h}.hints.hardPositiveStart`);
-      explanation = t(`${h}.explanations.hardPositiveStart`, opts);
-    }
-
-    examples.push({ operand1: a, operand2: b, operation: 'subtraction', result, emojiSafe: safe, hint, explanation, emoji });
-  }
-
-  return examples;
 }
 
 export function generatePracticeProblems(difficulty: DifficultyLevel, t: Translate): PracticeProblem[] {
@@ -129,15 +92,3 @@ export function generateQuizQuestions(difficulty: DifficultyLevel, t: Translate)
   return questions;
 }
 
-export function getConceptIntro(difficulty: DifficultyLevel, t: Translate): ConceptIntro | null {
-  if (difficulty === 'easy') {
-    return { copy: t('operations.conceptIntro.subtraction.easy'), level: 'easy' };
-  }
-  if (difficulty === 'medium') {
-    return { copy: t('operations.conceptIntro.subtraction.medium'), level: 'medium' };
-  }
-  if (difficulty === 'hard') {
-    return { copy: t('operations.conceptIntro.subtraction.hard'), level: 'hard' };
-  }
-  return null;
-}

@@ -50,16 +50,4 @@ export const getWrongAnswerMessage = (t: TFunction): string => {
     : 'Nice try! Let\'s solve it together.';
 };
 
-export const getEncouragementMessage = (t: TFunction): string => {
-  const pool = t('messages.encouragement', { returnObjects: true }) as unknown as string[];
-  return pool && pool.length > 0
-    ? pool[Math.floor(Math.random() * pool.length)]
-    : 'Keep going! You\'ve got this!';
-};
 
-export const getLevelUpMessage = (t: TFunction): string => {
-  const pool = t('messages.levelUp', { returnObjects: true }) as unknown as string[];
-  return pool && pool.length > 0
-    ? pool[Math.floor(Math.random() * pool.length)]
-    : 'You\'re leveling up your math skills!';
-};

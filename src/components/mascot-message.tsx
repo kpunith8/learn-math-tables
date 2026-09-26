@@ -36,9 +36,4 @@ export const getMascotHint = (t: TFunction, operation?: string): string => {
     : 'You can do this! Every mistake helps you learn!';
 };
 
-export const getMascotCelebration = (t: TFunction): string => {
-  const pool = t('messages.mascot.celebrations', { returnObjects: true }) as unknown as string[];
-  return pool && pool.length > 0
-    ? pool[Math.floor(Math.random() * pool.length)]
-    : 'Amazing! You\'re getting so good at this!';
-};
+
