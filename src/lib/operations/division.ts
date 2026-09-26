@@ -1,4 +1,4 @@
-import { Example, PracticeProblem, QuizQuestion, ConceptIntro, DifficultyLevel, Translate } from './types';
+import { PracticeProblem, QuizQuestion, DifficultyLevel, Translate } from './types';
 import { pickEmojis } from './emoji-pool';
 import { pickUniquePair, Pair } from './unique-pair';
 import { randInt, shuffleArray, isEmojiSafe, levelMax } from './utils';
@@ -33,55 +33,6 @@ function emojiSplit(total: number, groups: number, emoji: string): string {
 
 function getHint(t: Translate): string {
   return t('operations.practiceTip.division');
-}
-
-export function generateLearnExamples(difficulty: DifficultyLevel, t: Translate): Example[] {
-  const emojis = pickEmojis(5);
-  const examples: Example[] = [];
-  const used = new Set<string>();
-
-  for (let i = 0; i < 5; i++) {
-    const { a, b } = pickUniquePair(difficulty, used, pickOperands);
-    const result = a / b;
-    const emoji = emojis[i];
-    const safe = isEmojiSafe(a, b, result);
-    const h = 'operations.division';
-    const opts = { a, b, result, emoji, emojiSplit: emojiSplit(a, b, emoji) };
-
-    let hint: string;
-    let explanation: string;
-
-    if (difficulty === 'easy') {
-      if (a === 0) {
-        hint = t(`${h}.hints.easyZero`);
-        explanation = t(`${h}.explanations.easyZero`, opts);
-      } else if (b === 1) {
-        hint = t(`${h}.hints.easyOne`);
-        explanation = t(`${h}.explanations.easyOne`, opts);
-      } else {
-        hint = t(emoji === '🍪' ? `${h}.hints.easyCountCookies` : `${h}.hints.easyCountItems`);
-        if (safe && a > 0 && b > 0 && result > 0) {
-          explanation = t(`${h}.explanations.easyGeneralSafe`, opts);
-        } else {
-          explanation = t(`${h}.explanations.easyGeneralNotSafe`, opts);
-        }
-      }
-    } else if (difficulty === 'medium') {
-      hint = t(emoji === '🍪' ? `${h}.hints.mediumCountCookies` : `${h}.hints.mediumCountItems`);
-      if (safe && a > 0 && b > 0 && result > 0) {
-        explanation = t(`${h}.explanations.mediumSafe`, opts);
-      } else {
-        explanation = t(`${h}.explanations.mediumNotSafe`, opts);
-      }
-    } else {
-      hint = t(`${h}.hints.hard`);
-      explanation = t(`${h}.explanations.hard`, opts);
-    }
-
-    examples.push({ operand1: a, operand2: b, operation: 'division', result, emojiSafe: safe, hint, explanation, emoji });
-  }
-
-  return examples;
 }
 
 export function generatePracticeProblems(difficulty: DifficultyLevel, t: Translate): PracticeProblem[] {
@@ -144,15 +95,3 @@ export function generateQuizQuestions(difficulty: DifficultyLevel, t: Translate)
   return questions;
 }
 
-export function getConceptIntro(difficulty: DifficultyLevel, t: Translate): ConceptIntro | null {
-  if (difficulty === 'easy') {
-    return { copy: t('operations.conceptIntro.division.easy'), level: 'easy' };
-  }
-  if (difficulty === 'medium') {
-    return { copy: t('operations.conceptIntro.division.medium'), level: 'medium' };
-  }
-  if (difficulty === 'hard') {
-    return { copy: t('operations.conceptIntro.division.hard'), level: 'hard' };
-  }
-  return null;
-}

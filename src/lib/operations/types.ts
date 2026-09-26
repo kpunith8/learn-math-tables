@@ -2,20 +2,8 @@ import { Plus, Minus, X, Divide, type LucideIcon } from 'lucide-react';
 
 export type Operation = 'addition' | 'subtraction' | 'multiplication' | 'division';
 export type DifficultyLevel = 'easy' | 'medium' | 'hard';
-export type Stage = 'difficulty' | 'learn' | 'practice' | 'quiz';
 
 export type Translate = (key: string, options?: Record<string, unknown>) => string;
-
-export interface Example {
-  operand1: number;
-  operand2: number;
-  operation: Operation;
-  result: number;
-  emojiSafe: boolean;
-  hint: string;
-  explanation: string;
-  emoji: string;
-}
 
 export interface PracticeProblem {
   operand1: number;
@@ -34,11 +22,6 @@ export interface QuizQuestion {
   correctAnswer: number;
   options: number[];
   hint: string;
-}
-
-export interface ConceptIntro {
-  copy: string;
-  level: DifficultyLevel;
 }
 
 export const OPERATION_META: Record<Operation, { icon: LucideIcon; name: string; tagline: string; description: string; color: string }> = {

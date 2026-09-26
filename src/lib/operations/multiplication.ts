@@ -1,4 +1,4 @@
-import { Example, PracticeProblem, QuizQuestion, ConceptIntro, DifficultyLevel, Translate } from './types';
+import { PracticeProblem, QuizQuestion, DifficultyLevel, Translate } from './types';
 import { pickEmojis } from './emoji-pool';
 import { pickUniquePair, Pair } from './unique-pair';
 import { randInt, shuffleArray, isEmojiSafe, levelMax } from './utils';
@@ -33,64 +33,6 @@ function emojiGroups(a: number, b: number, emoji: string): string {
 
 function getHint(t: Translate): string {
   return t('operations.practiceTip.multiplication');
-}
-
-export function generateLearnExamples(difficulty: DifficultyLevel, t: Translate): Example[] {
-  const emojis = pickEmojis(5);
-  const examples: Example[] = [];
-  const used = new Set<string>();
-
-  for (let i = 0; i < 5; i++) {
-    const { a, b } = pickUniquePair(difficulty, used, pickOperands);
-    const result = a * b;
-    const emoji = emojis[i];
-    const safe = isEmojiSafe(a, b, result);
-    const h = 'operations.multiplication';
-    const opts = { a, b, result, absB: Math.abs(b), emojiGroups: emojiGroups(a, b, emoji) };
-
-    let hint: string;
-    let explanation: string;
-
-    if (difficulty === 'easy') {
-      if (a === 0) {
-        hint = t(`${h}.hints.easyZero`);
-        explanation = t(`${h}.explanations.easyZero`, opts);
-      } else if (a === 1) {
-        hint = t(`${h}.hints.easyOne`);
-        explanation = t(`${h}.explanations.easyOne`, opts);
-      } else {
-        hint = t(emoji === '🎈' ? `${h}.hints.easyCountBalloons` : `${h}.hints.easyCountItems`);
-        if (safe && a > 0 && b > 0) {
-          explanation = t(`${h}.explanations.easyGeneralSafe`, opts);
-        } else {
-          explanation = t(`${h}.explanations.easyGeneralNotSafe`, opts);
-        }
-      }
-    } else if (difficulty === 'medium') {
-      if (a === 0 || b === 0) {
-        hint = t(`${h}.hints.mediumZero`);
-        explanation = t(`${h}.explanations.mediumZero`, opts);
-      } else if (a === 1 || b === 1) {
-        hint = t(`${h}.hints.mediumOne`);
-        explanation = t(`${h}.explanations.mediumOne`, opts);
-      } else {
-        hint = t(`${h}.hints.mediumGeneral`);
-        explanation = t(`${h}.explanations.mediumGeneral`, opts);
-      }
-    } else {
-      if (result < 0) {
-        hint = t(`${h}.hints.hardNegative`);
-        explanation = t(`${h}.explanations.hardNegative`, opts);
-      } else {
-        hint = t(`${h}.hints.hardPositive`);
-        explanation = t(`${h}.explanations.hardPositive`, opts);
-      }
-    }
-
-    examples.push({ operand1: a, operand2: b, operation: 'multiplication', result, emojiSafe: safe, hint, explanation, emoji });
-  }
-
-  return examples;
 }
 
 export function generatePracticeProblems(difficulty: DifficultyLevel, t: Translate): PracticeProblem[] {
@@ -153,15 +95,3 @@ export function generateQuizQuestions(difficulty: DifficultyLevel, t: Translate)
   return questions;
 }
 
-export function getConceptIntro(difficulty: DifficultyLevel, t: Translate): ConceptIntro | null {
-  if (difficulty === 'easy') {
-    return { copy: t('operations.conceptIntro.multiplication.easy'), level: 'easy' };
-  }
-  if (difficulty === 'medium') {
-    return { copy: t('operations.conceptIntro.multiplication.medium'), level: 'medium' };
-  }
-  if (difficulty === 'hard') {
-    return { copy: t('operations.conceptIntro.multiplication.hard'), level: 'hard' };
-  }
-  return null;
-}

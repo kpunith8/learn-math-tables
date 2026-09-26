@@ -1,16 +1,11 @@
 {
   "common": {
-    "appName": "Math Adventure",
     "nav": {
       "home": "Home",
       "menu": "Open menu",
       "closeMenu": "Close menu",
-      "practice": "Practice",
-      "scores": "Scores",
-      "reset": "Reset",
       "mute": "Mute sounds",
       "unmute": "Unmute sounds",
-      "addName": "Add Name",
       "addNameShort": "Add Name"
     },
     "auth": {
@@ -19,49 +14,32 @@
     },
     "buttons": {
       "next": "Next",
-      "back": "Back",
       "continue": "Continue",
-      "gotIt": "Got it!",
       "checkAnswer": "Check Answer",
       "letsGo": "Let's Go!",
       "skip": "Skip",
       "yesSure": "Yes, sure!",
       "noGoBack": "No, go back",
-      "close": "Close",
-      "playAgain": "Play Again",
-      "explore": "Explore",
-      "startLearning": "🚀 Start Learning!"
+      "explore": "Explore"
     },
     "difficulty": {
       "label": "Difficulty:",
       "easy": {
-        "title": "Easy",
-        "desc": "Simple numbers to start with",
         "badge": "🌟 Easy"
       },
       "medium": {
-        "title": "Medium",
-        "desc": "Bigger numbers, new ideas",
         "badge": "⭐ Medium"
       },
       "hard": {
-        "title": "Hard",
-        "desc": "Challenge yourself!",
         "badge": "🏆 Hard"
-      },
-      "chooseLevel": "Choose Your Level! 🎯"
+      }
     },
     "aria": {
       "home": "Home",
       "answer": "Answer",
       "toggleNegative": "Toggle negative number",
       "answerOptions": "Answer options",
-      "enterYourAnswer": "Enter your answer",
-      "selectTable": "Select a times table",
-      "tableLocked": "{{table}} (locked)",
-      "table": "Table {{number}}",
-      "listenAloud": "Read equation aloud",
-      "stopReading": "Stop reading aloud"
+      "enterYourAnswer": "Enter your answer"
     }
   },
   "home": {
@@ -82,8 +60,7 @@
     "stats": {
       "stars": "Stars",
       "badges": "Badges",
-      "dayStreak": "Day Streak",
-      "toNextStar": "To Next ⭐"
+      "dayStreak": "Day Streak"
     },
     "trail": {
       "sectionTitle": "The Number Trail",
@@ -117,46 +94,30 @@
     }
   },
   "header": {
-    "title": "🔢 Tables",
-    "practice": "🎯 Practice",
-    "scores": "🏆 Scores",
-    "resetLabel": "Reset",
-    "drawer": {
-      "difficulty": "Difficulty"
-    }
+    "title": "Tables",
+    "practice": "Practice",
+    "scores": "Scores",
+    "resetLabel": "Reset"
   },
   "operations": {
     "_note": "Explanation/hint strings below use {{var}} interpolation placeholders matching the variable names in src/lib/operations/*.ts. Some source strings branch on the chosen emoji (e.g. 'apples' vs 'cookies' vs 'items') or embed literal emoji equation lines (e.g. 🍎🍎+🍎=🍎🍎🍎) which are numeral/emoji-only and don't need translation — those are marked skipTranslation.",
     "meta": {
       "addition": {
-        "name": "Addition",
-        "tagline": "Put numbers together!",
-        "description": "Addition is putting two groups together to find the total!"
+        "name": "Addition"
       },
       "subtraction": {
-        "name": "Subtraction",
-        "tagline": "Take some away!",
-        "description": "Subtraction is taking some away to see what's left!"
+        "name": "Subtraction"
       },
       "multiplication": {
-        "name": "Multiplication",
-        "tagline": "Count in groups!",
-        "description": "Multiplication is counting in equal groups — a fast way to add!"
+        "name": "Multiplication"
       },
       "division": {
-        "name": "Division",
-        "tagline": "Share things fairly!",
-        "description": "Division is sharing a total equally into groups!"
+        "name": "Division"
       }
     },
     "screen": {
-      "letsLearn": "Let's Learn {{name}}",
-      "nextExample": "Next",
-      "letsGoPractice": "Let's Practice!",
-      "viewAllToUnlock": "View all examples to unlock practice",
       "timeToPractice": "Time to Practice!",
       "problemOf": "Problem {{index}} of {{total}}",
-      "goToExample": "Go to example {{index}}",
       "correctFeedback": "Yes! Great job!",
       "incorrectFeedback": "Not quite — try again! 💡",
       "revealedIntro": "Here's how we solve it! Let's look together 👀",
@@ -170,28 +131,6 @@
         "division": "Share the total equally!"
       }
     },
-    "conceptIntro": {
-      "addition": {
-        "easy": "Addition means putting things together! Let's count everything together. 🍎🍎🍎 + 🍎🍎🍎🍎 = ?",
-        "medium": "Let's add bigger numbers! Remember — addition means combining two groups to find the total.",
-        "hard": "What happens when we add a negative number? 🤔 Adding a negative number is like taking a step backward!"
-      },
-      "subtraction": {
-        "easy": "🍪🍪🍪🍪🍪🍪🍪 You have 7 cookies! A dinosaur eats 2. How many are left? Subtraction means taking away — let's see what's left!",
-        "medium": "What if we don't have enough to take away? Sometimes the answer goes below zero — that's called a negative number!",
-        "hard": "Let's practice moving further along the number line, even starting from a negative number!"
-      },
-      "multiplication": {
-        "easy": "Let's discover multiplication! 🎈🎈 + 🎈🎈 + 🎈🎈 = 3 groups of 2 = 6. Multiplication is counting groups — it's like fast adding!",
-        "medium": "Time to multiply with bigger numbers! Remember: multiplication means counting equal groups.",
-        "hard": "What happens when we multiply a positive and a negative number? A positive times a negative always gives a negative answer!"
-      },
-      "division": {
-        "easy": "12 chocolates, 4 friends — share equally! 🍫🍫🍫🍫🍫🍫🍫🍫🍫🍫🍫🍫 Division means sharing fairly. Let's help everyone get the same amount!",
-        "medium": "Let's divide bigger numbers! Remember — division means splitting a total into equal groups.",
-        "hard": "Can we divide by zero? 🤔 If you try to share 6 cookies among 0 friends, the question doesn't make sense — so we say dividing by zero is 'undefined.'"
-      }
-    },
     "practiceTip": {
       "addition": "Try counting all the items together, starting from the first number!",
       "subtraction": "Think: what do I have left after taking some away?",
@@ -199,123 +138,54 @@
       "division": "Try sharing the total equally into groups — how many in each group?"
     },
     "addition": {
-      "hints": {
-        "easyCountApples": "Count the apples!",
-        "easyCountCookies": "Count the cookies!",
-        "easyCountItems": "Count the items!",
-        "medium": "Add the tens, then the ones!",
-        "hard": "Think of the number line — adding a negative means moving left!"
-      },
       "explanations": {
-        "easyNotSafe": "{{a}} + {{b}} = {{result}}. Add the two numbers together to find the total!",
-        "medium": "{{a}} + {{b}}: first add the tens ({{tensA}} + {{tensB}} = {{tensSum}}), then the ones ({{onesA}} + {{onesB}} = {{onesSum}}). Combined: {{result}}.",
-        "hard": "{{a}} + {{b}}: start at {{a}} on the number line. Adding {{b}} means moving {{steps}} step(s) {{direction}}. You land at {{result}}.",
         "practiceFallback": "{{a}} + {{b}} = {{result}}."
       },
       "quizHint": "The answer is {{result}} — {{a}} + {{b}} = {{result}}"
     },
     "subtraction": {
-      "hints": {
-        "easyCountBees": "Count the bees left after some fly away!",
-        "easyCountItems": "Count the items left after some fly away!",
-        "mediumNegative": "It's okay if the answer goes below zero — that's a negative number!",
-        "mediumPositive": "Subtract the tens, then the ones!",
-        "hardNegativeStart": "Starting from a negative number? Move further left on the number line!",
-        "hardPositiveStart": "Let's practice moving along the number line with bigger numbers!"
-      },
       "explanations": {
-        "easyNotSafe": "{{a}} − {{b}} = {{result}}. Take {{b}} away from {{a}} to get {{result}}.",
-        "mediumNegative": "{{a}} − {{b}}: we don't have enough {{a}}s to take away {{b}}, so we go past zero. The answer is {{result}}.",
-        "mediumPositive": "{{a}} − {{b}} = {{result}}. Subtract step by step.",
-        "hardNegativeStart": "{{a}} − {{b}}: start at {{a}} on the number line. Subtract {{b}} means moving {{steps}} step(s) left. You land at {{result}}.",
-        "hardPositiveStart": "{{a}} − {{b}} = {{result}}. Start at {{a}}, subtract {{b}}.",
         "practiceFallback": "{{a}} − {{b}} = {{result}}."
       },
       "quizHint": "The answer is {{result}} — {{a}} − {{b}} = {{result}}"
     },
     "multiplication": {
-      "hints": {
-        "easyZero": "Anything times 0 is always 0!",
-        "easyOne": "Times 1 stays the same!",
-        "easyCountBalloons": "Count all the balloons!",
-        "easyCountItems": "Count all the items!",
-        "mediumZero": "Anything times 0 is 0!",
-        "mediumOne": "Times 1 stays the same!",
-        "mediumGeneral": "Count all the items in every group!",
-        "hardNegative": "Positive times negative always gives a negative answer!",
-        "hardPositive": "Count all the items in every group!"
-      },
       "explanations": {
-        "easyZero": "{{a}} × {{b}}: when you have 0 groups, there's nothing at all. That's why the answer is always 0!",
-        "easyOne": "{{a}} × {{b}}: one group of {{b}} is just {{b}}. That's why anything times 1 stays the same!",
-        "easyGeneralSafe": "{{a}} groups of {{b}}: {{emojiGroups}}\nThat's {{result}} in total!",
-        "easyGeneralNotSafe": "{{a}} × {{b}} = {{result}}. {{a}} groups of {{b}} makes {{result}}.",
-        "mediumZero": "{{a}} × {{b}} = {{result}}. Zero groups means zero items.",
-        "mediumOne": "{{a}} × {{b}} = {{result}}. One group keeps the number the same.",
-        "mediumGeneral": "{{a}} × {{b}}: {{a}} groups of {{b}} equals {{result}}.",
-        "hardNegative": "{{a}} × {{b}}: a positive ({{a}}) times a negative ({{b}}) means we have {{a}} groups of {{absB}} below zero. The answer is {{result}}.",
-        "hardPositive": "{{a}} × {{b}} = {{result}}. Multiply the numbers together.",
         "practiceFallback": "{{a}} × {{b}} = {{result}}."
       },
       "quizHint": "The answer is {{result}} — {{a}} × {{b}} = {{result}}"
     },
     "division": {
-      "hints": {
-        "easyZero": "Sharing nothing gives everyone nothing!",
-        "easyOne": "Dividing by 1 keeps the same number!",
-        "easyCountCookies": "Count how many cookies are in each group!",
-        "easyCountItems": "Count how many items are in each group!",
-        "mediumCountCookies": "Count how many cookies are in each group!",
-        "mediumCountItems": "Count how many items are in each group!",
-        "hard": "Share the total equally into groups!"
-      },
       "explanations": {
-        "easyZero": "{{a}} ÷ {{b}} = {{result}}. If you have 0 items to share among {{b}} friends, everyone gets 0.",
-        "easyOne": "{{a}} ÷ {{b}} = {{result}}. One friend gets everything — so the number stays the same!",
-        "easyGeneralSafe": "Share {{a}} {{emoji}} among {{b}} groups: {{emojiSplit}}\nEach group gets {{result}}!",
-        "easyGeneralNotSafe": "{{a}} ÷ {{b}} = {{result}}. Share {{a}} equally into {{b}} groups — each gets {{result}}.",
-        "mediumSafe": "Share {{a}} {{emoji}} among {{b}} groups: {{emojiSplit}}\nEach group gets {{result}}!",
-        "mediumNotSafe": "{{a}} ÷ {{b}} = {{result}}. {{a}} shared equally among {{b}} gives {{result}} each.",
-        "hard": "{{a}} ÷ {{b}} = {{result}}. Divide {{a}} by {{b}} to get {{result}} in each group.",
         "practiceFallback": "{{a}} ÷ {{b}} = {{result}}."
       },
       "quizHint": "The answer is {{result}} — {{a}} ÷ {{b}} = {{result}}"
     }
   },
+  "playground": {
+    "title": "Let's Play!",
+    "pressPlay": "Play",
+    "replay": "Replay",
+    "dragHint": "Tap a piece to fly it over!",
+    "tapHint": "Tap each piece to fly it over, or drag it!",
+    "roundOf": "Round {{current}} of {{total}}",
+    "mergePot": "Merge pot — drop everything here",
+    "eatZone": "Eat zone — drag foods here",
+    "removeHint": "Drag {{count}} to the eat zone",
+    "remaining": "{{count}} left",
+    "stepBack": "Back",
+    "stepNext": "Next",
+    "wrongBadge": "Not quite — try another number!",
+    "correctRound": "Yes! Great work!",
+    "sessionDone": "Play session complete! You're warmed up!",
+    "practiceCta": "Let's Practice!",
+    "playAgain": "Play Again",
+    "answerSlot": "Drag the answer here",
+    "showLabel": "Watch how it works, then answer!",
+    "skipShow": "Skip show"
+  },
   "messages": {
     "_note": "Arrays are randomized pools — i18next returnObjects: true to fetch the array, then pick a random index in code.",
-    "celebration": {
-      "small": [
-        "Great job!",
-        "Nice!",
-        "Well done!",
-        "Awesome!",
-        "Super!",
-        "You got it!",
-        "Sweet!",
-        "Nailed it!"
-      ],
-      "medium": [
-        "Amazing!",
-        "Fantastic!",
-        "Wonderful!",
-        "You're on fire!",
-        "Brilliant!",
-        "Way to go!",
-        "You're on a roll!",
-        "Sharp thinking!"
-      ],
-      "large": [
-        "Incredible!",
-        "Outstanding!",
-        "You're a Math Champion!",
-        "Phenomenal!",
-        "Extraordinary!",
-        "Legendary!",
-        "Unstoppable!",
-        "Math royalty!"
-      ]
-    },
     "wrongAnswer": [
       "Nice try! Let's solve it together.",
       "Almost there! Try again!",
@@ -323,22 +193,6 @@
       "So close! One more look and you'll spot it.",
       "That's okay — mistakes help your brain grow!",
       "Good thinking! Let's check it another way."
-    ],
-    "encouragement": [
-      "Keep going! You've got this!",
-      "Every question makes you stronger!",
-      "You're doing great — keep trying!",
-      "Math Explorers never give up!",
-      "One step at a time — you're getting there!",
-      "Your brain is leveling up right now!",
-      "Deep breath — you know more than you think!"
-    ],
-    "levelUp": [
-      "You're leveling up your math skills!",
-      "Getting stronger every question!",
-      "You're becoming a math master!",
-      "New level, new powers — keep exploring!",
-      "Your math superpowers are growing!"
     ],
     "practiceToast": {
       "title": [
@@ -356,7 +210,6 @@
       "description": "Keep it up, Math Explorer!"
     },
     "mascot": {
-      "name": "Nova",
       "speaksAs": "Nova says",
       "hints": {
         "addition": [
@@ -389,19 +242,7 @@
           "Math is about discovery, not speed!",
           "Try saying the numbers out loud — it helps!"
         ]
-      },
-      "celebrations": [
-        "Amazing! You're getting so good at this!",
-        "You discovered the answer all by yourself!",
-        "That was fantastic thinking!",
-        "You're a real Math Explorer!",
-        "Nova is proud of you! Keep going!",
-        "Brilliant! That's how math champions do it!",
-        "Whoa, look at you go!",
-        "Your brain just leveled up!",
-        "Nova is doing a happy dragon dance!",
-        "That's exactly right — nicely solved!"
-      ]
+      }
     }
   },
   "quiz": {
@@ -427,7 +268,6 @@
       "revealedReason": "Revealed {{cardKey}}"
     },
     "factCard": {
-      "equation": "{{table}} × {{group}} = ?",
       "tapToReveal": "Tap to reveal",
       "ariaRevealed": "{{table}} times {{group}} equals {{answer}}",
       "ariaUnrevealed": "{{table}} times {{group}}, tap to reveal"
@@ -554,7 +394,6 @@
       "whatIsTheAnswer": "What is the answer?",
       "checkAnswer": "Check Answer",
       "reviewComplete": "Review complete!",
-      "continue": "Continue",
       "correct": "Correct!"
     },
     "celebrationOverlay": {
@@ -790,36 +629,6 @@
       "name": "Zara the Zebra",
       "item": "stripes"
     },
-    "_note": "emoji and color are NOT translated — only name and item. Used by src/lib/constants.ts CHARACTERS and the story generator in src/lib/utils.ts (generateStoryText).",
-    "storyTemplates": [
-      "Meet <1>{{name}} {{emoji}}</1>! Every single one has exactly <1>{{table}} {{item}}</1>. With just <1>1</1>, that's <1>{{table}} × 1 = {{result}}</1>. Easy peasy!",
-      "Now there are <1>2</1> of {{name}}! Each has <1>{{table}} {{item}}</1>. Count together: <1>{{sequence}}</1>. So <1>{{table}} × 2 = {{result}}</1>!",
-      "Three {{emoji}}{{emoji}}{{emoji}}! Count the {{item}} in groups of {{table}}: <1>{{sequence}}</1>. <1>{{table}} × 3 = {{result}}</1>!",
-      "Four friends join the fun! Count all their {{item}}: <1>{{sequence}}</1>. Remember: <1>{{table}} × 4 = {{result}}</1>!",
-      "Halfway there — 5 of {{name}}! Their {{item}} go: <1>{{sequence}}</1>. <1>{{table}} × 5 = {{result}}</1>!",
-      "Six is a super number! All the {{item}} together: <1>{{sequence}}</1>. <1>{{table}} × 6 = {{result}}</1>!",
-      "Lucky 7! Count each group's {{item}}: <1>{{sequence}}</1>. <1>{{table}} × 7 = {{result}}</1>. You're doing great!",
-      "Eight is great! All their {{item}}: <1>{{sequence}}</1>. <1>{{table}} × 8 = {{result}}</1>!",
-      "Almost at 10! Nine groups, count the {{item}}: <1>{{sequence}}</1>. <1>{{table}} × 9 = {{result}}</1>!",
-      "The big 10! Count ALL the {{item}}: <1>{{sequence}}</1>. <1>{{table}} × 10 = {{result}}</1>! You finished the whole table!"
-    ],
-    "storyTemplateFallback": "{{groupCount}} groups of {{table}} — count them: <1>{{sequence}}</1>. <1>{{table}} × {{groupCount}} = {{result}}</1>!"
-  },
-  "meta": {
-    "title": "Math Adventure - Fun Math Learning for Kids",
-    "description": "Free interactive math learning app for kids. Learn addition, subtraction, multiplication, and division with fun examples, practice problems, and quizzes. Perfect for children aged 5-8.",
-    "keywords": "math for kids, addition, subtraction, multiplication, division, learn math, free math game for kids, educational math game, times tables",
-    "jsonLd": {
-      "name": "Math Adventure",
-      "description": "Free interactive math adventure for kids under 8. Learn addition, subtraction, multiplication, and division — plus times tables 1 to 10 — with fun stories, colourful characters, and progressive unlocking.",
-      "teaches": [
-        "Addition",
-        "Subtraction",
-        "Multiplication",
-        "Division",
-        "Times Tables",
-        "Maths for kids"
-      ]
-    }
+    "_note": "emoji and color are NOT translated — only name and item. Used by src/lib/constants.ts CHARACTERS and the story generator in src/lib/utils.ts (generateStoryText)."
   }
 }

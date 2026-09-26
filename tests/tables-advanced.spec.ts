@@ -120,7 +120,7 @@ test.describe('tables — header interactions', () => {
     await page.goto('/tables');
     await expect(page.getByRole('button', { name: '1 times 3 equals 3' })).toBeVisible();
 
-    await page.getByRole('button', { name: /Reset/ }).first().click();
+    await page.locator('.table-strip').getByRole('button', { name: /Reset/ }).click();
     await page.getByRole('button', { name: /Yes, sure!/ }).click();
 
     await expect(page.getByRole('button', { name: '1 times 3, tap to reveal' })).toBeVisible();

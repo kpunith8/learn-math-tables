@@ -188,15 +188,88 @@ export async function solveQuiz(page: Page, op: Operation, total = 5) {
   await page.getByRole('button', { name: /Continue/ }).click();
 }
 
-export async function completeLearnStage(page: Page, op: Operation) {
-  await page.goto(`/${op}`);
-  await page.getByRole('button', { name: /Got it!/ }).click();
+/** Parse a playground equation like "12 + 7 = ?" (supports + − × ÷). */
+export function parsePlayEquation(text: string): Equation {
+  const m = text.match(/(-?\d+)\s*([+−\-×÷])\s*(-?\d+)/);
+  if (!m) throw new Error(`Could not parse playground equation: "${text}"`);
+  return { a: Number(m[1]), b: Number(m[3]), symbol: m[2] };
+}
 
-  for (let i = 0; i < 4; i++) {
-    await page.getByRole('button', { name: /^Next$/ }).click();
+/** Drain draggable tokens until the answer phase appears. Tolerates a problem-set
+ *  remount landing mid-drain (dev StrictMode/HMR): each fresh set is drainable,
+ *  so simply keep draining whatever is visible. */
+export async function drainPlayTokens(page: Page) {
+  for (let attempt = 0; attempt < 4; attempt++) {
+    let guard = 0;
+    while ((await page.getByTestId(/^play-token-/).count()) > 0 && guard++ < 60) {
+      await page.getByTestId(/^play-token-/).first().click();
+    }
+    if (await page.getByTestId('play-answer-slot').isVisible()) return;
+  }
+  await expect(page.getByTestId('play-answer-slot')).toBeVisible();
+}
+
+/** Tap a token: real click by default, or fast synthetic click for long
+ *  traversal flows (real-pointer fidelity is covered in playground.spec.ts). */
+async function tapPlayToken(page: Page, fast: boolean) {
+  const token = page.getByTestId(/^play-token-/).first();
+  if (fast) {
+    await token.dispatchEvent('click');
+  } else {
+    await token.click();
+  }
+}
+
+/** Finish the manipulate/show phase of one play round (tap-to-fly + clip advance). */
+async function finishPlayRoundSetup(page: Page, op: Operation, fast = false) {
+  if (op === 'addition' || op === 'subtraction') {
+    if (fast) {
+      for (let attempt = 0; attempt < 4; attempt++) {
+        let guard = 0;
+        while ((await page.getByTestId(/^play-token-/).count()) > 0 && guard++ < 60) {
+          await tapPlayToken(page, true);
+        }
+        if (await page.getByTestId('play-answer-slot').isVisible()) return;
+      }
+      await expect(page.getByTestId('play-answer-slot')).toBeVisible();
+    } else {
+      await drainPlayTokens(page);
+    }
+  } else {
+    await page.getByTestId('clip-play').click();
+    for (let s = 0; s < 5; s++) {
+      if (await page.getByTestId('play-answer-slot').isVisible()) break;
+      await page.getByTestId('clip-next').click();
+    }
+    await expect(page.getByTestId('play-answer-slot')).toBeVisible();
+  }
+}
+
+/** Answer one visible play round (equation → correct badge → continue). */
+async function answerPlayRound(page: Page, op: Operation) {
+  const eqText = await page.getByTestId('play-equation').innerText();
+  const answer = computeAnswer(op, parsePlayEquation(eqText));
+  await page.getByTestId(`play-badge-${answer}`).click();
+  // Every round (including the last) ends on a continue button; the final
+  // one flips the session to done and reveals the Practice CTA.
+  await page.getByTestId('play-next-round').click();
+}
+
+export async function completePlayStage(page: Page, op: Operation) {
+  await page.goto(`/${op}/play`);
+  await expect(page.getByTestId('play-equation')).toBeVisible();
+
+  // Loop until done (bounded): a problem-set remount in dev can restart the
+  // session mid-flow, so count the CTA — not iterations.
+  for (let i = 0; i < 10; i++) {
+    await finishPlayRoundSetup(page, op, true);
+    if (await page.getByTestId('play-to-practice').isVisible()) break;
+    await answerPlayRound(page, op);
+    if (await page.getByTestId('play-to-practice').isVisible()) break;
   }
 
-  await page.getByRole('button', { name: /Let's Practice!/ }).click();
+  await expect(page.getByTestId('play-to-practice')).toBeVisible();
+  await page.getByTestId('play-to-practice').click();
   await expect(page).toHaveURL(new RegExp(`/${op}/practice$`));
   await dismissConceptIfPresent(page);
 }

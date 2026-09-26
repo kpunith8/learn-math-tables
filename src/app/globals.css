@@ -222,6 +222,33 @@
   to { opacity: 1; }
 }
 
+@keyframes play-glow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(255, 107, 82, 0.35); }
+  50% { box-shadow: 0 0 0 8px rgba(255, 107, 82, 0); }
+}
+
+@keyframes play-shake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-7px); }
+  40% { transform: translateX(6px); }
+  60% { transform: translateX(-4px); }
+  80% { transform: translateX(3px); }
+}
+
+/* Interactive playground motion (transform/opacity only — GPU friendly). */
+.play-glow {
+  animation: play-glow 1.8s ease-in-out infinite;
+}
+
+.play-shake {
+  animation: play-shake 0.4s ease-out;
+}
+
+.play-dragging {
+  filter: drop-shadow(0 8px 14px rgba(27, 20, 71, 0.3));
+  will-change: transform;
+}
+
 /* Devaangari/Kannada glyphs render smaller at the same px, so Hindi and
    Kannada get a +2px bump. On mobile (where everything reads tiny) the
    bump applies to all languages; on desktop only hi/kn are bumped. */

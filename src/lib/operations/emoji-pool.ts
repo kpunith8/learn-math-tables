@@ -13,7 +13,12 @@ export function pickEmojis(count: number): string[] {
   const available = ALL_EMOJIS.filter((e) => !usedEmojis.has(e));
   const pool = available.length >= count ? available : ALL_EMOJIS;
   if (pool === ALL_EMOJIS) usedEmojis.clear();
-  const shuffled = [...pool].sort(() => Math.random() - 0.5);
+  // Fisher-Yates: unbiased (unlike sort-by-random) and O(n).
+  const shuffled = [...pool];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
   const picked = shuffled.slice(0, count);
   picked.forEach((e) => usedEmojis.add(e));
   return picked;

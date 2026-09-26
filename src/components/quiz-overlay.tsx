@@ -4,8 +4,8 @@ import { useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { ArrowRight, Lightbulb } from 'lucide-react';
-import { MascotMessage, getMascotCelebration } from '@/components/mascot-message';
+import { ArrowRight, Check, Lightbulb } from 'lucide-react';
+import { MascotMessage } from '@/components/mascot-message';
 import { getWrongAnswerMessage } from '@/components/celebration-message';
 
 export interface QuizQuestion {
@@ -169,9 +169,10 @@ export function QuizOverlay({ questions, onComplete, onSkip, onPlaySound }: Quiz
             )}
 
             {phase === 'correct' && (
-              <div className="mt-3 animate-[pop-in_0.3s_ease-out]">
-                <MascotMessage message={getMascotCelebration(t)} className="mx-auto" />
-              </div>
+              <p className="mt-3 font-display text-lg text-leaf flex items-center justify-center gap-1.5 animate-[pop-in_0.3s_ease-out]" role="status">
+                <Check className="w-6 h-6" strokeWidth={2.5} aria-hidden="true" />
+                {t('operations.screen.correctFeedback')}
+              </p>
             )}
 
             <div className="mt-auto pt-4">

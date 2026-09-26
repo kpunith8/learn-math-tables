@@ -55,8 +55,30 @@ the original `src/` sources using the dev server's source maps. Set
 | Route | Description |
 | --- | --- |
 | `/` | Landing page: mission postcard, stats, expedition trail |
-| `/addition`, `/subtraction`, `/multiplication`, `/division` | Operation modules (`/…/difficulty`, `/…/practice`, `/…/quiz`) |
+| `/addition/play`, `/subtraction/play`, `/multiplication/play`, `/division/play` | Interactive playgrounds (drag-and-drop learning, no stars) |
+| `/addition/practice`, `/…/quiz` (per operation) | Typed practice (stars) and multiple-choice quiz (stars) |
 | `/tables` | Times tables app (audio, certificates, leaderboard) |
+| `/tables/play` | Tables playground: skip-count show + drag-the-answer |
+
+Bare `/addition` and legacy `/addition/learn` (plus old `/addition/easy/…`
+difficulty URLs) client-redirect to the modern paths.
+
+## Interactive playground (`/[operation]/play`)
+
+Each operation opens on a hands-on playground instead of a lesson page:
+
+- **Addition** — drag both groups into the merge pot, then drag the total badge to `= ?`.
+- **Subtraction** — the bar shows exactly the items to remove; drag them to the
+  eat zone, see the grouped remainder, then drag the answer.
+- **Multiplication / division / tables** — a press-to-play animated show
+  (arrays, fair-share dealing, skip-counting; dots + Back/Next + swipe), then
+  drag the answer badge.
+- 5 rounds per session, then a Practice CTA. Play awards **zero stars** — scoring
+  stays in practice/quiz.
+- Every tap flies (animated clone arcs to the target); drag, tap, and keyboard
+  (Tab + arrows + Enter) all work, with `prefers-reduced-motion` respected.
+- Manipulatives scale by difficulty: single emojis → tens-frames (ten real mini
+  emojis in a 5×2 grid, always countable) → signed blocks on hard mode.
 
 ## Multi-language support
 
@@ -72,6 +94,11 @@ Multi-language* for the full workflow and a key-parity verification command.
 
 ## Recent changes
 
+- **Interactive playgrounds (`/play`)** — addition/subtraction use full
+  manipulative drag (tens-frames, break-apart free); multiplication/division/
+  tables use press-to-play shows plus drag-the-answer. Shared pointer-events
+  core (`src/components/playground/`, no DnD library), tap-fly animations,
+  keyboard support, zero stars for play. Retired `/learn` (redirects to `/play`).
 - **Multi-language support (en/hi/kn)** — every route, operation generator, and
   the tables app now render translated copy; language persists via localStorage.
 - **Language picker rebuilt on Base UI `Select`** — replaces a native `<select>`

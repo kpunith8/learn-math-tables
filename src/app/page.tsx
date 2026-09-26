@@ -15,10 +15,10 @@ import { UniversalDifficultySelector } from '@/components/universal-difficulty-s
 import { getStarsToNextMilestone, isOperationFullyCompleted } from '@/lib/engines/star-economy';
 
 const TRAIL = [
-  { id: 'addition' as const, emoji: '🏝️', route: '/addition', accent: '#4FA8F5' },
-  { id: 'subtraction' as const, emoji: '🏞️', route: '/subtraction', accent: '#57C278' },
-  { id: 'multiplication' as const, emoji: '⛰️', route: '/multiplication', accent: '#7E8CD9' },
-  { id: 'division' as const, emoji: '🏰', route: '/division', accent: '#FF7A59' },
+  { id: 'addition' as const, emoji: '🏝️', route: '/addition/play', accent: '#4FA8F5' },
+  { id: 'subtraction' as const, emoji: '🏞️', route: '/subtraction/play', accent: '#57C278' },
+  { id: 'multiplication' as const, emoji: '⛰️', route: '/multiplication/play', accent: '#7E8CD9' },
+  { id: 'division' as const, emoji: '🏰', route: '/division/play', accent: '#FF7A59' },
   { id: 'tables' as const, emoji: '👑', route: '/tables', accent: '#F5AB3C' },
 ];
 

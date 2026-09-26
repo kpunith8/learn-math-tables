@@ -1,6 +1,6 @@
 import { test, expect } from './fixtures';
 import {
-  completeLearnStage,
+  completePlayStage,
   solvePracticeProblem,
   solveQuiz,
   readPracticeEquation,
@@ -10,8 +10,9 @@ import {
 
 for (const op of OPERATIONS) {
   test.describe(`${op} flow`, () => {
-    test('learn → practice → quiz completes and returns to the operation page', async ({ page }) => {
-      await completeLearnStage(page, op);
+    test('play → practice → quiz completes and returns to the playground', async ({ page }) => {
+      test.slow();
+      await completePlayStage(page, op);
 
       for (let i = 0; i < 5; i++) {
         await solvePracticeProblem(page, op, i);
@@ -21,7 +22,7 @@ for (const op of OPERATIONS) {
       await expect(page).toHaveURL(new RegExp(`/${op}/quiz$`));
 
       await solveQuiz(page, op);
-      await expect(page).toHaveURL(new RegExp(`/${op}$`));
+      await expect(page).toHaveURL(new RegExp(`/${op}/play$`));
     });
 
     test('legacy difficulty URL redirects to the modern path', async ({ page }) => {
@@ -29,9 +30,14 @@ for (const op of OPERATIONS) {
       await expect(page).toHaveURL(new RegExp(`/${op}/practice$`));
     });
 
+    test('retired learn URL redirects to the playground', async ({ page }) => {
+      await page.goto(`/${op}/learn`);
+      await expect(page).toHaveURL(new RegExp(`/${op}/play$`), { timeout: 15000 });
+      await expect(page.getByTestId('play-equation')).toBeVisible();
+    });
+
     test('three wrong attempts reveal the explanation', async ({ page }) => {
       await page.goto(`/${op}/practice`);
-      await page.getByRole('button', { name: /Got it!/ }).click();
 
       const eq = await readPracticeEquation(page, op);
       const wrong = String(computeAnswer(op, eq) + 1);

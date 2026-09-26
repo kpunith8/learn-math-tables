@@ -21,13 +21,14 @@ npm run test:coverage   # regenerate coverage reports from the last run
 - **Config**: `playwright.config.ts` — `testDir: ./tests`, Chromium-only, `baseURL: http://localhost:3000`, and a `webServer` that runs `npm run dev` (dev server is required because coverage maps V8 data back to `src/` via Turbopack source maps). A `globalTeardown` runs `scripts/generate-coverage.mjs` after the suite (even on failure) so reports always regenerate.
 - **Test fixture**: `tests/fixtures.ts` extends `page` to start/stop `page.coverage` (`resetOnNavigation: false`) and persist raw V8 coverage + per-chunk `.map` files to `coverage/raw/<test>.json`. Set `PW_DISABLE_COVERAGE=1` to skip.
 - **Coverage merge**: `scripts/generate-coverage.mjs` groups raw entries by chunk URL, converts each via `v8-to-istanbul` + `@jridgewell/trace-mapping` (`FlattenMap` for sectioned maps), filters to files under `<cwd>/src/`, merges with `istanbul-lib-coverage`, and emits `text`, `text-summary`, `html`, `lcovonly`, `json` into `coverage/`.
-- **Test files**: `tests/landing.spec.ts` (hero/trail/stats/mission, difficulty + language selectors, name modal skip/save with mocked Turnstile), `tests/operations.spec.ts` (learn→practice→quiz full flow, legacy `/op/easy/practice` redirect, wrong-answer reveal — parameterized over all 4 operations), `tests/tables.spec.ts` (table switch → pattern discovery → card reveal, `/tables/[n]` deep-link), `tests/api-name.spec.ts` (403 without a verifiable Turnstile token). Coverage-driver specs (localStorage seeding + auth + storage edge cases) live in `tests/landing-advanced.spec.ts` (seeded engine → mission/badges/trail, authenticated header, guest sign-in) and `tests/tables-advanced.spec.ts` (state sanitization + garbage storage, table completion → celebration → quiz → leaderboard, retrieval practice, reset, leaderboard overlay, mobile drawer + Escape, mute, drawer buttons, localStorage write-failure, `switchToTable` saved-state restore, tables auth branches). Shared DOM parsing and seeding helpers live in `tests/helpers.ts` (`seedAppState`, `seedEngineState`, `seedName`, `mockKindeAuth`, `solveTablesQuiz`, `revealAllCards`).
+- **Test files**: `tests/landing.spec.ts` (hero/trail/stats/mission, difficulty + language selectors, name modal skip/save with mocked Turnstile), `tests/operations.spec.ts` (play→practice→quiz full flow, legacy `/op/easy/practice` + retired `/op/learn` redirects, wrong-answer reveal — parameterized over all 4 operations), `tests/playground.spec.ts` (pointer drag, tap-fly, keyboard play, clip controls, wrong badge, play-awards-zero-stars, `/tables/play`), `tests/playground-touch.spec.ts` (iPhone touch context: tap + real CDP touchscreen drag), `tests/tables.spec.ts` (table switch → pattern discovery → card reveal, `/tables/[n]` deep-link, timer pause across SPA navigation), `tests/api-name.spec.ts` (403 without a verifiable Turnstile token). Coverage-driver specs (localStorage seeding + auth + storage edge cases) live in `tests/landing-advanced.spec.ts` (seeded engine → mission/badges/trail, authenticated header, guest sign-in) and `tests/tables-advanced.spec.ts` (state sanitization + garbage storage, table completion → celebration → quiz → leaderboard, retrieval practice, reset, leaderboard overlay, mobile drawer + Escape, mute, drawer buttons, localStorage write-failure, `switchToTable` saved-state restore, tables auth branches). Shared DOM parsing and seeding helpers live in `tests/helpers.ts` (`seedAppState`, `seedEngineState`, `seedName`, `mockKindeAuth`, `solveTablesQuiz`, `revealAllCards`, `completePlayStage`, `drainPlayTokens`, `parsePlayEquation`).
 - **Mocking Kinde auth in tests**: mock `**/api/auth/setup` (via `mockKindeAuth`) — `{ message: 'OK', env: {...} }` for guests, plus 3-part base64url fake JWTs (`@kinde/jwt-decoder` skips signature validation; claims need `sub`/`given_name`/`iat`/`exp`) for authenticated sessions. Without the mock, `useKindeBrowserClient` stays `isLoading` forever and the session branches never render. LoginLink/LogoutLink render as `<a>` (use `getByRole('link', ...)`); on tables the desktop row + drawer both render the same controls — use `.first()`.
-- **Selectors you'll rely on**: practice equation is parsed from the input's ancestors (horizontal ×/÷ is `getByLabel('Answer').locator('..').locator('..')`; vertical +/− is three `.locator('..')` up) — read it, compute the answer, fill and submit. Quiz options are `role="radio"` buttons; the question label matches `/-?\d+\s*[+\u2212×÷]\s*-?\d+\s*=\s*\?/`. Base UI Select triggers are `role="combobox"`, items `role="option"`.
+- **Selectors you'll rely on**: practice equation is parsed from the input's ancestors (horizontal ×/÷ is `getByLabel('Answer').locator('..').locator('..')`; vertical +/− is three `.locator('..')` up) — read it, compute the answer, fill and submit. Quiz options are `role="radio"` buttons; the question label matches `/-?\d+\s*[+\u2212×÷]\s*-?\d+\s*=\s*\?/`. Base UI Select triggers are `role="combobox"`, items `role="option"`. Playground hooks: `play-equation`, `play-token-<id>`, `play-dropzone`/`play-answer-slot`, `play-badge-<n>`, `play-next-round`, `play-to-practice`, `clip-play`/`clip-next`/`clip-back`/`clip-skip`/`clip-dot-<i>`; tables timer is `.timer-display`. Long traversal flows use synthetic `dispatchEvent('click')` taps via `completePlayStage(..., fast)` — real-pointer fidelity lives in `playground.spec.ts`, not in traversal helpers.
 - **Name-save test** stubs `window.turnstile` via `addInitScript` (`render`/`getResponse`/`reset`/`remove`), route-aborts `challenges.cloudflare.com/**`, and route-fulfills `POST /api/name`.
 - **Storage keys used by tests**: `mathAdvDifficulty`, `math-adventure-language`, `mathAdvName`, `mathAdventure` (`STORAGE_KEY`), `mathAdvEngine`, `mathAdvLeaderboard`.
 - **Storage keys (app code)**: canonical map in `src/lib/storage-keys.ts` (`STORAGE_KEYS` + `STORAGE_SCHEMA_VERSION`) — import from there, never hardcode key strings. Current values are the v1 schema; on an incompatible schema change, bump the version and read `versionedKey()` first with legacy fallback + migration (never orphan a kid's saved progress). Tests seed the raw v1 strings (see `tests/helpers.ts`).
 - **Hydration guardrail**: `tests/fixtures.ts` fails any test whose page logs a React hydration error (matches `/hydration/i` on console errors + pageerrors). If you touch first-render output or storage hydration, this suite catches SSR/client divergence — do NOT weaken the matcher to silence it; fix the divergence.
+- **Do NOT edit files while the suite runs.** The dev server's Fast Refresh remounts pages mid-test on file changes, which regenerates randomized problems and orphans in-flight tap/drag loops (symptoms: equation text swaps mid-test, tokens reappear, `play-to-practice` never arrives). Let the run finish, then edit, then re-run. Cold starts can also stall first navigations — retries (`1` local / `2` CI) plus the bounded retry loops in `tests/helpers.ts` (`drainPlayTokens`, `completePlayStage`) absorb single remounts; repeated drain failures across retries mean a real bug, not noise.
 - **Deprecated `page.coverage`** (Chromium-only) is used intentionally for coverage; it logs a deprecation warning — that's expected.
 - Artifacts: `playwright-report/`, `test-results/`, `coverage/` are git-ignored.
 
@@ -55,9 +56,12 @@ npm run test:coverage   # regenerate coverage reports from the last run
 /multiplication/[[...segments]]
 /division/[[...segments]]
 /tables              Legacy tables app (separate codebase)
+/tables/play         Tables playground (standalone)
+/addition/play …     Per-operation playgrounds (learning entry point)
 ```
 
-Operation catch-all pattern: `/[operation]` (learn), `/[operation]/learn`, `/[operation]/practice`, `/[operation]/quiz`.
+Operation catch-all pattern: `/[operation]/play`, `/[operation]/practice`, `/[operation]/quiz`.
+`/learn` is retired (redirects to `/play`); bare `/[operation]` also redirects to `/play`.
 There is **no per-operation difficulty chooser page** — difficulty is global (see **Universal difficulty** below). Legacy URLs
 like `/addition/easy/practice` are client-redirected (in `OperationFlow`) to `/addition/practice`.
 
@@ -81,25 +85,25 @@ All app-wide client context is composed in one `Providers` component (used in ro
 
 ### Module structure (addition, subtraction, multiplication, division)
 
-Each operation module has 4 files and must export all 4 functions:
+Each operation module exports 2 functions (learn/concept generators were removed when `/learn` retired):
 
 ```
 src/lib/operations/{operation}.ts
-  ├── generateLearnExamples(d: DifficultyLevel, t: Translate) → Example[]
   ├── generatePracticeProblems(d: DifficultyLevel, t: Translate) → PracticeProblem[]
-  ├── generateQuizQuestions(d: DifficultyLevel, t: Translate) → QuizQuestion[]
-  └── getConceptIntro(d: DifficultyLevel, t: Translate) → ConceptIntro | null
+  └── generateQuizQuestions(d: DifficultyLevel, t: Translate) → QuizQuestion[]
 ```
 
-Shared types at `src/lib/operations/types.ts` (`Operation`, `DifficultyLevel`, `Stage`, `Example`, `PracticeProblem`, `QuizQuestion`, `ConceptIntro`, `Translate`, `OPERATION_META`, `EMOJI_SAFE_LIMIT`). `Translate = (key: string, options?: Record<string, unknown>) => string`.
+Shared types at `src/lib/operations/types.ts` (`Operation`, `DifficultyLevel`, `PracticeProblem`, `QuizQuestion`, `Translate`, `OPERATION_META`, `EMOJI_SAFE_LIMIT`). `Translate = (key: string, options?: Record<string, unknown>) => string`.
 
-Each route's page.tsx is a thin Client Component wrapper importing `OperationFlow` and the 4 generation functions.
+Each route's page.tsx is a thin Client Component wrapper importing `OperationFlow` and the 2 generation functions.
 
 ### Component tree
 
-- `OperationFlow` (state machine driven by `useParams()` URL segments: optional first segment = stage)
-- `ConceptIntroCard` (optional) → `WorkedExample` (5) → `PracticeProblemView` (6) → `ProblemSummaryList` → `QuizOverlay`
-- **`QuizOverlay` is conditionally mounted** (no `isOpen` prop — render it only when quiz starts to avoid cascade warning)
+- `OperationFlow` (state machine driven by `useParams()` URL segments: optional first segment = stage, one of `play`/`practice`/`quiz`)
+- `/{play}` → per-operation playground (`addition-playground`, `subtraction-playground`, `Multiplication/DivisionPlayground` in `show-then-answer.tsx`), composed from `src/components/playground/` primitives: `PlaygroundShell` (gradient header, round dots, Replay/Practice CTA), `DraggableItem` + `DropZone` (`drag-core.tsx`), `CountBadge`, `ShowClip` (press-to-play explainer: dots + Back/Next + swipe), `Manipulative`/`TokenFace` (tens = 5×2 mini-emoji frames, always countable), `playground-utils.ts` (`buildTokens`, `makeAnswerOptions`), `flyClone` (tap-to-fly arc animation)
+- `/{practice}` → `PracticeProblemView` (5, `key={currentProblemIndex}` reset) → `ProblemSummaryList` → `QuizOverlay`
+- **Playgrounds and `QuizOverlay` are client-only** (`dynamic(..., { ssr: false })`) because they render randomized content on first paint — SSR HTML must stay deterministic for hydration. Practice content additionally gates on `useDifficulty().isLoaded` (deterministic skeleton first). Never render `randInt`-derived content on first paint.
+- **`QuizOverlay` is conditionally mounted** (no `isOpen` prop — render it only when quiz starts to avoid cascade warning). Its correct-answer state shows a check + `operations.screen.correctFeedback` (no mascot).
 - `NameModal` only shows on landing page when `isLoaded && !state.playerName`
 
 ### State management
@@ -126,6 +130,7 @@ sets `document.documentElement.lang` on language change. Use `useTranslation()` 
 - Only `_note` documentation keys may be en-only (there are exactly 4). Verify parity:
   `node -e "const fs=require('fs');const L=l=>JSON.parse(fs.readFileSync('src/i18n/locales/'+l+'.json','utf8'));const leaf=(o,p='')=>{const r=[];for(const k in o){const np=p?p+'.'+k:k;o[k]&&typeof o[k]==='object'&&!Array.isArray(o[k])?r.push(...leaf(o[k],np)):r.push(np)}return r};const en=leaf(L('en')).sort();const hi=new Set(leaf(L('hi'))),kn=new Set(leaf(L('kn')));console.log(en.filter(k=>!hi.has(k)||!kn.has(k)))"`
 - In components: `const { t } = useTranslation()`. In operation generators: receive `t: Translate` and call `t('key', { var })`.
+- **Interpolation is `{{var}}` double braces, always.** Single braces render literally (this has bitten before — verify visually, not just by reading tool output). The parity script only checks key presence, not brace shape.
 - **`TFunction` type is imported from `i18next`, NOT `react-i18next`** (v17 doesn't export it).
 - `getMascotHint(t, operation?)` — `t` is the FIRST argument.
 - Difficulty key is `common.difficulty.${level}.desc` (NOT `.description`).
@@ -135,11 +140,13 @@ sets `document.documentElement.lang` on language change. Use `useTranslation()` 
 ### Tables module (`/tables`)
 
 Legacy feature with its own components in `src/components/` (app-header, celebration, certificate, leaderboard, fact-card, illustration-panel, table-selector, progress-bar, pattern-discovery). Has audio (Web Speech), SVG generation, hamburger drawer. No name modal. Also has a `/tables/[table]` deep-link route (1–20) that seeds the app to that table; its metadata is generated in `tables/[table]/layout.tsx`.
+- **Header split**: `AppHeader` renders a dark `bg-header` nav (Home + title + actions) followed by a separate light `.table-strip` section (table pills + desktop Reset) in the previous lavender. The drawer panel stays light.
+- **Timer pause**: the `ProgressBar` timer runs off persisted `state.tableStartTime`. A mount/unmount effect in `tables/page.tsx` stashes the leave time in a module var and shifts `tableStartTime` forward by the away duration on return (via `updateState`, no schema change) — elapsed time and star ratings exclude SPA-away time. Skipped when the timer never started (`0`). Full reloads intentionally don't pause (module state dies with the document).
 
 ### SEO metadata
 
 - Site URL lives in `src/lib/site.ts` (`SITE_URL`, `SITE_NAME`, `SITE_DESCRIPTION`) — change the domain there, never hardcode it.
-- Pages are client components, so per-route metadata lives in **server `layout.tsx`** files (one per operation, `tables/layout.tsx`, `tables/[table]/layout.tsx`).
+- Pages are client components, so per-route metadata lives in **server `layout.tsx`** files (one per operation, `tables/layout.tsx`, `tables/play/layout.tsx`, `tables/[table]/layout.tsx`). `OP_STAGES` in `sitemap.ts` is `['play', 'practice', 'quiz']` plus a standalone `/tables/play` entry.
 - **When adding a new route**: add a `layout.tsx` exporting `Metadata` (unique `title`, `description`, `alternates.canonical`) and add the URL to `src/app/sitemap.ts`.
 - OG/Twitter images are generated with `next/og` in `src/app/opengraph-image.tsx` / `twitter-image.tsx` (shared design in `og-image.tsx`). `robots.ts` and `sitemap.ts` live in `src/app/`.
 - `generateMetadata` plain-string `title`s do NOT get the root `title.template` suffix applied — append `| Math Adventure` explicitly (see `tables/[table]/layout.tsx`).
@@ -155,7 +162,10 @@ Legacy feature with its own components in `src/components/` (app-header, celebra
 - **Practice problems**: 5 per session, 3 attempts before revealing answer; all content (examples, practice, quiz) uses `randInt` so it's different each visit — no fixed pools and no `generatedForRef` caching
 - **Input width**: `w-[clamp(70px,25vw,100px)]` for number blanks; `+/-` toggle button with `gap-1.5` from input; stacked vertical layout has `mt-3 pt-2` from the border line
 - **Practice feedback**: Correct answer fires a base-ui `Toast` (stacked, `type='success'`, `timeout=2000`) at top-center with ✅ check mark — not inline banners or Nova dialog
-- **Concept intro** and practice content are mutually exclusive (`!showConcept` guards the practice section)
+- **Playground drag core** (`drag-core.tsx`): Pointer Events with move/up tracked on `window` (deliberately NO pointer capture — it can throw on some mouse/pen stacks and silently kill gestures); per-gesture closures so handlers never go stale. Hit-testing is point-in-rect against a live zone registry (+8px forgiveness), never `elementFromPoint` (stacking/overlays can't swallow drops). A `blur` listener abandons interrupted gestures so a stuck drag never blocks later taps.
+- **Playground remounts**: `OperationFlow` keys each playground by problem signature (`playKey`) — a regenerated problem set remounts with fresh round state instead of stranding stale drops. Never `setState` in an effect to reset round state (repo lint forbids it) — use keys.
+- **Subtraction shows the subtrahend**: the remove-bar holds exactly the `b` items (never the `a` bar — removing e.g. 11 from bare ten-frames needs an undiscoverable split). The `a − b` remainder is revealed grouped before the answer badges.
+- **Playground copy is tap-first** (`playground.*` keys): tap works everywhere drag does, so hints lead with tap ("Tap a piece to fly it over!").
 - **Use shadcn components for generic UI** — import from `@/components/ui/` (`Button`, `Dialog` + `DialogContent/Header/Title/Description/Footer`, `Input`, `Card`, `Badge`, `Progress`) instead of hand-rolling raw JSX (`<button>`, custom modal `<div>`s). Add missing ones with `npx shadcn@latest add <item>`. Base UI is also fine for low-level primitives already in use (Toast, Select).
 - **Use lucide-react icons for all glyphs** — buttons, feedback, and decorative marks use lucide SVGs (`Check`, `ArrowRight`, `RefreshCcw`, `BicepsFlexed`, `ThumbsUp`, `User`, `Plus`/`Minus`/`X`/`Divide`, etc.). Avoid emoji characters. `OPERATION_META` stores each operation's `icon: LucideIcon` (see `src/lib/operations/types.ts`).
 - **shadcn `@acme` registries in docs are placeholders** — no public ACME registry exists

@@ -11,19 +11,23 @@ import { useDifficulty } from '@/lib/contexts/DifficultyContext';
 import { useEngineState } from '@/lib/hooks/useEngineState';
 import { useAudio } from '@/lib/hooks/useAudio';
 import {
-  Operation, DifficultyLevel, Example, PracticeProblem,
-  QuizQuestion, ConceptIntro, OPERATION_META, Translate,
+  Operation, DifficultyLevel, PracticeProblem,
+  QuizQuestion, OPERATION_META, Translate,
 } from '@/lib/operations/types';
 import { Button } from '@/components/ui/button';
 import { House, User, ArrowLeft, ArrowRight, BicepsFlexed, Check } from 'lucide-react';
 import { resetEmojiPool } from '@/lib/operations/emoji-pool';
 import { isOperationFullyCompleted } from '@/lib/engines/star-economy';
 import { STAR_CAPS } from '@/lib/engines/types';
-import { ConceptIntroCard } from './concept-intro-card';
-import { WorkedExample } from './worked-example';
 import { PracticeProblemView } from './practice-problem';
 import { ProblemSummaryList } from './problem-summary';
-import { MascotMessage, getMascotHint } from '@/components/mascot-message';
+
+// Playgrounds render randomized content on first paint, so (like QuizOverlay)
+// they mount client-only to keep SSR HTML deterministic for hydration.
+const AdditionPlayground = dynamic(() => import('@/components/playground/addition-playground').then((m) => m.AdditionPlayground), { ssr: false });
+const SubtractionPlayground = dynamic(() => import('@/components/playground/subtraction-playground').then((m) => m.SubtractionPlayground), { ssr: false });
+const MultiplicationPlayground = dynamic(() => import('@/components/playground/show-then-answer').then((m) => m.MultiplicationPlayground), { ssr: false });
+const DivisionPlayground = dynamic(() => import('@/components/playground/show-then-answer').then((m) => m.DivisionPlayground), { ssr: false });
 
 const QuizOverlay = dynamic(() => import('@/components/quiz-overlay').then((m) => m.QuizOverlay), { ssr: false });
 
@@ -55,10 +59,8 @@ function PracticeToastList() {
 
 interface OperationFlowProps {
   operation: Operation;
-  generateLearnExamples: (d: DifficultyLevel, t: Translate) => Example[];
   generatePracticeProblems: (d: DifficultyLevel, t: Translate) => PracticeProblem[];
   generateQuizQuestions: (d: DifficultyLevel, t: Translate) => QuizQuestion[];
-  getConceptIntro: (d: DifficultyLevel, t: Translate) => ConceptIntro | null;
 }
 
 function OperationIcon({ operation, className }: { operation: Operation; className?: string }) {
@@ -68,10 +70,8 @@ function OperationIcon({ operation, className }: { operation: Operation; classNa
 
 export function OperationFlow({
   operation,
-  generateLearnExamples: genExamples,
   generatePracticeProblems: genPractice,
   generateQuizQuestions: genQuiz,
-  getConceptIntro,
 }: OperationFlowProps) {
   const router = useRouter();
   const params = useParams();
@@ -79,12 +79,12 @@ export function OperationFlow({
   const { playSound } = useAudio();
   const engine = useEngineState();
   const { t } = useTranslation();
-  const { difficulty } = useDifficulty();
+  const { difficulty, isLoaded: difficultyLoaded } = useDifficulty();
   const { isAuthenticated, user } = useKindeBrowserClient();
   const sessionName = isAuthenticated ? user?.given_name || '' : '';
 
   const segments = params.segments as string[] | undefined;
-  const STAGES = ['learn', 'practice', 'quiz'] as const;
+  const STAGES = ['play', 'practice', 'quiz'] as const;
   const DIFFICULTIES = ['easy', 'medium', 'hard'] as const;
 
   // Legacy URLs like /addition/easy/practice carried the difficulty in the path.
@@ -95,57 +95,55 @@ export function OperationFlow({
   const legacyStage = legacyDifficulty
     ? segments && segments.length > 1 && (STAGES as readonly string[]).includes(segments[1])
       ? (segments[1] as (typeof STAGES)[number])
-      : 'learn'
-    : 'learn';
+      : 'play'
+    : 'play';
 
-  const urlStage: (typeof STAGES)[number] =
-    segments && segments.length > 0 && (STAGES as readonly string[]).includes(segments[0])
-      ? (segments[0] as (typeof STAGES)[number])
-      : legacyStage;
+  // `/learn` is retired — the playground is the learning entry now.
+  const rawStage = segments && segments.length > 0 && (STAGES as readonly string[]).includes(segments[0])
+    ? (segments[0] as (typeof STAGES)[number])
+    : legacyStage;
+  const retiredLearn = segments?.[0] === 'learn';
+  const bareOperation = !segments || segments.length === 0;
+  const urlStage: (typeof STAGES)[number] = retiredLearn || bareOperation ? 'play' : rawStage;
 
   const activeDifficulty = legacyDifficulty ?? difficulty;
 
   useEffect(() => {
-    if (!legacyDifficulty) return;
-    const target = urlStage === 'learn' ? `/${operation}` : `/${operation}/${urlStage}`;
-    router.replace(target);
-  }, [legacyDifficulty, urlStage, operation, router]);
+    if (legacyDifficulty) {
+      router.replace(`/${operation}/${urlStage}`);
+      return;
+    }
+    // Retired routes land on the playground.
+    if (retiredLearn || bareOperation) {
+      router.replace(`/${operation}/play`);
+    }
+  }, [legacyDifficulty, retiredLearn, bareOperation, urlStage, operation, router]);
 
   const meta = OPERATION_META[operation];
-  const metaName = t(`operations.meta.${operation}.name`, meta.name);
 
   const generatedContent = useMemo(() => {
     if (!activeDifficulty) return null;
     resetEmojiPool();
-    const examples = genExamples(activeDifficulty, t);
     const problems = genPractice(activeDifficulty, t);
     const quizzes = genQuiz(activeDifficulty, t);
-    const intro = getConceptIntro(activeDifficulty, t);
-    return { examples, problems, quizzes, intro };
-  }, [activeDifficulty, genExamples, genPractice, genQuiz, getConceptIntro, t]);
+    return { problems, quizzes };
+  }, [activeDifficulty, genPractice, genQuiz, t]);
 
-  const learnExamples: Example[] = generatedContent?.examples ?? [];
   const practiceProblems: PracticeProblem[] = generatedContent?.problems ?? [];
   const quizQuestions: QuizQuestion[] = generatedContent?.quizzes ?? [];
-  const conceptIntro: ConceptIntro | null = generatedContent?.intro ?? null;
 
-  const [currentExampleIndex, setCurrentExampleIndex] = useState(0);
   const [currentProblemIndex, setCurrentProblemIndex] = useState(0);
   const [practiceCorrectCount, setPracticeCorrectCount] = useState(0);
   const [showSummary, setShowSummary] = useState(false);
   const [fadeOut, setFadeOut] = useState(false);
-  const [conceptDismissed, setConceptDismissed] = useState(false);
-  const showConcept = conceptIntro != null && !conceptDismissed;
 
   useEffect(() => {
     if (difficulty) {
       const id = setTimeout(() => {
-        setCurrentExampleIndex(0);
         setCurrentProblemIndex(0);
         setPracticeCorrectCount(0);
         setShowSummary(false);
         setFadeOut(false);
-        setConceptDismissed(false);
       }, 0);
       return () => clearTimeout(id);
     }
@@ -153,46 +151,12 @@ export function OperationFlow({
 
   useEffect(() => {
     const id = setTimeout(() => {
-      if (urlStage === 'practice' || urlStage === 'learn') {
+      if (urlStage === 'practice' || urlStage === 'play') {
         setShowSummary(false);
       }
     }, 0);
     return () => clearTimeout(id);
   }, [urlStage]);
-
-  const handleConceptDone = useCallback(() => {
-    setConceptDismissed(true);
-  }, []);
-
-  const goToExample = useCallback((index: number) => {
-    if (index === currentExampleIndex) return;
-    setFadeOut(true);
-    setTimeout(() => {
-      setCurrentExampleIndex(index);
-      setFadeOut(false);
-      playSound('click');
-    }, 200);
-  }, [currentExampleIndex, playSound]);
-
-  const handlePreviousExample = useCallback(() => {
-    if (currentExampleIndex > 0) {
-      goToExample(currentExampleIndex - 1);
-    }
-  }, [currentExampleIndex, goToExample]);
-
-  const handleNextExample = useCallback(() => {
-    if (currentExampleIndex < learnExamples.length - 1) {
-      setFadeOut(true);
-      setTimeout(() => {
-        setCurrentExampleIndex((i) => i + 1);
-        setFadeOut(false);
-        playSound('click');
-      }, 200);
-    } else {
-      engine.awardLessonComplete(`${operation}:${activeDifficulty}`);
-      router.push(`/${operation}/practice`);
-    }
-  }, [currentExampleIndex, learnExamples.length, playSound, router, operation, activeDifficulty, engine]);
 
   const handlePracticeComplete = useCallback(
     (correct: boolean) => {
@@ -261,25 +225,60 @@ export function OperationFlow({
       if (allOps.every((op) => isOperationFullyCompleted(hypotheticalStars, op))) {
         engine.unlockBadge('math-explorer');
       }
-      router.push(`/${operation}`);
+      router.push(`/${operation}/play`);
     },
     [router, operation, activeDifficulty, engine]
   );
 
   const handleQuizSkip = useCallback(() => {
-    router.push(`/${operation}`);
+    router.push(`/${operation}/play`);
   }, [router, operation]);
 
   const handleBackToMenu = useCallback(() => {
     router.push('/');
   }, [router]);
 
-  const currentExample = learnExamples[currentExampleIndex];
+  const handlePlayToPractice = useCallback(() => {
+    router.push(`/${operation}/practice`);
+  }, [router, operation]);
+
   const currentProblem = practiceProblems[currentProblemIndex];
+
+  // The playground is its own full screen (no stars awarded — pure learning).
+  // Keyed by problem signature so a regenerated problem set (difficulty /
+  // language change) remounts with fresh round state instead of stale drops.
+  if (urlStage === 'play') {
+    const playKey = practiceProblems.map((p) => `${p.operand1}x${p.operand2}`).join('|');
+    const playground = (() => {
+      switch (operation) {
+        case 'addition':
+          return <AdditionPlayground key={playKey} problems={practiceProblems} accent={meta.color} onPractice={handlePlayToPractice} onHome={handleBackToMenu} />;
+        case 'subtraction':
+          return <SubtractionPlayground key={playKey} problems={practiceProblems} accent={meta.color} onPractice={handlePlayToPractice} onHome={handleBackToMenu} />;
+        case 'multiplication':
+          return <MultiplicationPlayground key={playKey} problems={practiceProblems} accent={meta.color} onPractice={handlePlayToPractice} onHome={handleBackToMenu} />;
+        case 'division':
+          return <DivisionPlayground key={playKey} problems={practiceProblems} accent={meta.color} onPractice={handlePlayToPractice} onHome={handleBackToMenu} />;
+      }
+    })();
+    return (
+      <Toast.Provider toastManager={practiceToastManager}>
+        {playground}
+        <Toast.Portal>
+          <Toast.Viewport className="fixed top-20 inset-x-4 z-50 flex flex-col items-center gap-2 sm:left-auto sm:right-4 sm:items-end sm:max-w-[360px]">
+            <PracticeToastList />
+          </Toast.Viewport>
+        </Toast.Portal>
+      </Toast.Provider>
+    );
+  }
 
   return (
     <Toast.Provider toastManager={practiceToastManager}>
-    <div className="font-body min-h-screen bg-surface">
+    <div
+      className="font-body min-h-screen"
+      style={{ background: `linear-gradient(180deg, ${meta.color}1f 0%, var(--color-paper) 30%)` }}
+    >
       <div className="bg-header text-white px-3 py-2 sm:px-4 sm:py-3 flex items-center justify-between gap-1 flex-wrap">
         <div className="flex items-center gap-1">
           <button
@@ -290,11 +289,11 @@ export function OperationFlow({
             <House className="w-6 h-6 text-white/80" strokeWidth={2} />
           </button>
           <button
-            onClick={() => router.push(`/${operation}`)}
+            onClick={() => router.push(`/${operation}/play`)}
             className="font-display text-base text-white p-1.5 min-h-[44px] flex items-center gap-1 hover:text-white/80 transition-colors cursor-pointer"
           >
             <OperationIcon operation={operation} className="w-6 h-6 text-white" />
-            {metaName}
+            {t(`operations.meta.${operation}.name`, meta.name)}
           </button>
         </div>
         <div className="flex items-center justify-end gap-1.5 flex-wrap">
@@ -317,90 +316,30 @@ export function OperationFlow({
         </div>
       </div>
 
-      {!showConcept && (urlStage === 'learn' || (urlStage === 'practice' && !showSummary)) && (
+      {urlStage === 'practice' && !showSummary && (
         <div className="flex justify-center gap-2 py-3">
-          {urlStage === 'learn'
-            ? learnExamples.map((_, i) => (
-                <button
-                  key={i}
-                  onClick={() => goToExample(i)}
-                  aria-label={t('operations.screen.goToExample', { index: i + 1 })}
-                  className="flex items-center justify-center w-7 h-7 cursor-pointer"
-                >
-                  <span
-                    className={`w-2.5 h-2.5 rounded-full transition-colors duration-200 ${
-                      i === currentExampleIndex ? 'bg-coral' : i < currentExampleIndex ? 'bg-leaf' : 'bg-mist'
-                    }`}
-                  />
-                </button>
-              ))
-            : practiceProblems.map((_, i) => (
-                <div
-                  key={i}
-                  className={`w-2.5 h-2.5 rounded-full transition-colors duration-200 ${
-                    i === currentProblemIndex ? 'bg-coral' : i < currentProblemIndex ? 'bg-leaf' : 'bg-mist'
-                  }`}
-                />
-              ))}
+          {practiceProblems.map((_, i) => (
+            <div
+              key={i}
+              className={`w-2.5 h-2.5 rounded-full transition-colors duration-200 ${
+                i === currentProblemIndex ? 'bg-coral' : i < currentProblemIndex ? 'bg-leaf' : 'bg-mist'
+              }`}
+            />
+          ))}
         </div>
       )}
 
-      {showConcept && conceptIntro && urlStage !== 'quiz' && (
-        <div className="flex justify-center p-6">
-          <ConceptIntroCard copy={conceptIntro.copy} onDone={handleConceptDone} />
+      {urlStage === 'practice' && !difficultyLoaded && (
+        <div className="flex flex-col items-center p-4 sm:p-6" aria-busy="true">
+          <h2 className="font-display text-[20px] text-orange mb-2 flex items-center gap-1.5">
+            {t('operations.screen.timeToPractice')}
+            <BicepsFlexed className="w-5 h-5" />
+          </h2>
+          <div className="w-full max-w-[420px] bg-card rounded-2xl border-2 border-mist p-5 animate-pulse min-h-[280px]" />
         </div>
       )}
 
-      {urlStage === 'learn' && !showConcept && currentExample && (
-        <div className="flex flex-col items-center p-6">
-          <div className="flex items-center gap-3 mb-4">
-            <h2 className="font-display text-[20px] text-orange">
-              {t('operations.screen.letsLearn', { name: metaName })}
-            </h2>
-          </div>
-          <MascotMessage message={getMascotHint(t, operation)} className="mb-4" />
-          <div className={`transition-opacity duration-200 ${fadeOut ? 'opacity-0' : 'opacity-100'}`}>
-            <WorkedExample example={currentExample} />
-          </div>
-          <div className="mt-5 flex items-center justify-center gap-3">
-            {currentExampleIndex > 0 && (
-              <Button
-                onClick={handlePreviousExample}
-                variant="secondary"
-                size="xl"
-              >
-                <ArrowLeft className="w-4 h-4" />
-                {t('common.buttons.back')}
-              </Button>
-            )}
-          <Button
-            onClick={handleNextExample}
-            variant="indigo"
-            size="xl"
-          >
-            {currentExampleIndex < learnExamples.length - 1 ? (
-              <>
-                {t('common.buttons.next')}
-                <ArrowRight className="w-4 h-4" />
-              </>
-            ) : (
-              <>
-                {t('operations.screen.letsGoPractice')}
-                <BicepsFlexed className="w-4 h-4" />
-              </>
-            )}
-          </Button>
-          </div>
-
-          {currentExampleIndex < learnExamples.length - 1 && (
-            <p className="font-body text-sm text-text-dim mt-3">
-              {t('operations.screen.viewAllToUnlock', 'View all examples to unlock practice')}
-            </p>
-          )}
-        </div>
-      )}
-
-      {urlStage === 'practice' && !showConcept && !showSummary && currentProblem && (
+      {urlStage === 'practice' && difficultyLoaded && !showSummary && currentProblem && (
         <div className="flex flex-col items-center p-4 sm:p-6">
           <h2 className="font-display text-[20px] text-orange mb-2 flex items-center gap-1.5">
             {t('operations.screen.timeToPractice')}
@@ -415,6 +354,15 @@ export function OperationFlow({
               onComplete={handlePracticeComplete}
             />
           </div>
+          <Button
+            onClick={() => router.push(`/${operation}/play`)}
+            variant="secondary"
+            size="sm"
+            className="mt-4"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            {t('playground.title')}
+          </Button>
         </div>
       )}
 
@@ -435,6 +383,19 @@ export function OperationFlow({
           onSkip={handleQuizSkip}
           onPlaySound={playSound}
         />
+      )}
+
+      {urlStage === 'practice' && !showSummary && (
+        <div className="flex justify-center pb-6">
+          <Button
+            onClick={() => router.push(`/${operation}/quiz`)}
+            variant="ghost"
+            size="sm"
+          >
+            {t('common.buttons.skip')}
+            <ArrowRight className="w-4 h-4" />
+          </Button>
+        </div>
       )}
     </div>
 

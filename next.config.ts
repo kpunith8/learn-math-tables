@@ -20,6 +20,11 @@ const securityHeaders = [
 ];
 
 const nextConfig: NextConfig = {
+  // Rule bundle-barrel-imports: per-icon `lucide-react` imports resolve to
+  // direct module imports (Base UI is already imported via subpaths).
+  experimental: {
+    optimizePackageImports: ['lucide-react'],
+  },
   logging: {
     // Forward only errors to the terminal. The dev server relays browser
     // console output (default `'warn'`), which turns intentional fault-injection

@@ -23,10 +23,16 @@ const ConfirmDialog = dynamic(() => import('@/components/confirm-dialog').then((
 const PatternDiscovery = dynamic(() => import('@/components/pattern-discovery').then((m) => m.PatternDiscovery), { ssr: false });
 const RetrievalPractice = dynamic(() => import('@/components/retrieval-practice').then((m) => m.RetrievalPractice), { ssr: false });
 
+// Timestamp (ms) when the player last navigated away from /tables. Module
+// scope survives SPA navigations (unlike component state) and resets on full
+// reload — exactly the lifetime needed to exclude away-time from the timer.
+let tablePauseStartedAt = 0;
+
 export default function TablesPage({ initialTable }: { initialTable?: number } = {}) {
   const {
     state,
     isLoaded,
+    updateState,
     switchToTable,
     saveCurrentTableState,
     setDifficulty,
@@ -155,6 +161,23 @@ export default function TablesPage({ initialTable }: { initialTable?: number } =
   useEffect(() => {
     completedCheckRef.current.clear();
   }, [state.currentTable]);
+
+  // Pause the table timer while navigated away: stash the leave time on
+  // unmount and shift tableStartTime forward by the away duration on return,
+  // so elapsed time (and star ratings) never include time spent elsewhere.
+  // Skipped when the timer never started (tableStartTime 0).
+  useEffect(() => {
+    if (tablePauseStartedAt > 0) {
+      const awayMs = Date.now() - tablePauseStartedAt;
+      tablePauseStartedAt = 0;
+      if (awayMs > 0) {
+        updateState((prev) => (prev.tableStartTime > 0 ? { ...prev, tableStartTime: prev.tableStartTime + awayMs } : prev));
+      }
+    }
+    return () => {
+      tablePauseStartedAt = Date.now();
+    };
+  }, [updateState]);
 
   // Keyboard navigation
   useEffect(() => {
