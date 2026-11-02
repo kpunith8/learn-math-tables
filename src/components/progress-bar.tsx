@@ -27,8 +27,8 @@ export function ProgressBar({ completedTables, difficulty, practiceMode, tableSt
       </span>
       <div className="progress-track flex-1 h-2 bg-mist rounded-full overflow-hidden">
         <div
-          className="progress-fill h-full rounded-full transition-[width] duration-500 ease-out"
-          style={{ width: `${percentage}%`, background: 'linear-gradient(90deg, var(--color-gold), var(--color-coral))' }}
+          className="progress-fill h-full w-full origin-left rounded-full transition-transform duration-500 ease-out motion-reduce:transition-none"
+          style={{ transform: `scaleX(${percentage / 100})`, background: 'linear-gradient(90deg, var(--color-gold), var(--color-coral))' }}
         />
       </div>
       <span className="timer-display font-display text-[13px] text-text-secondary font-bold whitespace-nowrap">

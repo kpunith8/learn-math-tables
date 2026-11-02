@@ -286,9 +286,14 @@ export function useEngineState() {
     [persist]
   );
 
-  const getWeakFactsList = () => getWeakFacts(engineState.masteryMap);
-  const getDueFactsList = () => getDueFacts(engineState.masteryMap);
-  const getNewBadges = () => engineState.achievements.filter((a) => a.unlockedAt !== null);
+  // Derived lists stay referentially stable while the underlying slice is
+  // unchanged, so consumers can depend on them without re-running effects.
+  const getWeakFactsList = useCallback(() => getWeakFacts(engineState.masteryMap), [engineState.masteryMap]);
+  const getDueFactsList = useCallback(() => getDueFacts(engineState.masteryMap), [engineState.masteryMap]);
+  const getNewBadges = useCallback(
+    () => engineState.achievements.filter((a) => a.unlockedAt !== null),
+    [engineState.achievements]
+  );
 
   return {
     engineState,

@@ -20,9 +20,9 @@ const OP_SYMBOLS: Record<Operation, string> = {
 export function ProblemSummaryList({ problems, correctCount, onContinue }: ProblemSummaryListProps) {
   const { t } = useTranslation();
   return (
-    <div className="w-full max-w-[420px] mx-auto animate-[fade-in_0.3s_ease-out]">
+    <div className="w-full max-w-[420px] mx-auto animate-[fade-in_0.3s_ease-out] motion-reduce:animate-none">
       <div className="text-center mb-4">
-        <h3 className="font-display text-[22px] text-orange mb-1">
+        <h3 className="font-display text-[22px] text-ink mb-1">
           {t('operations.screen.finishedPracticing', 'You finished practicing! 🌈')}
         </h3>
         <p className="font-body text-sm text-text-tertiary">
@@ -69,7 +69,7 @@ export function ProblemSummaryList({ problems, correctCount, onContinue }: Probl
 
       <button
         onClick={onContinue}
-        className="w-full mt-5 font-display text-base py-3 rounded-xl border-none bg-coral text-white cursor-pointer transition-colors duration-150 shadow-[0_4px_12px_rgba(255,107,82,0.35)] hover:bg-coral-hover active:bg-coral-active"
+        className="w-full mt-5 font-display text-base py-3 rounded-xl border-none bg-coral text-ink cursor-pointer transition-colors duration-150 shadow-[var(--shadow-card)] hover:bg-coral-hover active:bg-coral-active focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
       >
         {t('operations.screen.letsDoQuiz', "Let's do the quiz! 🎉")}
       </button>

@@ -210,7 +210,7 @@ export function DraggableItem({ id, label, disabled, onDrop, onTap, className = 
       data-testid={testId}
       onPointerDown={onPointerDown}
       onClick={onKeyboardClick}
-      className={`touch-none select-none cursor-grab active:cursor-grabbing disabled:cursor-default disabled:opacity-40 ${className}`}
+      className={`inline-flex items-center justify-center touch-none select-none cursor-grab active:cursor-grabbing disabled:cursor-default disabled:opacity-40 ${className}`}
     >
       {children}
     </button>

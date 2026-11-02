@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs';
 import { LoginLink, LogoutLink } from '@kinde-oss/kinde-auth-nextjs/components';
-import { House, LogIn, LogOut, Target, Trophy, Volume2, VolumeX } from 'lucide-react';
+import { House, LogIn, LogOut, Menu, RotateCcw, Target, Trophy, Volume2, VolumeX, X } from 'lucide-react';
 import { Difficulty } from '@/lib/constants';
 import { TableSelector } from './table-selector';
 
@@ -22,7 +22,7 @@ interface AppHeaderProps {
   onHome?: () => void;
 }
 
-const btnBase = 'font-display text-xs py-1.5 px-3.5 rounded-full border-2 cursor-pointer transition-all duration-150 min-h-[44px]';
+const btnBase = 'font-display text-xs py-1.5 px-3.5 rounded-full border-2 cursor-pointer transition-all duration-150 min-h-[44px] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus';
 
 export function AppHeader({
   currentTable,
@@ -55,39 +55,39 @@ export function AppHeader({
 
   return (
     <>
-    <header className="app-header bg-header px-3 py-2 md:p-4">
+    <header className="app-header app-bar py-2 md:py-3">
       {/* Mobile top row: title + home + hamburger */}
-      <div className="flex md:hidden items-center gap-2 mb-2">
-        <h1 className="font-display text-lg text-white font-normal flex-1 leading-tight">
+      <div className="app-width flex md:hidden items-center gap-2 mb-1">
+        <h1 className="font-display text-lg text-paper flex-1 leading-tight">
           {t('header.title')}
         </h1>
         <button
           onClick={onHome}
-          className="text-white/70 text-xl p-1.5 min-w-[44px] min-h-[44px] flex items-center justify-center hover:text-white transition-colors"
+          className="app-bar-mark min-w-[44px] min-h-[44px] flex items-center justify-center cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
           aria-label={t('common.nav.home')}
         >
-          <House className="w-6 h-6 text-white/80" strokeWidth={2} />
+          <House className="w-6 h-6 text-paper/80" strokeWidth={2} />
         </button>
         <button
           onClick={() => setIsMenuOpen(true)}
-          className="text-white text-2xl p-1.5 min-w-[44px] min-h-[44px] flex items-center justify-center"
+          className="app-bar-mark min-w-[44px] min-h-[44px] flex items-center justify-center cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
           aria-label={t('common.nav.menu')}
         >
-          ☰
+          <Menu className="w-6 h-6 text-paper" strokeWidth={2} aria-hidden="true" />
         </button>
       </div>
 
       {/* Desktop top row */}
-      <div className="hidden md:flex items-center justify-between flex-wrap gap-1.5 mb-3">
+      <div className="app-width hidden md:flex items-center justify-between flex-wrap gap-1.5 mb-1">
         <div className="flex items-center gap-2">
           <button
             onClick={onHome}
-            className="text-white/70 text-xl p-1.5 min-w-[44px] min-h-[44px] flex items-center justify-center hover:text-white transition-colors"
+            className="app-bar-mark min-w-[44px] min-h-[44px] flex items-center justify-center cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
             aria-label={t('common.nav.home')}
           >
-            <House className="w-6 h-6 text-white/80" strokeWidth={2} />
+            <House className="w-6 h-6 text-paper/80" strokeWidth={2} />
           </button>
-          <h1 className="font-display text-xl text-white font-normal">
+          <h1 className="font-display text-xl text-paper">
             {t('header.title')}
           </h1>
         </div>
@@ -97,8 +97,8 @@ export function AppHeader({
             aria-pressed={practiceMode}
             className={`${btnBase} inline-flex items-center gap-1.5 px-2.5 md:px-3.5
               ${practiceMode
-                ? 'bg-leaf border-leaf text-white shadow-[0_2px_8px_rgba(63,166,100,0.4)]'
-                : 'bg-coral-soft border-coral-soft text-white hover:bg-coral-soft-hover active:scale-95'
+                ? 'bg-leaf border-leaf text-ink shadow-[var(--shadow-card)]'
+                : 'bg-coral-soft border-coral-soft text-ink hover:bg-coral-soft-hover active:scale-95'
               }`}
           >
             <Target className="w-4 h-4" aria-hidden="true" />
@@ -113,7 +113,7 @@ export function AppHeader({
           </button>
           <button
             onClick={onToggleMute}
-            className={`${btnBase} px-2.5 md:px-3.5 border-[#DED5F0] bg-white/80 text-ink hover:bg-white active:scale-95`}
+            className={`${btnBase} px-2.5 md:px-3.5 border-mist bg-card text-ink hover:bg-card hover:border-coral active:scale-95`}
             aria-label={isMuted ? t('common.nav.unmute') : t('common.nav.mute')}
           >
             {isMuted ? <VolumeX className="w-4 h-4" aria-hidden="true" /> : <Volume2 className="w-4 h-4" aria-hidden="true" />}
@@ -121,19 +121,19 @@ export function AppHeader({
           {isAuthenticated ? (
             <>
               <span
-                className="inline-flex items-center justify-center font-display text-xs font-bold text-ink bg-white/80 border-2 border-[#DED5F0] rounded-full px-3 min-h-[44px] max-w-[140px] overflow-hidden text-ellipsis whitespace-nowrap"
+                className="inline-flex items-center justify-center font-display text-xs font-bold text-ink bg-card border-2 border-mist rounded-full px-3 min-h-[44px] max-w-[140px] overflow-hidden text-ellipsis whitespace-nowrap"
                 title={sessionName}
               >
                 {sessionName}
               </span>
-              <LogoutLink className={`${btnBase} inline-flex items-center justify-center gap-1.5 px-2.5 md:px-3.5 border-coral bg-coral text-white hover:bg-coral-hover`}>
+              <LogoutLink className={`${btnBase} inline-flex items-center justify-center gap-1.5 px-2.5 md:px-3.5 border-coral bg-coral text-ink hover:bg-coral-hover`}>
                 <LogOut className="w-4 h-4" />
                 {t('common.auth.signOut')}
               </LogoutLink>
             </>
           ) : (
             !isLoading && (
-              <LoginLink className={`${btnBase} inline-flex items-center justify-center gap-1.5 px-2.5 md:px-3.5 border-coral bg-coral text-white hover:bg-coral-hover`}>
+              <LoginLink className={`${btnBase} inline-flex items-center justify-center gap-1.5 px-2.5 md:px-3.5 border-coral bg-coral text-ink hover:bg-coral-hover`}>
                 <LogIn className="w-4 h-4" />
                 {t('common.auth.signIn')}
               </LoginLink>
@@ -144,29 +144,29 @@ export function AppHeader({
 
       {/* Mobile drawer */}
       <div
-        className={`drawer-container fixed inset-0 z-50 ${isMenuOpen ? 'pointer-events-auto' : 'pointer-events-none'}`}
+        className={`drawer-container fixed inset-0 z-50 overflow-hidden ${isMenuOpen ? 'pointer-events-auto' : 'pointer-events-none'}`}
       >
         <div
           className={`drawer-overlay absolute inset-0 bg-black/50 transition-opacity duration-300 ease-in-out ${isMenuOpen ? 'opacity-100' : 'opacity-0'}`}
           onClick={closeMenu}
         />
         <aside
-          className={`drawer-panel absolute top-0 right-0 h-full w-[280px] bg-[#FDFCFF] border-l-2 border-[#DED5F0] shadow-2xl p-5 flex flex-col gap-4 overflow-y-auto transition-transform duration-300 ease-in-out ${isMenuOpen ? 'translate-x-0' : 'translate-x-full'}`}
+          className={`drawer-panel absolute top-0 right-0 h-full w-[min(280px,100vw)] bg-paper border-l-2 border-mist shadow-2xl p-5 flex flex-col gap-4 overflow-y-auto transition-[transform,visibility] duration-300 ease-in-out ${isMenuOpen ? 'translate-x-0 visible' : 'translate-x-full invisible'}`}
         >
             <div className="drawer-header flex justify-between items-center">
               <button
                 onClick={() => { onHome?.(); closeMenu(); }}
-                className="text-ink/70 text-xl p-1.5 min-w-[44px] min-h-[44px] flex items-center justify-center hover:text-ink transition-colors"
+                className="text-ink/70 p-1.5 min-w-[44px] min-h-[44px] flex items-center justify-center hover:text-ink transition-colors rounded-full focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus active:bg-mist/60"
                 aria-label={t('common.nav.home')}
               >
                 <House className="w-6 h-6 text-ink" strokeWidth={2} />
               </button>
               <button
                 onClick={closeMenu}
-                className="drawer-close text-ink/70 text-2xl p-1 hover:text-ink"
+                className="drawer-close text-ink/70 p-2 hover:text-ink rounded-full focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus active:bg-mist/60"
                 aria-label={t('common.nav.closeMenu')}
               >
-                ✕
+                <X className="w-5 h-5" strokeWidth={2.5} aria-hidden="true" />
               </button>
             </div>
             <button
@@ -174,8 +174,8 @@ export function AppHeader({
               aria-pressed={practiceMode}
               className={`drawer-practice ${btnBase} w-full text-center
                 ${practiceMode
-                  ? 'bg-leaf border-leaf text-white shadow-[0_2px_8px_rgba(63,166,100,0.4)]'
-                  : 'bg-coral-soft border-coral-soft text-white hover:bg-coral-soft-hover'
+                  ? 'bg-leaf border-leaf text-ink shadow-[var(--shadow-card)]'
+                  : 'bg-coral-soft border-coral-soft text-ink hover:bg-coral-soft-hover'
                 }`}
             >
               {t('header.practice')}
@@ -188,13 +188,13 @@ export function AppHeader({
             </button>
             <button
               onClick={() => { onReset(); closeMenu(); }}
-              className={`drawer-reset ${btnBase} w-full text-center flex items-center justify-center gap-1.5 border-[#DED5F0] bg-white/80 text-ink hover:bg-white`}
+              className={`drawer-reset ${btnBase} w-full text-center flex items-center justify-center gap-1.5 border-mist bg-card text-ink hover:border-coral`}
             >
-              <span className="text-base leading-none" aria-hidden="true">↻</span> {t('header.resetLabel')}
+              <RotateCcw className="w-4 h-4" strokeWidth={2.5} aria-hidden="true" /> {t('header.resetLabel')}
             </button>
             <button
               onClick={() => { onToggleMute(); closeMenu(); }}
-              className={`drawer-mute ${btnBase} w-full text-center flex items-center justify-center gap-1.5 border-[#DED5F0] bg-white/80 text-ink hover:bg-white`}
+              className={`drawer-mute ${btnBase} w-full text-center flex items-center justify-center gap-1.5 border-mist bg-card text-ink hover:border-coral`}
             >
               {isMuted ? <VolumeX className="w-4 h-4" aria-hidden="true" /> : <Volume2 className="w-4 h-4" aria-hidden="true" />}
               {isMuted ? t('common.nav.unmute') : t('common.nav.mute')}
@@ -202,14 +202,14 @@ export function AppHeader({
             {isAuthenticated ? (
               <>
                 <span
-                  className="inline-flex items-center justify-center font-display text-sm font-bold text-ink bg-white/80 border-2 border-[#DED5F0] rounded-full px-4 min-h-[44px] max-w-full overflow-hidden text-ellipsis whitespace-nowrap"
+                  className="inline-flex items-center justify-center font-display text-sm font-bold text-ink bg-card border-2 border-mist rounded-full px-4 min-h-[44px] max-w-full overflow-hidden text-ellipsis whitespace-nowrap"
                   title={sessionName}
                 >
                   {sessionName}
                 </span>
                 <LogoutLink
                   onClick={closeMenu}
-                  className={`drawer-logout ${btnBase} inline-flex items-center justify-center gap-1.5 w-full text-center border-coral bg-coral text-white hover:bg-coral-hover`}
+                  className={`drawer-logout ${btnBase} inline-flex items-center justify-center gap-1.5 w-full text-center border-coral bg-coral text-ink hover:bg-coral-hover`}
                 >
                   <LogOut className="w-4 h-4" />
                   {t('common.auth.signOut')}
@@ -219,7 +219,7 @@ export function AppHeader({
               !isLoading && (
                 <LoginLink
                   onClick={closeMenu}
-                  className={`drawer-login ${btnBase} inline-flex items-center justify-center gap-1.5 w-full text-center border-coral bg-coral text-white hover:bg-coral-hover`}
+                  className={`drawer-login ${btnBase} inline-flex items-center justify-center gap-1.5 w-full text-center border-coral bg-coral text-ink hover:bg-coral-hover`}
                 >
                   <LogIn className="w-4 h-4" />
                   {t('common.auth.signIn')}
@@ -231,7 +231,8 @@ export function AppHeader({
     </header>
 
     {/* Table number strip — separate light section below the dark nav */}
-    <div className="table-strip bg-[#EFEBFB] border-b-2 border-[#DED5F0] px-3 py-2 md:px-4 md:py-3">
+    <div className="table-strip bg-paper-2 border-b-2 border-mist py-2 md:py-3">
+      <div className="app-width">
       <div className="flex gap-1.5 flex-wrap items-center justify-center md:justify-start mb-1.5 md:mb-2.5">
         <TableSelector
           currentTable={currentTable}
@@ -245,10 +246,11 @@ export function AppHeader({
       <div className="hidden md:flex items-center gap-2 flex-wrap justify-center md:justify-start">
         <button
           onClick={onReset}
-          className={`${btnBase} flex items-center gap-1.5 border-[#DED5F0] bg-white/80 text-ink hover:bg-white active:scale-95`}
+          className={`${btnBase} flex items-center gap-1.5 border-mist bg-card text-ink hover:border-coral active:scale-95`}
         >
-          <span className="text-base leading-none" aria-hidden="true">↻</span> {t('header.resetLabel')}
+          <RotateCcw className="w-4 h-4" strokeWidth={2.5} aria-hidden="true" /> {t('header.resetLabel')}
         </button>
+      </div>
       </div>
     </div>
     </>

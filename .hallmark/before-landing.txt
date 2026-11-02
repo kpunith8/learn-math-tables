@@ -1,0 +1,40 @@
+FAIL 4 src/app/page.tsx:116 card nested in card: class="absolute -top-2.5 left-1/2 -translate-x…" | fix: Keep one containment layer
+FAIL 10a src/app/page.tsx:203 transition-all on <button class="flex-1 min-w-0 text-left bg-car…"> | fix: Name the properties: transition-colors, transition-opacity or transition-transform
+FAIL 26a src/app/page.tsx:1 no :focus-visible styling anywhere | fix: A focus ring at 3:1 or better, instant
+FAIL 27 src/app/page.tsx:94 motion utilities (animate-[pop-in_0.3s_ease-out]) with no motion-reduce: or motion-safe: variant anywhere | fix: Add motion-reduce: fallbacks, or put the motion behind motion-safe:
+FAIL 30a src/app/layout.tsx:44 text opens with an emoji: "🧮" | fix: One icon library, a custom SVG, or the word alone
+FAIL 30a src/app/page.tsx:18 emoji passed as an icon: 🏝️ | fix: One icon library, a custom SVG, or the word alone
+FAIL 30a src/app/page.tsx:19 emoji passed as an icon: 🏞️ | fix: One icon library, a custom SVG, or the word alone
+FAIL 30a src/app/page.tsx:20 emoji passed as an icon: ⛰️ | fix: One icon library, a custom SVG, or the word alone
+FAIL 30a src/app/page.tsx:21 emoji passed as an icon: 🏰 | fix: One icon library, a custom SVG, or the word alone
+FAIL 30a src/app/page.tsx:22 emoji passed as an icon: 👑 | fix: One icon library, a custom SVG, or the word alone
+FAIL 30a src/app/page.tsx:94 emoji icon "🧭" in <span class="text-[28px] animate-[pop-in…"> | fix: One icon library or custom SVG
+FAIL 30a src/app/page.tsx:105 emoji icon "⭐" in <div class="inline-flex items-center ga…"> | fix: One icon library or custom SVG
+FAIL 30a src/app/page.tsx:106 emoji icon "⭐" in <span class="text-lg"> | fix: One icon library or custom SVG
+FAIL 30a src/app/page.tsx:137 emoji icon "⭐" in <span class="text-sm leading-none"> | fix: One icon library or custom SVG
+FAIL 30a src/app/page.tsx:157 emoji icon "⭐" in <div class="bg-card rounded-xl border-2…"> | fix: One icon library or custom SVG
+FAIL 30a src/app/page.tsx:158 emoji icon "⭐" in <div class="text-xl"> | fix: One icon library or custom SVG
+FAIL 30a src/app/page.tsx:162 emoji icon "📚" in <div class="bg-card rounded-xl border-2…"> | fix: One icon library or custom SVG
+FAIL 30a src/app/page.tsx:163 emoji icon "📚" in <div class="text-xl"> | fix: One icon library or custom SVG
+FAIL 30a src/app/page.tsx:168 emoji passed as an icon: 🔥 | fix: One icon library, a custom SVG, or the word alone
+FAIL 30a src/app/page.tsx:179 emoji icon "🗺️" in <span class="text-lg"> | fix: One icon library or custom SVG
+FAIL 30a src/app/page.tsx:237 emoji in <h2> "🏅" | fix: One icon library, a custom SVG, or the word alone
+FAIL 30a src/app/page.tsx:237 emoji icon "🏅" in <span class=""> | fix: One icon library or custom SVG
+FAIL 34 src/app/page.tsx:1 no overflow-x: clip on html and body | fix: overflow-x: clip on both html and body
+FAIL 40 http://localhost:3000/:1 [1280px] contrast 2.81:1 against the pixels behind < 4.5:1 on span.max-w-[180px].overflow-hidden "Add Name" | fix: Raise the contrast to threshold
+FAIL 40 http://localhost:3000/:1 [1280px] contrast 2.76:1 against the pixels behind < 4.5:1 on span.absolute.-top-2.5 "POSTCARD FROM NOVA" | fix: Raise the contrast to threshold
+FAIL 40 http://localhost:3000/:1 [1280px] contrast 2.76:1 against the pixels behind < 4.5:1 on span.font-display.text-xs "Reward: +15 ⭐" | fix: Raise the contrast to threshold
+FAIL 48 src/app/page.tsx:105 colour literal shadow-[0_2px_6px_rgba(27,20,71,0.06)] in a class on <div class="inline-flex items-center gap-1.…"> | fix: Lift the value into the token block (@theme or :root) and use its utility name
+FAIL 48 src/app/page.tsx:115 colour literal shadow-[0_4px_14px_rgba(255,182,72,0.18)] in a class on <div class="relative bg-card rounded-2xl bo…"> | fix: Lift the value into the token block (@theme or :root) and use its utility name
+FAIL 48 src/app/page.tsx:193 inline-style colour literal #fff | fix: Lift the value into the token block
+FAIL 48 src/app/page.tsx:203 colour literal hover:shadow-[0_6px_18px_rgba(27,20,71,0.10)] in a class on <button class="flex-1 min-w-0 text-left bg-c… | fix: Lift the value into the token block (@theme or :root) and use its utility name
+FAIL 48 src/app/page.tsx:241 colour literal shadow-[0_2px_4px_rgba(90,20,71,0.06)] in a class on <div class="flex items-center gap-1.5 bg-ca…"> | fix: Lift the value into the token block (@theme or :root) and use its utility name
+FAIL 67 src/app/page.tsx:116 uppercase at 10px tracked 0.05em on <span class="absolute -top-2.5 left-1/2 -tra…"> | fix: Sentence case in the body face, a step smaller, untracked: drop uppercase and the tracking-* class
+REFLEX 26b src/app/page.tsx:1 no :disabled styling anywhere | fix: All eight states; guard: not a form control, no aria-disabled anywhere
+REFLEX 39b http://localhost:3000/:1 [1440px] control height outside 44 to 52px: button.flex-1 76px, button.flex-1 76px, button.flex-1 76px | fix: Marketing controls stand 44 to 52px; app UI 32 to 40px with a 44px hit target
+REFLEX 44c http://localhost:3000/:1 [1440px] hero ends at 244px of a 900px screen | fix: Fill the first screen with the visual or the headline, not with copy
+REFLEX 59 http://localhost:3000/:1 [1440px] smallest gap between sections is 20px (gaps: 20, 20, 24) | fix: 120px or more between sections, by the --section-gap steps
+REFLEX 75 http://localhost:3000/:1 [1440px] text that strains the eye: span.absolute at 10px | fix: Running text 12px or more (16px for body), functional text 11px or more, multi-line prose leaded 1.3 or more
+REFLEX 77 http://localhost:3000/:1 [1440px] 1 thin section: "Today's Mission" (100% wide, no mass) | fix: Widen the body to ten of twelve columns and give it mass: a visual 300px tall or more, a set of three across, rows, or a statement (layout.md § 4 and § 5)
+REFLEX 78 http://localhost:3000/:1 [1440px] section heads render at 16px under a 32px hero head | fix: h2 at --text-section (about 52px at 1440), item titles at --text-title (layout.md § 2)
+WARN 77 http://localhost:3000/:1 [1440px] 4 sections, hero and footer included | fix: A landing strip, not a page: six to nine sections, five on a thin prompt (layout.md § 3)

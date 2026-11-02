@@ -1,0 +1,72 @@
+{
+ "v": 1,
+ "at": "2026-10-31T16:51:41.876Z",
+ "scope": "page",
+ "summary": {
+  "fails": 32,
+  "reflex": 7,
+  "warns": 1
+ },
+ "files": {
+  "src/app/page.tsx": {
+   "handlers": [
+    "onCancel={() => setShowNameModal(false)}",
+    "onClick={() => router.push(world.route)}",
+    "onClick={openNameModal}",
+    "onSave={(name) => { setPlayerName(name); setShowNameModal(false); }}"
+   ],
+   "links": [],
+   "fields": [],
+   "hooks": [],
+   "ids": [],
+   "scripts": []
+  },
+  "src/app/layout.tsx": {
+   "handlers": [],
+   "links": [],
+   "fields": [],
+   "hooks": [],
+   "ids": [],
+   "scripts": []
+  }
+ },
+ "wiring": {
+  "handlers": [
+   "onCancel={() => setShowNameModal(false)}",
+   "onClick={() => router.push(world.route)}",
+   "onClick={openNameModal}",
+   "onSave={(name) => { setPlayerName(name); setShowNameModal(false); }}"
+  ],
+  "links": [],
+  "fields": [],
+  "hooks": [],
+  "ids": []
+ },
+ "scripts": {},
+ "pages": {
+  "http://localhost:3000/": {
+   "links": [
+    "/api/auth/login"
+   ],
+   "fields": [
+    "#base-ui-_R_cpbmmlb_-hidden-input",
+    "#base-ui-_R_kpbmmlb_-hidden-input"
+   ],
+   "actions": [],
+   "forms": [],
+   "hooked": [],
+   "headings": [
+    "welcome number explorer!",
+    "today's mission",
+    "the number trail"
+   ],
+   "figures": [
+    "5minutes",
+    "1day"
+   ],
+   "images": [],
+   "controls": 10,
+   "words": 111
+  }
+ }
+}

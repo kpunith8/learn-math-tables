@@ -61,15 +61,15 @@ export function TableSelector({
             onClick={() => isUnlocked && onSelectTable(tableNumber)}
             disabled={!isUnlocked}
             aria-label={`${t('tables.tableSelector.ariaTable', { number: tableNumber })}${!isUnlocked ? t('tables.tableSelector.ariaLocked', ' (locked)') : ''}`}
-            className="table-btn w-9 h-9 rounded-full border-[2.5px] font-display text-sm transition-all duration-150"
+            className="table-btn w-9 h-9 rounded-full border-[2.5px] font-display text-sm transition-[background-color,border-color,box-shadow,color] duration-150 motion-reduce:transition-none cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus active:scale-95 disabled:cursor-not-allowed"
             style={
               isUnlocked
                 ? isActive
-                  ? { background: hue.solid, color: '#fff', borderColor: hue.solid, transform: 'scale(1.08)', boxShadow: `0 0 0 3px #fff, 0 0 0 4.5px ${hue.solid}, 0 3px 8px rgba(27,20,71,0.25)` }
+                  ? { background: hue.solid, color: 'var(--color-ink)', borderColor: hue.solid, transform: 'scale(1.08)', boxShadow: `0 0 0 3px var(--color-fringe), 0 0 0 4.5px ${hue.solid}, var(--shadow-card)` }
                   : isCompleted
-                    ? { background: hue.solid, color: '#fff', borderColor: hue.solid, boxShadow: `0 1px 4px rgba(0,0,0,0.15)` }
-                    : { background: hue.pastel, color: '#2B2352', borderColor: hue.border, boxShadow: '0 1px 3px rgba(27,20,71,0.08)' }
-                : { background: '#fff', color: 'rgba(27,20,71,0.4)', borderColor: '#DED7E8', borderStyle: 'dashed' }
+                    ? { background: hue.solid, color: 'var(--color-ink)', borderColor: hue.solid, boxShadow: 'var(--shadow-card)' }
+                    : { background: hue.pastel, color: 'var(--color-ink)', borderColor: hue.border, boxShadow: 'var(--shadow-card)' }
+                : { background: 'var(--color-card)', color: 'var(--color-muted-ink)', borderColor: 'var(--color-mist)', borderStyle: 'dashed' }
             }
           >
             {isCompleted ? `✓` : tableNumber}

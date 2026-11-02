@@ -1,6 +1,6 @@
 'use client';
 
-import type { ReactNode } from 'react';
+import type { CSSProperties, ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { House, RotateCcw, BicepsFlexed } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -43,21 +43,23 @@ export function PlaygroundShell({
 
   return (
     <div
-      className="font-body min-h-screen"
-      style={{ background: `linear-gradient(180deg, ${accent}1f 0%, var(--color-paper) 34%)` }}
+      className="app-ground font-body min-h-screen"
+      style={{ '--world': accent } as CSSProperties}
     >
-      <div className="bg-header text-white px-3 py-2 sm:px-4 sm:py-3 flex items-center justify-between gap-1 flex-wrap">
-        <div className="flex items-center gap-1">
-          <button
-            onClick={onHome}
-            className="text-white/70 text-xl p-1.5 min-w-[44px] min-h-[44px] flex items-center justify-center hover:text-white transition-colors cursor-pointer"
-            aria-label={t('common.aria.home', 'Home')}
-          >
-            <House className="w-6 h-6 text-white/80" strokeWidth={2} />
-          </button>
-          <span className="font-display text-base text-white p-1.5 min-h-[44px] flex items-center">
-            {metaName}
-          </span>
+      <div className="app-bar">
+        <div className="app-bar-inner">
+          <div className="flex items-center gap-1">
+            <button
+              onClick={onHome}
+              className="app-bar-mark min-w-[44px] min-h-[44px] cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-paper"
+              aria-label={t('common.aria.home', 'Home')}
+            >
+              <House className="w-6 h-6 text-paper/80" strokeWidth={2} />
+            </button>
+            <span className="app-bar-title min-h-[44px] px-1.5 flex items-center">
+              {metaName}
+            </span>
+          </div>
         </div>
       </div>
 

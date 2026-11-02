@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, Search } from 'lucide-react';
 
 const buildPattern = (tableNumber: number): string =>
   Array.from({ length: 10 }, (_, i) => (i + 1) * tableNumber).join(', ');
@@ -21,7 +21,7 @@ export function PatternDiscovery({ tableNumber, onComplete }: PatternDiscoveryPr
   return (
     <div className="flex justify-center p-4">
       <div className="bg-card rounded-2xl border-2 border-coral/20 p-5 max-w-[420px] w-full text-center">
-        <div className="text-[36px] mb-2">🔍</div>
+        <Search className="w-9 h-9 mx-auto mb-2 text-ink" strokeWidth={2} aria-hidden="true" />
         <h2 className="font-display text-lg text-text-primary font-bold mb-1">
           {t('tables.patternDiscovery.title', { table: tableNumber })}
         </h2>
@@ -30,7 +30,7 @@ export function PatternDiscovery({ tableNumber, onComplete }: PatternDiscoveryPr
           {pattern}
         </div>
 
-        <p className="font-display text-sm text-orange mb-3">{t(`tables.patternDiscovery.patterns.${tableNumber}.discovery`)}</p>
+        <p className="font-display text-sm text-error mb-3">{t(`tables.patternDiscovery.patterns.${tableNumber}.discovery`)}</p>
 
         {!showReveal && (
           <>
@@ -50,7 +50,7 @@ export function PatternDiscovery({ tableNumber, onComplete }: PatternDiscoveryPr
         )}
 
         {showReveal && (
-          <div className="animate-[pop-in_0.3s_ease-out]">
+          <div className="animate-[pop-in_0.3s_ease-out] motion-reduce:animate-none">
             <div className="bg-warm-bg rounded-xl border border-warm-border p-3 mb-3">
               <p className="font-body text-sm text-text-secondary">{t(`tables.patternDiscovery.patterns.${tableNumber}.reveal`)}</p>
             </div>

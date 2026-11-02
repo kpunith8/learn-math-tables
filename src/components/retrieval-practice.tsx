@@ -112,7 +112,7 @@ export function RetrievalPractice({ tableNumber, weakFacts, onComplete }: Retrie
         </div>
 
         {phase === 'show' && showAnswer && (
-          <div className="animate-[pop-in_0.3s_ease-out]">
+          <div className="animate-[pop-in_0.3s_ease-out] motion-reduce:animate-none">
             <div className="bg-indigo/5 rounded-xl border-2 border-indigo/20 p-4 mb-3">
               <div className="font-display text-[28px] text-indigo font-bold">
                 = {correctAnswer}
@@ -123,7 +123,7 @@ export function RetrievalPractice({ tableNumber, weakFacts, onComplete }: Retrie
         )}
 
         {phase === 'recall' && (
-          <div className="animate-[pop-in_0.3s_ease-out]">
+          <div className="animate-[pop-in_0.3s_ease-out] motion-reduce:animate-none">
             <p className="font-body text-sm text-text-secondary mb-3">{t('tables.retrievalPractice.whatIsTheAnswer')}</p>
             <div className="flex items-center justify-center gap-2">
               <span className="font-display text-xl text-text-primary">{tableNumber} × {currentQuestion.multiplier} = </span>
@@ -135,7 +135,7 @@ export function RetrievalPractice({ tableNumber, weakFacts, onComplete }: Retrie
                 onKeyDown={(e) => {
                   if (e.key === 'Enter') handleSubmit();
                 }}
-                className="w-[80px] text-center font-display text-xl py-2 rounded-xl border-2 border-border-card focus:border-indigo focus:outline-none"
+                className="w-[80px] text-center font-display text-xl py-2 rounded-xl border-2 border-field-edge bg-paper text-ink focus-visible:border-coral focus-visible:ring-2 focus-visible:ring-focus focus-visible:outline-none"
                 aria-label={t('common.aria.enterYourAnswer')}
                 autoFocus
               />
@@ -156,7 +156,7 @@ export function RetrievalPractice({ tableNumber, weakFacts, onComplete }: Retrie
         )}
 
         {phase === 'result' && (
-          <div className="animate-[pop-in_0.3s_ease-out]">
+          <div className="animate-[pop-in_0.3s_ease-out] motion-reduce:animate-none">
             {answerStatus === 'correct' ? (
               <CelebrationMessage size="small" label={t('tables.retrievalPractice.correct')} />
             ) : (

@@ -65,7 +65,7 @@ export function ShowClip({ steps, accent, onDone }: ShowClipProps) {
         }
       }}
     >
-      <div key={index} className="animate-[popup-in_0.25s_ease-out]">
+      <div key={index} className="animate-[popup-in_0.25s_ease-out] motion-reduce:animate-none">
         <h3 className="font-display text-base text-ink text-center">{step.title}</h3>
         <div className="my-3 py-3 px-2 bg-mist/40 rounded-xl min-h-[120px] flex items-center justify-center">
           {step.visual}
@@ -82,10 +82,10 @@ export function ShowClip({ steps, accent, onDone }: ShowClipProps) {
             aria-label={`Step ${i + 1}`}
             data-testid={`clip-dot-${i}`}
             onClick={() => go(i)}
-            className="flex items-center justify-center w-11 h-11 cursor-pointer"
+            className="flex items-center justify-center w-11 h-11 cursor-pointer rounded-full focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus active:bg-mist/60"
           >
             <span
-              className="w-2.5 h-2.5 rounded-full transition-colors duration-200"
+              className="w-2.5 h-2.5 rounded-full transition-colors duration-200 motion-reduce:transition-none"
               style={{ background: i === index ? accent : 'var(--color-mist)' }}
             />
           </button>
@@ -99,7 +99,7 @@ export function ShowClip({ steps, accent, onDone }: ShowClipProps) {
         </Button>
         <button
           onClick={onDone}
-          className="font-body text-xs text-text-dim underline underline-offset-2 cursor-pointer min-h-[44px] px-2"
+          className="font-body text-xs text-text-dim underline underline-offset-2 cursor-pointer min-h-[44px] px-2 rounded-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus active:text-ink"
           data-testid="clip-skip"
         >
           {t('playground.skipShow')}

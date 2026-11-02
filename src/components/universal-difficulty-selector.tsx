@@ -2,6 +2,7 @@
 
 import { useTranslation } from 'react-i18next';
 import { Select } from '@base-ui/react/select';
+import { Check, ChevronDown } from 'lucide-react';
 import { useDifficulty } from '@/lib/contexts/DifficultyContext';
 import { DifficultyLevel } from '@/lib/operations/types';
 
@@ -31,36 +32,26 @@ export function UniversalDifficultySelector({ dark = false, className = '' }: Un
       <Select.Trigger
         type="button"
         aria-label={t('common.difficulty.label', 'Difficulty')}
-        className={`inline-flex items-center gap-1.5 font-display text-xs font-bold rounded-full cursor-pointer select-none min-h-[44px] px-3 py-1.5 border-2 transition-colors ${className} ${
-          dark
-            ? 'bg-white/15 text-white border-white/25 hover:bg-white/25'
-            : 'bg-white/80 text-ink border-[#DED5F0] hover:bg-white'
-        }`}
+        className={`press ${dark ? 'bg-ink text-paper border-ink-2' : 'press-quiet'} ${className}`}
       >
         <Select.Value className="whitespace-nowrap" />
-        <Select.Icon className="flex items-center" aria-hidden="true">
-          <span
-            className={`transform transition-transform duration-150 data-[popup-open]:rotate-180 ${
-              dark ? 'text-white/70' : 'text-ink/50'
-            }`}
-          >
-            ▾
-          </span>
+        <Select.Icon className="flex items-center transition-transform duration-150 data-[popup-open]:rotate-180">
+          <ChevronDown className="h-4 w-4" strokeWidth={2.5} aria-hidden="true" />
         </Select.Icon>
       </Select.Trigger>
       <Select.Portal>
         <Select.Positioner className="z-50" alignItemWithTrigger>
-          <Select.Popup className="min-w-[var(--anchor-width)] rounded-2xl bg-white border-2 border-[#E4DDCB] shadow-[0_12px_32px_rgba(27,20,71,0.18)] p-1.5 origin-[var(--transform-origin)] animate-[popup-in_0.15s_ease-out]">
+          <Select.Popup className="min-w-[var(--anchor-width)] origin-[var(--transform-origin)] rounded-2xl border-2 border-rule bg-card p-1.5 shadow-card animate-[popup-in_0.15s_ease-out]">
             <Select.List className="flex flex-col gap-0.5">
               {items.map((item) => (
                 <Select.Item
                   key={item.value}
                   value={item.value}
-                  className="flex items-center justify-between gap-3 rounded-xl px-3 py-2 font-display text-sm text-ink cursor-pointer outline-none data-[highlighted]:bg-[#F3EFFB] data-[selected]:font-bold"
+                  className="flex cursor-pointer items-center justify-between gap-3 rounded-xl px-3 py-2 font-display text-sm text-ink outline-none data-[highlighted]:bg-paper-2 data-[selected]:font-bold"
                 >
                   <Select.ItemText>{item.label}</Select.ItemText>
-                  <Select.ItemIndicator className="text-coral">
-                    <span aria-hidden="true">✓</span>
+                  <Select.ItemIndicator className="text-growth-ink">
+                    <Check className="h-4 w-4" strokeWidth={3} aria-hidden="true" />
                   </Select.ItemIndicator>
                 </Select.Item>
               ))}

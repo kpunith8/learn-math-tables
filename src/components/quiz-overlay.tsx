@@ -91,7 +91,7 @@ export function QuizOverlay({ questions, onComplete, onSkip, onPlaySound }: Quiz
               }
               className="mb-4"
             />
-            <div className="font-display text-[24px] text-orange my-3">
+            <div className="font-display text-[24px] text-ink my-3">
               {correctAnswers === questions.length
                 ? t('quiz.results.perfectScoreLine', { correct: correctAnswers, total: questions.length })
                 : correctAnswers >= 3
@@ -110,7 +110,7 @@ export function QuizOverlay({ questions, onComplete, onSkip, onPlaySound }: Quiz
 
         {phase !== 'finished' && currentQuestion && (
           <div className="min-h-[280px] flex flex-col">
-            <div className="font-display text-[clamp(26px,6vw,34px)] text-orange my-2 mb-4">
+            <div className="font-display text-[clamp(26px,6vw,34px)] text-ink my-2 mb-4">
               {currentQuestion.label}
             </div>
 
@@ -141,7 +141,7 @@ export function QuizOverlay({ questions, onComplete, onSkip, onPlaySound }: Quiz
                     disabled={!isInteractive || isSelected}
                     role="radio"
                     aria-checked={isSelected}
-                    className={`font-display text-xl py-3.5 rounded-[14px] border-[2.5px] cursor-pointer transition-all duration-150 ${stateClass} ${isInteractive ? 'active:scale-95' : 'cursor-default'}`}
+                    className={`font-display text-xl py-3.5 rounded-[14px] border-[2.5px] cursor-pointer transition-[background-color,border-color,transform,box-shadow,color] duration-150 motion-reduce:transition-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus disabled:cursor-default disabled:opacity-100 ${stateClass} ${isInteractive ? 'active:scale-95' : 'cursor-default'}`}
                   >
                     {option}
                   </button>
@@ -154,7 +154,7 @@ export function QuizOverlay({ questions, onComplete, onSkip, onPlaySound }: Quiz
                 <p className="font-body text-sm text-text-secondary bg-surface rounded-[10px] py-2 px-3.5 border border-border-card text-center">
                   <Lightbulb className="w-4 h-4 inline-block mr-1 -mt-0.5" strokeWidth={2.5} aria-hidden="true" /> {hintText}
                 </p>
-                <p className="font-body text-sm text-orange">
+                <p className="font-body text-sm text-error">
                   {getWrongAnswerMessage(t)}
                 </p>
                 <Button
@@ -169,7 +169,7 @@ export function QuizOverlay({ questions, onComplete, onSkip, onPlaySound }: Quiz
             )}
 
             {phase === 'correct' && (
-              <p className="mt-3 font-display text-lg text-leaf flex items-center justify-center gap-1.5 animate-[pop-in_0.3s_ease-out]" role="status">
+              <p className="mt-3 font-display text-lg text-growth-ink flex items-center justify-center gap-1.5 animate-[pop-in_0.3s_ease-out] motion-reduce:animate-none" role="status">
                 <Check className="w-6 h-6" strokeWidth={2.5} aria-hidden="true" />
                 {t('operations.screen.correctFeedback')}
               </p>

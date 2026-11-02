@@ -25,13 +25,13 @@
     "difficulty": {
       "label": "कठिनाई का स्तर:",
       "easy": {
-        "badge": "🌟 आसान"
+        "badge": "आसान"
       },
       "medium": {
-        "badge": "⭐ मध्यम"
+        "badge": "मध्यम"
       },
       "hard": {
-        "badge": "🏆 कठिन"
+        "badge": "कठिन"
       }
     },
     "aria": {
@@ -44,7 +44,7 @@
   },
   "home": {
     "header": {
-      "title": "🌟 मैथ एडवेंचर!"
+      "title": "मैथ एडवेंचर!"
     },
     "hero": {
       "welcome": "स्वागत है नंबर एक्सप्लोरर!",
@@ -55,7 +55,7 @@
       "postcardFrom": "नोवा का पोस्टकार्ड",
       "todaysMission": "आज का मिशन",
       "complete": "पूरा हुआ!",
-      "reward": "इनाम: +15 ⭐"
+      "reward": "इनाम: +15"
     },
     "stats": {
       "stars": "सितारे",
@@ -90,7 +90,16 @@
       }
     },
     "badges": {
-      "sectionTitle": "आपके बैज"
+      "sectionTitle": "आपके बैज",
+      "empty": "पहला बैज पाने के लिए खेलें।",
+      "earned": "अर्जित",
+      "locked": "अभी नहीं अर्जित",
+      "count": "{{total}} में से {{earned}} बैज अर्जित"
+    },
+    "footer": {
+      "closing": "फिर मिलेंगे रास्ते पर।",
+      "signOff": "— नोवा",
+      "madeFor": "5 से 8 साल के बच्चों के लिए"
     }
   },
   "header": {

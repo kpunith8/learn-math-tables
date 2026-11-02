@@ -16,7 +16,7 @@ export function ConfirmDialog({ isOpen, title, message, onConfirm, onCancel }: C
 
   return (
     <div className="confirm-overlay fixed inset-0 z-[1300] bg-black/50 flex items-center justify-center p-5 opacity-100 pointer-events-auto transition-opacity duration-300">
-      <div className="confirm-dialog bg-card rounded-[20px] p-7 md:p-6 max-w-[380px] w-full text-center shadow-[0_12px_40px_rgba(0,0,0,0.2)] animate-[pop-in_0.35s_cubic-bezier(0.175,0.885,0.32,1.275)]">
+      <div className="confirm-dialog bg-card rounded-[20px] p-7 md:p-6 max-w-[380px] w-full text-center shadow-[var(--shadow-card)] animate-[pop-in_0.35s_cubic-bezier(0.175,0.885,0.32,1.275)] motion-reduce:animate-none">
         <div className="confirm-title font-display text-[22px] text-coral mb-2">
           {title}
         </div>
@@ -26,13 +26,13 @@ export function ConfirmDialog({ isOpen, title, message, onConfirm, onCancel }: C
         <div className="confirm-actions flex gap-3 justify-center">
           <button
             onClick={onConfirm}
-            className="confirm-yes font-display text-sm py-2 px-5 rounded-full border-none bg-coral text-white cursor-pointer transition-all duration-150 shadow-[0_4px_12px_rgba(255,107,82,0.3)] hover:scale-105 hover:bg-coral-hover active:scale-95"
+            className="confirm-yes font-display text-sm py-2 px-5 rounded-full border-none bg-coral text-ink cursor-pointer transition-all duration-150 shadow-[var(--shadow-card)] hover:scale-105 hover:bg-coral-hover active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
           >
             {t('common.buttons.yesSure')}
           </button>
           <button
             onClick={onCancel}
-            className="confirm-no font-display text-sm py-2 px-5 rounded-full border-none bg-mist text-text-secondary cursor-pointer transition-all duration-150 hover:scale-105 active:scale-95"
+            className="confirm-no font-display text-sm py-2 px-5 rounded-full border-none bg-mist text-ink cursor-pointer transition-all duration-150 hover:scale-105 active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
           >
             {t('common.buttons.noGoBack')}
           </button>

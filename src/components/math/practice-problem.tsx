@@ -67,14 +67,14 @@ export function PracticeProblemView({ problem, index, total, onComplete }: Pract
   const accent = OPERATION_META[operation].color;
 
   return (
-    <div className="w-full max-w-[420px] bg-card rounded-2xl border-2 border-mist p-5 animate-[fade-in_0.3s_ease-out]">
+    <div className="w-full max-w-[420px] bg-card rounded-2xl border-2 border-mist p-5 animate-[fade-in_0.3s_ease-out] motion-reduce:animate-none">
       <div className="text-sm font-body text-text-dim text-center mb-2">
         {t('operations.screen.problemOf', { index: index + 1, total })}
       </div>
 
       <div className="mb-4">
         {isHorizontal ? (
-          <div className="text-[clamp(22px,6vw,34px)] font-display text-center leading-[1.4]" style={{ color: accent }}>
+          <div className="text-[clamp(22px,6vw,34px)] font-display text-center leading-[1.4] text-ink">
             {operation === 'multiplication'
               ? `${padNumber(operand1)} × ${padNumber(operand2)} = `
               : `${padNumber(operand1)} ÷ ${padNumber(operand2)} = `}
@@ -89,7 +89,7 @@ export function PracticeProblemView({ problem, index, total, onComplete }: Pract
           </div>
         ) : (
           <div className="font-display text-center leading-[1.3]">
-            <div className="inline-block text-[clamp(22px,6vw,34px)] text-right font-mono" style={{ color: accent }}>
+            <div className="inline-block text-[clamp(22px,6vw,34px)] text-right font-mono text-ink">
               {(() => {
                 const op1 = padNumber(operand1);
                 const op2 = padNumber(operand2);
@@ -117,7 +117,7 @@ export function PracticeProblemView({ problem, index, total, onComplete }: Pract
         )}
       </div>
 
-      <div className="text-center my-3 py-2 bg-mist/40 rounded-xl min-h-[60px] flex items-center justify-center">
+      <div className="text-center my-3 py-2 px-4 bg-mist/40 rounded-xl min-h-[60px] flex items-center justify-center">
         {showEmoji ? (
           (operation === 'addition' || operation === 'subtraction') ? (
             <EmojiGroup
@@ -144,33 +144,33 @@ export function PracticeProblemView({ problem, index, total, onComplete }: Pract
           <button
             onClick={handleSubmit}
             disabled={answer === ''}
-            className="w-full inline-flex items-center justify-center gap-1.5 font-display text-base py-2.5 rounded-xl border-none bg-indigo text-white cursor-pointer transition-colors duration-150 hover:bg-indigo-hover active:bg-indigo-active disabled:opacity-40 disabled:cursor-not-allowed"
+            className="w-full inline-flex items-center justify-center gap-1.5 font-display text-base py-2.5 rounded-xl border-none bg-indigo text-ink cursor-pointer transition-colors duration-150 hover:bg-indigo-hover active:bg-indigo-active disabled:opacity-50 disabled:cursor-not-allowed focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-focus)]"
           >
             {t('common.buttons.checkAnswer')}
             <Check className="w-5 h-5" strokeWidth={2.5} />
           </button>
         )}
         {status === 'correct' && (
-          <div className="inline-flex items-center justify-center gap-1.5 font-display text-lg text-green animate-[popup-in_0.25s_ease-out]" role="status">
+          <div className="inline-flex items-center justify-center gap-1.5 font-display text-lg text-growth-ink animate-[popup-in_0.25s_ease-out] motion-reduce:animate-none" role="status">
             <Check className="w-6 h-6" strokeWidth={2.5} />
             {t('operations.screen.correctFeedback')}
           </div>
         )}
         {status === 'incorrect' && (
-          <div className="text-center font-display text-base text-orange animate-[popup-in_0.25s_ease-out]" role="alert">
+          <div className="text-center font-display text-base text-error animate-[popup-in_0.25s_ease-out] motion-reduce:animate-none" role="alert">
             {t('operations.screen.incorrectFeedback', "Not quite — try again! 💡")}
           </div>
         )}
         {status === 'revealed' && (
           <div className="font-body text-sm text-text-secondary bg-mist/30 rounded-xl p-3 text-center leading-[1.6]">
-            <p className="font-display text-base text-orange mb-2">{t('operations.screen.revealedIntro', "Here's how we solve it! Let's look together 👀")}</p>
+            <p className="font-display text-base text-error mb-2">{t('operations.screen.revealedIntro', "Here's how we solve it! Let's look together 👀")}</p>
             <p>{explanation}</p>
           </div>
         )}
       </div>
 
       {showTip && (
-        <div className="text-center font-body text-sm text-orange bg-warm-bg rounded-[10px] py-2 px-3.5 mt-2 border-[1.5px] border-warm-border animate-[popup-in_0.25s_ease-out]" role="status">
+        <div className="text-center font-body text-sm text-error bg-warm-bg rounded-[10px] py-2 px-3.5 mt-2 border-[1.5px] border-warm-border animate-[popup-in_0.25s_ease-out] motion-reduce:animate-none" role="status">
           <Lightbulb className="w-4 h-4 inline-block mr-1 -mt-0.5" strokeWidth={2.5} aria-hidden="true" /> {tip}
         </div>
       )}

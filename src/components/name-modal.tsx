@@ -91,7 +91,7 @@ export function NameModal({ isOpen, initialName, onSave, onCancel }: NameModalPr
           <Button
             onClick={handleSave}
             disabled={submitting}
-            className="font-display text-base py-2.5 px-7 rounded-full bg-coral text-white hover:bg-coral-hover active:bg-coral-active shadow-[0_4px_12px_rgba(255,107,82,0.35)]"
+            className="font-display text-base py-2.5 px-7 rounded-full bg-coral text-ink hover:bg-coral-hover active:bg-coral-active shadow-[var(--shadow-card)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
           >
             {t('modals.nameModal.save')}
           </Button>
