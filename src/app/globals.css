@@ -106,6 +106,7 @@
   .session-chip {
     display: inline-flex;
     align-items: center;
+    justify-content: center;
     max-width: 150px;
     min-height: 44px;
     padding-inline: var(--space-md);
@@ -329,10 +330,10 @@
   .trail-card:first-child .trail-name {
     font-size: calc(var(--text-xl) + var(--type-bump, 0px));
   }
-  .trail-card:first-child .trail-go {
+  .trail-card:first-child .trail-footer {
+    width: auto;
     margin: 0 0 0 auto;
     padding-top: 0;
-    text-align: right;
   }
   .trail-card:hover {
     transform: translateY(-3px);
@@ -390,9 +391,16 @@
     font-size: calc(var(--text-sm) + var(--type-bump, 0px));
     color: var(--color-text-tertiary);
   }
-  .trail-go {
+  .trail-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-sm);
+    width: 100%;
     margin-top: auto;
     padding-top: var(--space-sm);
+  }
+  .trail-go {
     font-family: var(--font-display);
     font-weight: 700;
     font-size: calc(var(--text-xs) + var(--type-bump, 0px));
@@ -421,9 +429,7 @@
     display: none;
   }
   .trail-stamp {
-    position: absolute;
-    top: var(--space-sm);
-    right: var(--space-sm);
+    flex-shrink: 0;
     padding: var(--space-2xs) var(--space-xs);
     font-family: var(--font-display);
     font-weight: 700;
@@ -983,10 +989,10 @@
   .trail-card:first-child .trail-name {
     font-size: calc(var(--text-title) + var(--type-bump, 0px));
   }
-  .trail-card:first-child .trail-go {
-    margin: var(--space-sm) 0 0;
+  .trail-card:first-child .trail-footer {
+    width: 100%;
+    margin: auto 0 0;
     padding-top: var(--space-sm);
-    text-align: left;
   }
   .postcard {
     padding: var(--space-lg);

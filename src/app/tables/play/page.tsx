@@ -64,6 +64,7 @@ export default function TablesPlayPage() {
         accent={KINGDOM}
         symbol="×"
         headerTitle={t('home.trail.worlds.tables.name')}
+        allowSkip={false}
         tip={
           patternTip ? (
             <div className="w-full bg-card rounded-2xl border-2 border-gold/50 p-3.5 flex items-start gap-2" role="note">

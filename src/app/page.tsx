@@ -199,8 +199,10 @@ export default function LandingPage() {
                         <span className="trail-name">{t(`home.trail.worlds.${world.id}.name`)}</span>
                       </span>
                       <span className="trail-tag">{t(`home.trail.worlds.${world.id}.tagline`)}</span>
-                      <span className="trail-go">{t('common.buttons.explore')}</span>
-                      {completed && <span className="trail-stamp">{t('home.trail.done')}</span>}
+                      <span className="trail-footer">
+                        <span className="trail-go">{t('common.buttons.explore')}</span>
+                        {completed && <span className="trail-stamp">{t('home.trail.done')}</span>}
+                      </span>
                     </button>
                   );
                 })}

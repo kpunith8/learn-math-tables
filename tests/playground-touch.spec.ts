@@ -1,11 +1,29 @@
 import { devices } from '@playwright/test';
 import { test, expect } from './fixtures';
+import { computeAnswer, parsePlayEquation } from './helpers';
 
 // Touch-context suite (mobile viewport + touch input) guarding tap-to-fly and
 // real touchscreen drags. Chromium-only like the rest of the suite.
 test.use({ ...devices['iPhone 13'], browserName: 'chromium' });
 
 test.describe('playground on touch', () => {
+  for (const operation of ['multiplication', 'division'] as const) {
+    test(`${operation} skipping the show preserves the current round`, async ({ page }) => {
+      await page.goto(`/${operation}/play`);
+      await page.getByTestId('clip-play').tap();
+      await page.getByTestId('clip-skip').tap();
+      const equation = await page.getByTestId('play-equation').innerText();
+      const answer = computeAnswer(operation, parsePlayEquation(equation));
+      await page.getByTestId(`play-badge-${answer}`).tap();
+      await page.getByTestId('play-next-round').tap();
+      await expect(page.getByText('Round 2 of 5')).toBeVisible();
+      await page.getByTestId('clip-play').tap();
+      await page.getByTestId('clip-skip').tap();
+      await expect(page.getByText('Round 2 of 5')).toBeVisible();
+      await expect(page.getByTestId('play-answer-slot')).toBeVisible();
+    });
+  }
+
   test('tap flies a token into the merge pot', async ({ page }) => {
     await page.goto('/addition/play');
     await expect(page.getByTestId('play-equation')).toBeVisible();

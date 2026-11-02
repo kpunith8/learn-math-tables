@@ -20,6 +20,7 @@ interface PlaygroundShellProps {
   onHome: () => void;
   /** Standalone surfaces (e.g. tables) override the header title. */
   headerTitle?: string;
+  allowSkip?: boolean;
   children: ReactNode;
 }
 
@@ -35,6 +36,7 @@ export function PlaygroundShell({
   onPractice,
   onHome,
   headerTitle,
+  allowSkip = true,
   children,
 }: PlaygroundShellProps) {
   const { t } = useTranslation();
@@ -78,11 +80,10 @@ export function PlaygroundShell({
         <p className="font-body text-xs text-text-dim mb-2" aria-live="polite">
           {roundLabel}
         </p>
-        <MascotMessage message={hint} className="mb-4" />
         {children}
 
         <div className="mt-5 flex items-center justify-center gap-3 flex-wrap">
-          <Button onClick={onReplay} variant="secondary" size="xl" data-testid="play-again">
+          <Button onClick={onReplay} variant="secondary" size="xl" className="px-4 sm:px-8" data-testid="play-again">
             <RotateCcw className="w-4 h-4" />
             {done ? t('playground.playAgain') : t('playground.replay')}
           </Button>
@@ -92,7 +93,14 @@ export function PlaygroundShell({
               <BicepsFlexed className="w-4 h-4" />
             </Button>
           )}
+          {!done && allowSkip && (
+            <Button onClick={onPractice} variant="indigo" size="xl" className="h-auto min-h-11 max-w-full whitespace-normal px-4 py-2 text-center sm:px-8" data-testid="play-skip-practice">
+              {t('playground.skipPractice')}
+              <BicepsFlexed className="w-4 h-4" />
+            </Button>
+          )}
         </div>
+        <MascotMessage message={hint} className="mt-5" />
       </div>
     </div>
   );
