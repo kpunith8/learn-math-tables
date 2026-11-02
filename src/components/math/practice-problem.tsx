@@ -140,10 +140,10 @@ export function PracticeProblemView({ problem, index, total, onComplete }: Pract
       </div>
 
       <div className="min-h-[36px] mt-2">
-        {status === 'waiting' && (
+        {(status === 'waiting' || status === 'correct') && (
           <button
             onClick={handleSubmit}
-            disabled={answer === ''}
+            disabled={answer === '' || status === 'correct'}
             className="w-full inline-flex items-center justify-center gap-1.5 font-display text-base py-2.5 rounded-xl border-none bg-indigo text-ink cursor-pointer transition-colors duration-150 hover:bg-indigo-hover active:bg-indigo-active disabled:opacity-50 disabled:cursor-not-allowed focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-focus)]"
           >
             {t('common.buttons.checkAnswer')}
@@ -151,7 +151,7 @@ export function PracticeProblemView({ problem, index, total, onComplete }: Pract
           </button>
         )}
         {status === 'correct' && (
-          <div className="inline-flex items-center justify-center gap-1.5 font-display text-lg text-growth-ink animate-[popup-in_0.25s_ease-out] motion-reduce:animate-none" role="status">
+          <div className="mt-3 flex items-center justify-center gap-1.5 text-center font-display text-lg text-growth-ink animate-[popup-in_0.25s_ease-out] motion-reduce:animate-none" role="status">
             <Check className="w-6 h-6" strokeWidth={2.5} />
             {t('operations.screen.correctFeedback')}
           </div>

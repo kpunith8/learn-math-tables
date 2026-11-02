@@ -61,33 +61,17 @@ test.describe('playground', () => {
     await expect(page.getByTestId('play-next-round')).toBeVisible();
   });
 
-  test('wrong answer badge shakes and keeps the round going', async ({ page }) => {
+  test('a wrong answer keeps the round open so it can be corrected', async ({ page }) => {
     await page.goto('/addition/play');
-    // A problem-set remount can swap the round under us in dev; retry on a
-    // fresh round when the click lands after a swap (bounded).
-    for (let attempt = 0; attempt < 3; attempt++) {
-      await drainPlayTokens(page);
-      const eqText = await page.getByTestId('play-equation').innerText();
-      const answer = computeAnswer('addition', parsePlayEquation(eqText));
-      const badges = page.getByTestId(/^play-badge-/);
-      const count = await badges.count();
-      let wrongId: string | null = null;
-      for (let i = 0; i < count; i++) {
-        const id = await badges.nth(i).getAttribute('data-testid');
-        if (id !== `play-badge-${answer}`) {
-          wrongId = id;
-          break;
-        }
-      }
-      if (!wrongId) continue;
-      await page.getByTestId(wrongId).click({ timeout: 5000 }).catch(() => null);
-      if (await page.getByText('Not quite — try another number!').isVisible().catch(() => false)) {
-        await expect(page.getByTestId('play-next-round')).toBeHidden();
-        return;
-      }
-      await page.reload();
-    }
-    throw new Error('no wrong badge appeared after 3 attempts');
+    await drainPlayTokens(page);
+    const eqText = await page.getByTestId('play-equation').innerText();
+    const answer = computeAnswer('addition', parsePlayEquation(eqText));
+    const wrong = page.getByTestId(/^play-badge-/).filter({ hasNot: page.getByText(String(answer), { exact: true }) }).first();
+    await wrong.click();
+    await expect(page.getByText('Not quite — try another number!')).toBeVisible();
+    await expect(page.getByTestId('play-next-round')).toBeHidden();
+    await page.getByTestId(`play-badge-${answer}`).click();
+    await expect(page.getByTestId('play-next-round')).toBeVisible();
   });
 
   test('multiplication show requires press-to-play and steps through', async ({ page }) => {
@@ -155,4 +139,3 @@ test.describe('playground', () => {
     await expect(page.getByTestId('play-next-round')).toBeVisible();
   });
 });
-

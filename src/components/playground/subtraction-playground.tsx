@@ -206,7 +206,7 @@ export function SubtractionPlayground({ problems, accent, onPractice, onHome }: 
               <p className="font-display text-2xl mt-1 text-ink">
                 {problem.operand1} − {problem.operand2} = {problem.result}
               </p>
-              <Button onClick={nextRound} variant="indigo" size="xl" className="mt-4" data-testid="play-next-round">
+              <Button onClick={nextRound} variant="indigo" size="xl" className="mt-4 h-auto min-h-11 max-w-full whitespace-normal px-5 py-2 text-center" data-testid="play-next-round">
                 {roundIndex + 1 >= TOTAL_ROUNDS ? t('playground.sessionDone') : t('common.buttons.next')}
                 <ArrowRight className="w-4 h-4" />
               </Button>

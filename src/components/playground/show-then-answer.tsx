@@ -167,9 +167,10 @@ interface ShowThenAnswerProps {
   onPractice: () => void;
   onHome: () => void;
   headerTitle?: string;
+  allowSkip?: boolean;
 }
 
-export function ShowThenAnswerPlayground({ operation, problems, accent, symbol, tip, onPractice, onHome, headerTitle }: ShowThenAnswerProps) {
+export function ShowThenAnswerPlayground({ operation, problems, accent, symbol, tip, onPractice, onHome, headerTitle, allowSkip }: ShowThenAnswerProps) {
   const { t } = useTranslation();
   const { playSound } = useAudio();
   const [roundIndex, setRoundIndex] = useState(0);
@@ -236,6 +237,7 @@ export function ShowThenAnswerPlayground({ operation, problems, accent, symbol, 
       operation={operation}
       accent={accent}
       headerTitle={headerTitle}
+      allowSkip={allowSkip}
       roundLabel={done ? t('playground.sessionDone') : t('playground.roundOf', { current: Math.min(roundIndex + 1, TOTAL_ROUNDS), total: TOTAL_ROUNDS })}
       currentRound={Math.min(roundIndex, TOTAL_ROUNDS - 1)}
       totalRounds={TOTAL_ROUNDS}
@@ -303,7 +305,7 @@ export function ShowThenAnswerPlayground({ operation, problems, accent, symbol, 
               <p className="font-display text-2xl mt-1 text-ink">
                 {problem.operand1} {symbol} {problem.operand2} = {problem.result}
               </p>
-              <Button onClick={nextRound} variant="indigo" size="xl" className="mt-4 focus-visible:ring-2 disabled:pointer-events-none disabled:opacity-50" data-testid="play-next-round">
+              <Button onClick={nextRound} variant="indigo" size="xl" className="mt-4 h-auto min-h-11 max-w-full whitespace-normal px-5 py-2 text-center focus-visible:ring-2 disabled:pointer-events-none disabled:opacity-50" data-testid="play-next-round">
                 {roundIndex + 1 >= TOTAL_ROUNDS ? t('playground.sessionDone') : t('common.buttons.next')}
                 <ArrowRight className="w-4 h-4" />
               </Button>

@@ -2,6 +2,30 @@ import { test, expect } from './fixtures';
 import { seedEngineState, mockKindeAuth, TODAY } from './helpers';
 
 test.describe('landing page — state & auth branches', () => {
+  test('completed trail stamps sit at the bottom without covering card text', async ({ page }) => {
+    await seedEngineState(page, {
+      milestoneStars: Object.fromEntries(
+        ['addition', 'multiplication'].flatMap((op) =>
+          ['easy', 'medium', 'hard'].map((level) => [`${op}:${level}:quiz`, 3])
+        )
+      ),
+    });
+    await page.goto('/');
+    for (const width of [390, 1024, 1440]) {
+      await page.setViewportSize({ width, height: 900 });
+      const cards = page.locator('.trail-card:has(.trail-stamp)');
+      await expect(cards).toHaveCount(2);
+      for (const card of await cards.all()) {
+        const stamp = await card.locator('.trail-stamp').boundingBox();
+        const title = await card.locator('.trail-heading').boundingBox();
+        const explore = await card.locator('.trail-go').boundingBox();
+        expect(stamp!.x >= title!.x + title!.width || stamp!.y >= title!.y + title!.height).toBe(true);
+        expect(stamp!.x).toBeGreaterThan(explore!.x + explore!.width);
+        expect(Math.abs((stamp!.y + stamp!.height / 2) - (explore!.y + explore!.height / 2))).toBeLessThan(4);
+      }
+    }
+  });
+
   test('shows completed mission, badges and done trail markers when engine state is seeded', async ({ page }) => {
     await seedEngineState(page, {
       milestoneStars: {

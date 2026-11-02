@@ -175,6 +175,7 @@
     "title": "Let's Play!",
     "pressPlay": "Play",
     "replay": "Replay",
+    "skipPractice": "Skip and Practice",
     "dragHint": "Tap a piece to fly it over!",
     "tapHint": "Tap each piece to fly it over, or drag it!",
     "roundOf": "Round {{current}} of {{total}}",

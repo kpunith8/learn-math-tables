@@ -43,7 +43,7 @@ function getToastMessage(t: Translate): string {
 function PracticeToastList() {
   const { toasts } = Toast.useToastManager();
   return toasts.map((toast) => (
-    <Toast.Root key={toast.id} toast={toast} swipeDirection="up" className="group">
+    <Toast.Root key={toast.id} toast={toast} swipeDirection="up" className="group hidden md:block">
       <Toast.Content className="overflow-hidden">
         <div className="bg-green/10 border-2 border-green/30 rounded-xl px-4 py-3 shadow-lg flex items-center gap-2.5">
           <Check className="w-5 h-5 shrink-0 text-green" strokeWidth={2.5} />

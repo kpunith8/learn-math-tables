@@ -199,6 +199,9 @@ export function parsePlayEquation(text: string): Equation {
  *  remount landing mid-drain (dev StrictMode/HMR): each fresh set is drainable,
  *  so simply keep draining whatever is visible. */
 export async function drainPlayTokens(page: Page) {
+  // The playground is loaded dynamically; zero tokens before it mounts does
+  // not mean the manipulation phase has finished.
+  await expect(page.getByTestId('play-equation')).toBeVisible();
   for (let attempt = 0; attempt < 4; attempt++) {
     let guard = 0;
     while ((await page.getByTestId(/^play-token-/).count()) > 0 && guard++ < 60) {
@@ -222,6 +225,7 @@ async function tapPlayToken(page: Page, fast: boolean) {
 
 /** Finish the manipulate/show phase of one play round (tap-to-fly + clip advance). */
 async function finishPlayRoundSetup(page: Page, op: Operation, fast = false) {
+  await expect(page.getByTestId('play-equation')).toBeVisible();
   if (op === 'addition' || op === 'subtraction') {
     if (fast) {
       for (let attempt = 0; attempt < 4; attempt++) {

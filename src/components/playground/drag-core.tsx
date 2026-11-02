@@ -108,12 +108,11 @@ export function DraggableItem({ id, label, disabled, onDrop, onTap, className = 
   const onPointerDown = useCallback(
     (e: PointerEvent<HTMLButtonElement>) => {
       if (disabled || drag.current.active) return;
-      const gesture = { onDrop, onTap };
+      const gesture = { onDrop };
       drag.current = { active: true, pointerId: e.pointerId, moved: false, startX: e.clientX, startY: e.clientY, raf: 0 };
       const el = ref.current;
       if (el) {
         el.style.zIndex = '30';
-        el.style.pointerEvents = 'none';
         el.classList.add('play-dragging');
       }
 
@@ -160,6 +159,9 @@ export function DraggableItem({ id, label, disabled, onDrop, onTap, className = 
         const dy = ev.clientY - d.startY;
         if (Math.hypot(dx, dy) > 6) d.moved = true;
         if (!d.moved) return;
+        // Keep taps targeted at the item; disabling hit-testing on pointerdown
+        // can send the eventual click to Replay after the answer view changes.
+        if (ref.current) ref.current.style.pointerEvents = 'none';
         cancelAnimationFrame(d.raf);
         d.raf = requestAnimationFrame(() => setTransform(dx, dy));
       };
@@ -177,7 +179,6 @@ export function DraggableItem({ id, label, disabled, onDrop, onTap, className = 
         }
         if (!d.moved) {
           clearTransform();
-          gesture.onTap(id);
           return;
         }
         const zoneId = hitTestZoneAt(ev.clientX, ev.clientY);
@@ -189,13 +190,14 @@ export function DraggableItem({ id, label, disabled, onDrop, onTap, className = 
       window.addEventListener('pointercancel', onUp);
       window.addEventListener('blur', onBlur);
     },
-    [disabled, id, onDrop, onTap]
+    [disabled, id, onDrop]
   );
 
   const onKeyboardClick = useCallback(
     (e: MouseEvent<HTMLButtonElement>) => {
-      // Keyboard-activated clicks have detail === 0; real taps already went through onTap.
-      if (e.detail === 0 && !disabled) onTap(id);
+      // Commit taps on click, after the browser has chosen its target. Updating
+      // the layout on pointerup can otherwise send that click to Replay.
+      if (!disabled && (e.detail === 0 || !drag.current.moved)) onTap(id);
     },
     [disabled, id, onTap]
   );
