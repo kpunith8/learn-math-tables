@@ -124,7 +124,7 @@ export function AdditionPlayground({ problems, accent, onPractice, onHome }: Add
     >
       {!done && problem && (
         <div className="w-full max-w-[480px] flex flex-col items-center gap-4">
-          <div className="font-display text-[clamp(22px,6vw,32px)] text-center" style={{ color: accent }} data-testid="play-equation">
+          <div className="equation-plate font-display text-[clamp(22px,6vw,32px)] text-center" data-testid="play-equation">
             {problem.operand1} + {problem.operand2} = ?
           </div>
 
@@ -137,7 +137,7 @@ export function AdditionPlayground({ problems, accent, onPractice, onHome }: Add
                     <Plus className="w-4 h-4 inline-block mr-1" aria-hidden="true" />
                     {problem.operand1}
                   </p>
-                  <div className="flex flex-wrap gap-1.5 justify-center min-h-[60px]">
+                  <div className="flex flex-wrap gap-1.5 items-center justify-center min-h-[60px]">
                     {remaining(tokensA).map((tok) => (
                       <Manipulative key={tok.id} token={tok} emoji={problem.emoji} accent={accent} onDropToken={handleDropToken} onTapToken={dropToken} />
                     ))}
@@ -148,7 +148,7 @@ export function AdditionPlayground({ problems, accent, onPractice, onHome }: Add
                     <Plus className="w-4 h-4 inline-block mr-1" aria-hidden="true" />
                     {problem.operand2}
                   </p>
-                  <div className="flex flex-wrap gap-1.5 justify-center min-h-[60px]">
+                  <div className="flex flex-wrap gap-1.5 items-center justify-center min-h-[60px]">
                     {remaining(tokensB).map((tok) => (
                       <Manipulative key={tok.id} token={tok} emoji={problem.emoji} accent={accent} onDropToken={handleDropToken} onTapToken={dropToken} />
                     ))}
@@ -157,7 +157,7 @@ export function AdditionPlayground({ problems, accent, onPractice, onHome }: Add
               </div>
               <DropZone id="merge-pot" label={t('playground.mergePot')} accent={accent} testId="play-dropzone" className="w-full">
                 <p className="font-display text-base text-ink">{t('playground.mergePot')}</p>
-                <p key={droppedIds.size} className="font-display text-3xl mt-1 animate-[pop-in_0.25s_ease-out]" style={{ color: accent }} aria-live="polite">
+                <p key={droppedIds.size} className="font-display text-3xl mt-1 animate-[pop-in_0.25s_ease-out] motion-reduce:animate-none" aria-live="polite">
                   {droppedSum}
                 </p>
               </DropZone>
@@ -167,12 +167,12 @@ export function AdditionPlayground({ problems, accent, onPractice, onHome }: Add
               <p className="font-body text-sm text-text-secondary text-center">{t('playground.tapHint')}</p>
               <DropZone id="answer-slot" label={t('playground.answerSlot')} accent={accent} testId="play-answer-slot" className="w-full">
                 <p className="font-display text-base text-ink">{t('playground.answerSlot')}</p>
-                <p className="font-display text-3xl mt-1" style={{ color: accent }}>
+                <p className="font-display text-3xl mt-1 text-ink">
                   ?
                 </p>
               </DropZone>
               {lastWrong != null && (
-                <p className="font-body text-sm text-orange" role="alert">
+                <p className="font-body text-sm text-error" role="alert">
                   {t('playground.wrongBadge')}
                 </p>
               )}
@@ -190,12 +190,12 @@ export function AdditionPlayground({ problems, accent, onPractice, onHome }: Add
               </div>
             </>
           ) : (
-            <div className="w-full bg-card rounded-2xl border-2 border-leaf/40 p-5 text-center animate-[pop-in_0.25s_ease-out]" role="status">
-              <p className="font-display text-lg text-leaf flex items-center justify-center gap-1.5">
+            <div className="w-full bg-card rounded-2xl border-2 border-leaf/40 p-5 text-center animate-[pop-in_0.25s_ease-out] motion-reduce:animate-none" role="status">
+              <p className="font-display text-lg text-growth-ink flex items-center justify-center gap-1.5">
                 <Check className="w-6 h-6" strokeWidth={2.5} />
                 {t('playground.correctRound')}
               </p>
-              <p className="font-display text-2xl mt-1" style={{ color: accent }}>
+              <p className="font-display text-2xl mt-1 text-ink">
                 {problem.operand1} + {problem.operand2} = {problem.result}
               </p>
               <Button onClick={nextRound} variant="indigo" size="xl" className="mt-4" data-testid="play-next-round">
@@ -208,7 +208,7 @@ export function AdditionPlayground({ problems, accent, onPractice, onHome }: Add
       )}
 
       {done && (
-        <div className="w-full max-w-[420px] bg-card rounded-2xl border-2 border-gold/50 p-6 text-center animate-[pop-in_0.3s_ease-out]" role="status">
+        <div className="w-full max-w-[420px] bg-card rounded-2xl border-2 border-gold/50 p-6 text-center animate-[pop-in_0.3s_ease-out] motion-reduce:animate-none" role="status">
           <p className="font-display text-lg text-ink">{t('playground.sessionDone')}</p>
           <p className="font-body text-sm text-text-secondary mt-1">{t('playground.tapHint')}</p>
         </div>

@@ -1,11 +1,35 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo, type CSSProperties } from 'react';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useTranslation, Trans } from 'react-i18next';
 import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs';
 import { LoginLink, LogoutLink } from '@kinde-oss/kinde-auth-nextjs/components';
-import { LogIn, LogOut, User, ArrowRight, Check } from 'lucide-react';
+import {
+  Award,
+  Castle,
+  Check,
+  ClipboardCheck,
+  Compass,
+  Crown,
+  Divide,
+  Flame,
+  LogIn,
+  LogOut,
+  Minus,
+  Mountain,
+  Palmtree,
+  Plus,
+  Search,
+  Sparkles,
+  Star,
+  User,
+  Waves,
+  X,
+  Zap,
+  type LucideIcon,
+} from 'lucide-react';
 import { useAppContext } from '@/lib/contexts/AppContext';
 import { useEngineState } from '@/lib/hooks/useEngineState';
 import { NameModal } from '@/components/name-modal';
@@ -14,13 +38,32 @@ import { UniversalDifficultySelector } from '@/components/universal-difficulty-s
 
 import { getStarsToNextMilestone, isOperationFullyCompleted } from '@/lib/engines/star-economy';
 
-const TRAIL = [
-  { id: 'addition' as const, emoji: '🏝️', route: '/addition/play', accent: '#4FA8F5' },
-  { id: 'subtraction' as const, emoji: '🏞️', route: '/subtraction/play', accent: '#57C278' },
-  { id: 'multiplication' as const, emoji: '⛰️', route: '/multiplication/play', accent: '#7E8CD9' },
-  { id: 'division' as const, emoji: '🏰', route: '/division/play', accent: '#FF7A59' },
-  { id: 'tables' as const, emoji: '👑', route: '/tables', accent: '#F5AB3C' },
+type World = 'addition' | 'subtraction' | 'multiplication' | 'division' | 'tables';
+
+const TRAIL: { id: World; Icon: LucideIcon; route: string; world: string }[] = [
+  { id: 'addition', Icon: Palmtree, route: '/addition/play', world: 'var(--color-lagoon)' },
+  { id: 'subtraction', Icon: Waves, route: '/subtraction/play', world: 'var(--color-valley)' },
+  { id: 'multiplication', Icon: Mountain, route: '/multiplication/play', world: 'var(--color-periwinkle)' },
+  { id: 'division', Icon: Castle, route: '/division/play', world: 'var(--color-castle)' },
+  { id: 'tables', Icon: Crown, route: '/tables', world: 'var(--color-kingdom)' },
 ];
+
+/* The achievement badges are stored with emoji glyphs; the landing renders
+   them as drawn marks instead, one icon library for the whole page. */
+const BADGE_ICONS: Record<string, LucideIcon> = {
+  'addition-hero': Plus,
+  'subtraction-ninja': Minus,
+  'multiplication-master': X,
+  'division-champion': Divide,
+  'table-detective': Search,
+  'pattern-hunter': Sparkles,
+  'math-explorer': Compass,
+  'first-quiz': ClipboardCheck,
+  'perfect-score': Award,
+  'streak-3': Flame,
+  'streak-7': Zap,
+  'star-collector-50': Star,
+};
 
 export default function LandingPage() {
   const router = useRouter();
@@ -38,221 +81,285 @@ export default function LandingPage() {
 
   const mission = isEngineLoaded ? engineState.dailyMission : null;
   const starProgress = isEngineLoaded ? getStarsToNextMilestone(engineState.stars) : 0;
-  const newBadges = isEngineLoaded ? getNewBadges() : [];
-  const completedOps = isEngineLoaded
-    ? TRAIL.flatMap((w) => w.id !== 'tables' && isOperationFullyCompleted(engineState.milestoneStars, w.id) ? [w.id] : [])
-    : [];
+  const newBadges = useMemo(
+    () => (isEngineLoaded ? getNewBadges() : []),
+    [isEngineLoaded, getNewBadges]
+  );
+  const completedOps = useMemo(
+    () =>
+      new Set(
+        TRAIL.flatMap((w) =>
+          w.id !== 'tables' && isOperationFullyCompleted(engineState.milestoneStars, w.id) ? [w.id] : []
+        )
+      ),
+    [engineState.milestoneStars]
+  );
+
+  const milestoneTarget = Number.isFinite(starProgress) ? engineState.stars + starProgress : null;
+  const milestonePct =
+    milestoneTarget && milestoneTarget > 0 ? Math.min(100, Math.round((engineState.stars / milestoneTarget) * 100)) : 100;
 
   return (
-    <div className="font-body min-h-screen bg-paper flex flex-col">
-      <header className="bg-ink text-white px-4 py-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-        <span className="font-display text-base shrink-0 text-center sm:text-left">{t('home.header.title')}</span>
-        <div className="flex items-center justify-center gap-1.5 flex-wrap sm:justify-end">
-          <UniversalDifficultySelector dark />
-          <LanguageSelector dark />
-          {isAuthenticated ? (
-            <>
-              <span
-                className="inline-flex items-center justify-center font-display text-xs font-bold text-white/90 bg-white/15 border-2 border-white/25 rounded-full px-3 min-h-[44px] max-w-[140px] overflow-hidden text-ellipsis whitespace-nowrap"
-                title={sessionName}
-              >
-                {sessionName}
-              </span>
-              <LogoutLink className="inline-flex items-center justify-center gap-1.5 font-display text-sm bg-coral text-white py-1.5 px-4 rounded-full hover:bg-coral-hover transition-colors min-h-[44px]">
-                <LogOut className="w-4 h-4" />
-                {t('common.auth.signOut')}
-              </LogoutLink>
-            </>
-          ) : (
-            <>
-              <button
-                onClick={openNameModal}
-                className="inline-flex items-center justify-center gap-1.5 font-display text-sm bg-coral text-white py-1.5 px-4 rounded-full border-none cursor-pointer hover:bg-coral-hover transition-colors min-h-[44px]"
-              >
-                <User className="w-4 h-4" />
-                <span className="max-w-[180px] overflow-hidden text-ellipsis whitespace-nowrap" title={state.playerName}>
-                  {state.playerName || t('common.nav.addNameShort')}
+    <div className="paper-page font-body flex min-h-screen flex-col">
+      <header className="site-nav">
+        <div className="shell nav-row">
+          <span className="wordmark">
+            <span className="wordmark-mark" aria-hidden="true">
+              <Compass className="h-[22px] w-[22px]" strokeWidth={2.5} />
+            </span>
+            {t('home.header.title')}
+          </span>
+
+          <div className="nav-selects">
+            <UniversalDifficultySelector />
+            <LanguageSelector />
+          </div>
+          <div className="nav-account">
+            {isAuthenticated ? (
+              <>
+                <span className="session-chip" title={sessionName}>
+                  {sessionName}
                 </span>
-              </button>
-              {!isLoading && (
-                <LoginLink className="inline-flex items-center justify-center gap-1.5 font-display text-sm text-white border-2 border-white/40 py-1.5 px-4 rounded-full hover:bg-white/10 transition-colors min-h-[44px]">
-                  <LogIn className="w-4 h-4" />
-                  {t('common.auth.signIn')}
-                </LoginLink>
-              )}
-            </>
-          )}
+                <LogoutLink className="press press-primary">
+                  <LogOut className="h-4 w-4" aria-hidden="true" />
+                  <span className="nav-label">{t('common.auth.signOut')}</span>
+                </LogoutLink>
+              </>
+            ) : (
+              <>
+                <button type="button" onClick={openNameModal} className="press press-primary">
+                  <User className="h-4 w-4" aria-hidden="true" />
+                  <span className="nav-name nav-label" title={state.playerName}>
+                    {state.playerName || t('common.nav.addNameShort')}
+                  </span>
+                </button>
+                {!isLoading && (
+                  <LoginLink className="press press-quiet">
+                    <LogIn className="h-4 w-4" aria-hidden="true" />
+                    <span className="nav-label">{t('common.auth.signIn')}</span>
+                  </LoginLink>
+                )}
+              </>
+            )}
+          </div>
         </div>
       </header>
 
-      <div className="flex-1 overflow-y-auto pb-8">
-        <div className="max-w-[600px] mx-auto px-4">
-
-          {/* Hero */}
-          <section className="text-center pt-5 pb-2">
-            <div className="flex items-center justify-center gap-2">
-              <span className="text-[28px] animate-[pop-in_0.3s_ease-out]">🧭</span>
-              <h1 className="font-display text-[clamp(22px,6vw,32px)] text-ink leading-tight">
-                {t('home.hero.welcome')}
-              </h1>
+      <main className="flex-1">
+        {/* Hero — the trail is the action, set large beside a short head */}
+        <section className="hero" aria-labelledby="hero-title">
+          <div className="shell fold-grid">
+            <div className="welcome-copy">
+              <div className="welcome-head">
+                <h1 id="hero-title" className="welcome-title">
+                  {t('home.hero.welcome')}
+                </h1>
+                <p className="welcome-lead">
+                  <Trans i18nKey="home.hero.subtitle" components={[<span key="stars" className="mark" />]} />
+                </p>
+              </div>
+              {isEngineLoaded && milestoneTarget !== null && (
+                <div className="star-meter">
+                  <span className="star-meter-figure">
+                    <Star className="h-6 w-6" strokeWidth={2.5} aria-hidden="true" />
+                    {starProgress}
+                  </span>
+                  <span className="star-meter-note">{t('home.hero.starsToNextMilestone')}</span>
+                  <span className="meter-track" aria-hidden="true">
+                    <span className="meter-fill" style={{ width: `${milestonePct}%` }} />
+                  </span>
+                </div>
+              )}
             </div>
-            <p className="font-body text-sm text-text-tertiary mt-1.5 max-w-[400px] mx-auto">
-              <Trans
-                i18nKey="home.hero.subtitle"
-                components={[<span key="stars" className="text-coral font-bold" />]}
-              />
-            </p>
-            <div className="inline-flex items-center gap-1.5 mt-3 border-2 border-mist bg-card rounded-full px-4 py-2 shadow-[0_2px_6px_rgba(27,20,71,0.06)]">
-              <span className="text-lg">⭐</span>
-              <span className="font-display text-sm text-ink font-bold">{starProgress}</span>
-              <span className="font-body text-xs font-semibold text-text-dim">{t('home.hero.starsToNextMilestone')}</span>
-            </div>
-          </section>
 
-          {/* Today's Postcard */}
-          {isEngineLoaded && mission && (
-            <section className="mt-5 mb-5">
-              <div className="relative bg-card rounded-2xl border-2 border-gold/50 p-4 pt-5 shadow-[0_4px_14px_rgba(255,182,72,0.18)]">
-                <span className="absolute -top-2.5 left-1/2 -translate-x-1/2 font-display text-[10px] tracking-wider text-card bg-coral px-3 py-0.5 rounded-full uppercase max-w-[calc(100%-2rem)] whitespace-nowrap overflow-hidden text-ellipsis">
-                  {t('home.mission.postcardFrom')}
-                </span>
-                <div className="flex items-center justify-between mb-2">
-                  <h2 className="font-display text-sm font-bold text-ink">{t('home.mission.todaysMission')}</h2>
+            <div className="trail-col">
+              <div className="trail-head">
+                <h2 id="trail-title" className="trail-title">
+                  {t('home.trail.sectionTitle')}
+                </h2>
+                <p className="trail-line">{t('home.trail.sectionSubtitle')}</p>
+              </div>
+
+              <div className="trail-grid" aria-labelledby="trail-title">
+                {TRAIL.map((world) => {
+                  const completed = world.id !== 'tables' && completedOps.has(world.id);
+                  const Icon = world.Icon;
+                  return (
+                    <button
+                      key={world.id}
+                      type="button"
+                      onClick={() => router.push(world.route)}
+                      className="trail-card"
+                      style={{ '--world': world.world } as CSSProperties}
+                    >
+                      <span className="trail-heading">
+                        <span className="trail-mark" aria-hidden="true">
+                          <Icon className="h-[26px] w-[26px]" strokeWidth={2.25} />
+                        </span>
+                        <span className="trail-name">{t(`home.trail.worlds.${world.id}.name`)}</span>
+                      </span>
+                      <span className="trail-tag">{t(`home.trail.worlds.${world.id}.tagline`)}</span>
+                      <span className="trail-go">{t('common.buttons.explore')}</span>
+                      {completed && <span className="trail-stamp">{t('home.trail.done')}</span>}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {isEngineLoaded && mission && (
+          <section className="mission-band">
+            <div className="shell">
+              <article className="postcard">
+                <div className="postcard-head">
+                  <h2 className="postcard-title">{t('home.mission.todaysMission')}</h2>
                   {mission.completed ? (
-                    <span className="inline-flex items-center gap-1 font-display text-xs text-leaf font-semibold">
-                      <Check className="w-4 h-4" strokeWidth={2.5} />
+                    <span className="postcard-status">
+                      <Check className="h-4 w-4" strokeWidth={3} aria-hidden="true" />
                       {t('home.mission.complete')}
                     </span>
                   ) : (
-                    <span className="font-display text-xs text-coral">{t('home.mission.reward')}</span>
+                    <span className="postcard-status postcard-status-reward">
+                      <Star className="h-4 w-4" strokeWidth={2.5} aria-hidden="true" />
+                      {t('home.mission.reward')}
+                    </span>
                   )}
                 </div>
-                <div className="space-y-1.5">
-                  {mission.tasks.map((task, i) => (
-                    <div key={i} className="flex items-center gap-2">
-                      <span className="w-4 h-4 shrink-0 flex items-center justify-center">
-                        {task.completed ? (
-                          <Check className="w-4 h-4 text-leaf" strokeWidth={2.5} />
-                        ) : (
-                          <span className="text-sm leading-none">⭐</span>
-                        )}
-                      </span>
-                      <span className={`font-body text-xs flex-1 ${task.completed ? 'text-leaf line-through' : 'text-text-secondary'}`}>
-                        {task.descriptionKey ? t(task.descriptionKey) : task.description}
-                      </span>
-                      {!task.completed && task.target > 1 && (
-                        <span className="font-body text-xs text-text-dim">{task.progress}/{task.target}</span>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </section>
-          )}
 
-          {/* Passport stamps */}
-          {isEngineLoaded && (
-            <section className="mb-6">
-              <div className="grid grid-cols-3 gap-2">
-                <div className="bg-card rounded-xl border-2 border-mist p-3 text-center">
-                  <div className="text-xl">⭐</div>
-                  <div className="font-display text-lg font-bold text-ink">{engineState.stars}</div>
-                  <div className="font-body text-[11px] font-semibold text-text-muted">{t('home.stats.stars')}</div>
-                </div>
-                <div className="bg-card rounded-xl border-2 border-mist p-3 text-center">
-                  <div className="text-xl">📚</div>
-                  <div className="font-display text-lg font-bold text-ink">{newBadges.length}</div>
-                  <div className="font-body text-[11px] font-semibold text-text-muted">{t('home.stats.badges')}</div>
-                </div>
-                <div className="bg-card rounded-xl border-2 border-mist p-3 text-center">
-                  <div className="text-xl">{engineState.streak > 0 ? '🔥' : '⏳'}</div>
-                  <div className="font-display text-lg font-bold text-ink">{engineState.streak}</div>
-                  <div className="font-body text-[11px] font-semibold text-text-muted">{t('home.stats.dayStreak')}</div>
-                </div>
-              </div>
-            </section>
-          )}
-
-          {/* Expedition trail */}
-          <section className="relative">
-            <div className="flex items-center gap-2 mb-4">
-              <span className="text-lg">🗺️</span>
-              <h2 className="font-display text-base font-bold text-ink">{t('home.trail.sectionTitle')}</h2>
-              <span className="font-body text-xs font-semibold text-text-dim">{t('home.trail.sectionSubtitle')}</span>
-            </div>
-
-            <div className="space-y-3">
-              {TRAIL.map((world, idx) => {
-                const completed = world.id !== 'tables' && completedOps.includes(world.id);
-                return (
-                  <div key={world.id} className="flex gap-3 items-stretch">
-                    {/* node rail */}
-                    <div className="flex flex-col items-center shrink-0">
-                      <div
-                        className="w-5 h-5 rounded-full border-[2.5px] mt-5 flex items-center justify-center text-[10px]"
-                        style={{ borderColor: world.accent, background: completed ? world.accent : 'var(--color-paper)', color: completed ? '#fff' : world.accent }}
-                      >
-                        {completed ? '✓' : ''}
-                      </div>
-                      {idx < TRAIL.length - 1 && (
-                        <div className="w-[2px] flex-1 my-1 rounded-full" style={{ backgroundImage: `repeating-linear-gradient(to bottom, ${world.accent} 0 4px, transparent 4px 8px)` }} />
-                      )}
-                    </div>
-
-                    {/* destination card */}
-                    <button
-                      onClick={() => router.push(world.route)}
-                      className="flex-1 min-w-0 text-left bg-card rounded-2xl border-2 px-4 py-3.5 cursor-pointer transition-all duration-150 hover:scale-[1.01] hover:shadow-[0_6px_18px_rgba(27,20,71,0.10)] active:scale-[0.99]"
-                      style={{ borderColor: world.accent + '55' }}
-                    >
-                      <div className="flex items-center gap-3">
-                        <div className="w-11 h-11 rounded-xl flex items-center justify-center text-[26px] shrink-0" style={{ background: world.accent + '18' }}>
-                          {world.emoji}
-                        </div>
-                        <div className="min-w-0 flex-1">
-                          <div className="flex items-center gap-2">
-                            <span className="font-display text-base text-ink font-bold truncate">{t(`home.trail.worlds.${world.id}.name`)}</span>
-                            {completed && (
-                              <span className="font-display text-[10px] text-white bg-leaf rounded-full px-2 py-0.5 shrink-0">{t('home.trail.done')}</span>
-                            )}
-                          </div>
-                          <div className="font-body text-xs font-semibold text-text-muted mt-0.5">{t(`home.trail.worlds.${world.id}.tagline`)}</div>
-                        </div>
-                        <span className="inline-flex items-center gap-0.5 font-body text-[11px] font-semibold text-text-dim shrink-0">
-                          {t('common.buttons.explore')}
-                          <ArrowRight className="w-3 h-3" strokeWidth={3} />
+                <div className="postcard-body">
+                  <ul className="mission-list">
+                    {mission.tasks.map((task, i) => (
+                      <li key={i} className="mission-task" data-done={task.completed || undefined}>
+                        <span className="mission-mark" aria-hidden="true">
+                          {task.completed ? (
+                            <Check className="h-4 w-4" strokeWidth={3} />
+                          ) : (
+                            <Star className="h-4 w-4" strokeWidth={2} />
+                          )}
                         </span>
-                      </div>
-                    </button>
+                        <span className="mission-text">
+                          {task.descriptionKey ? t(task.descriptionKey) : task.description}
+                        </span>
+                        {!task.completed && task.target > 1 && (
+                          <span className="mission-count">
+                            {task.progress}/{task.target}
+                          </span>
+                        )}
+                      </li>
+                    ))}
+                  </ul>
+
+                  <div className="postcard-stamp">
+                    <span className="postmark" aria-hidden="true">
+                      <Compass className="h-10 w-10" strokeWidth={2} />
+                    </span>
+                    <span className="postcard-from">{t('home.mission.postcardFrom')}</span>
                   </div>
-                );
-              })}
+                </div>
+              </article>
             </div>
           </section>
+        )}
 
-          {/* Badges sticker row */}
-          {isEngineLoaded && newBadges.length > 0 && (
-            <section className="mt-6">
-              <h2 className="font-display text-sm font-bold text-ink mb-2 flex items-center gap-1.5">
-                <span>🏅</span> {t('home.badges.sectionTitle')}
+        {isEngineLoaded && (
+          <section className="figures-band">
+            <div className="shell">
+              <dl className="figures-row">
+                <div className="figure-cell">
+                  <dt className="figure-label">
+                    <Star className="h-[18px] w-[18px]" strokeWidth={2.5} aria-hidden="true" />
+                    {t('home.stats.stars')}
+                  </dt>
+                  <dd className="figure-value">{engineState.stars}</dd>
+                </div>
+                <div className="figure-cell">
+                  <dt className="figure-label">
+                    <Award className="h-[18px] w-[18px]" strokeWidth={2.5} aria-hidden="true" />
+                    {t('home.stats.badges')}
+                  </dt>
+                  <dd className="figure-value">{newBadges.length}</dd>
+                </div>
+                <div className="figure-cell">
+                  <dt className="figure-label">
+                    <Flame className="h-[18px] w-[18px]" strokeWidth={2.5} aria-hidden="true" />
+                    {t('home.stats.dayStreak')}
+                  </dt>
+                  <dd className="figure-value">{engineState.streak}</dd>
+                </div>
+              </dl>
+            </div>
+          </section>
+        )}
+
+        {isEngineLoaded && (
+          <section className="stamps-band" aria-labelledby="stamps-title">
+            <div className="shell">
+              <h2 id="stamps-title" className="stamps-title">
+                {t('home.badges.sectionTitle')}
               </h2>
-              <div className="flex flex-wrap gap-2">
-                {newBadges.slice(0, 6).map((badge) => (
-                  <div
-                    key={badge.id}
-                    className="flex items-center gap-1.5 bg-card rounded-xl border border-mist px-3 py-1.5 rotate-[-1.5deg] shadow-[0_2px_4px_rgba(90,20,71,0.06)]"
-                    title={t(`achievements.${badge.id}.description`)}
-                  >
-                    <span className="text-base">{badge.icon}</span>
-                    <span className="font-body text-[11px] text-text-secondary font-medium">{t(`achievements.${badge.id}.label`)}</span>
-                  </div>
-                ))}
-              </div>
-            </section>
-          )}
+              {engineState.achievements.length > 0 ? (
+                <>
+                  <ul className="stamps-row">
+                    {engineState.achievements.map((badge) => {
+                      const earned = badge.unlockedAt !== null;
+                      const Icon = BADGE_ICONS[badge.id] ?? Award;
+                      return (
+                        <li
+                          key={badge.id}
+                          className="stamp"
+                          data-earned={earned || undefined}
+                          title={t(`achievements.${badge.id}.description`)}
+                        >
+                          <span className="stamp-ring" aria-hidden="true">
+                            <Icon className="h-4 w-4" strokeWidth={2.5} />
+                          </span>
+                          <span>{t(`achievements.${badge.id}.label`)}</span>
+                          <span className="sr-only">{earned ? t('home.badges.earned') : t('home.badges.locked')}</span>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                  <p className="stamps-count">
+                    {t('home.badges.count', { earned: newBadges.length, total: engineState.achievements.length })}
+                  </p>
+                </>
+              ) : (
+                <div className="stamps-empty">
+                  <Award className="h-6 w-6" strokeWidth={2.25} aria-hidden="true" />
+                  <p>{t('home.badges.empty')}</p>
+                </div>
+              )}
+            </div>
+          </section>
+        )}
+      </main>
 
+      <footer className="site-foot">
+        <div className="shell foot-grid">
+          <p className="foot-close">{t('home.footer.closing')}</p>
+          <p className="foot-sign">{t('home.footer.signOff')}</p>
+          <nav className="foot-links" aria-label={t('home.trail.sectionTitle')}>
+            <Link className="foot-link" href="/addition/play">
+              {t('operations.meta.addition.name')}
+            </Link>
+            <Link className="foot-link" href="/subtraction/play">
+              {t('operations.meta.subtraction.name')}
+            </Link>
+            <Link className="foot-link" href="/multiplication/play">
+              {t('operations.meta.multiplication.name')}
+            </Link>
+            <Link className="foot-link" href="/division/play">
+              {t('operations.meta.division.name')}
+            </Link>
+            <Link className="foot-link" href="/tables">
+              {t('header.title')}
+            </Link>
+          </nav>
+          <p className="foot-note">{t('home.footer.madeFor')}</p>
         </div>
-      </div>
+      </footer>
 
       <NameModal
         isOpen={showNameModal}

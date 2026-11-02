@@ -25,13 +25,13 @@
     "difficulty": {
       "label": "Difficulty:",
       "easy": {
-        "badge": "🌟 Easy"
+        "badge": "Easy"
       },
       "medium": {
-        "badge": "⭐ Medium"
+        "badge": "Medium"
       },
       "hard": {
-        "badge": "🏆 Hard"
+        "badge": "Hard"
       }
     },
     "aria": {
@@ -44,7 +44,7 @@
   },
   "home": {
     "header": {
-      "title": "🌟 Math Adventure!"
+      "title": "Math Adventure!"
     },
     "hero": {
       "welcome": "Welcome Number Explorer!",
@@ -55,7 +55,7 @@
       "postcardFrom": "Postcard from Nova",
       "todaysMission": "Today's Mission",
       "complete": "Complete!",
-      "reward": "Reward: +15 ⭐"
+      "reward": "Reward: +15"
     },
     "stats": {
       "stars": "Stars",
@@ -90,7 +90,16 @@
       }
     },
     "badges": {
-      "sectionTitle": "Your Badges"
+      "sectionTitle": "Your Badges",
+      "empty": "Play to earn your first badge.",
+      "earned": "Earned",
+      "locked": "Not yet earned",
+      "count": "{{earned}} of {{total}} badges earned"
+    },
+    "footer": {
+      "closing": "See you on the trail.",
+      "signOff": "— Nova",
+      "madeFor": "Made for ages 5 to 8"
     }
   },
   "header": {

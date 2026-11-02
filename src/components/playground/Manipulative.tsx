@@ -26,7 +26,7 @@ export function TokenFace({ token, emoji, accent, small }: TokenFaceProps) {
     // grouped like a ten. 23 reads as two full frames plus three singles.
     return (
       <span
-        className={`inline-flex items-center justify-center ${small ? 'min-w-[44px] min-h-[44px] p-1' : 'min-w-[56px] min-h-[56px] p-1.5'} rounded-xl border-2 bg-card shadow-[0_3px_8px_rgba(27,20,71,0.2)] ${
+        className={`inline-flex items-center justify-center ${small ? 'min-w-[44px] min-h-[44px] p-1' : 'min-w-[48px] min-h-[48px] p-1'} rounded-xl border-2 bg-card shadow-[var(--shadow-card)] ${
           negative ? 'border-red-400' : 'border-mist'
         }`}
         style={{ borderColor: negative ? undefined : accent }}
@@ -54,7 +54,7 @@ export function TokenFace({ token, emoji, accent, small }: TokenFaceProps) {
   }
   return (
     <span
-      className={`inline-flex items-center justify-center ${size} ${glyph} rounded-xl border-2 bg-card shadow-[0_2px_6px_rgba(27,20,71,0.12)] ${
+      className={`inline-flex items-center justify-center ${size} ${glyph} rounded-xl border-2 bg-card shadow-[var(--shadow-card)] ${
         negative ? 'border-red-400' : 'border-mist'
       }`}
       aria-hidden="true"

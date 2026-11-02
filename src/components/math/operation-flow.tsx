@@ -1,7 +1,7 @@
 'use client';
 
 import dynamic from 'next/dynamic';
-import { useState, useCallback, useEffect, useMemo } from 'react';
+import { useState, useCallback, useEffect, useMemo, type CSSProperties } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useRouter, useParams } from 'next/navigation';
 import { Toast } from '@base-ui/react/toast';
@@ -15,7 +15,7 @@ import {
   QuizQuestion, OPERATION_META, Translate,
 } from '@/lib/operations/types';
 import { Button } from '@/components/ui/button';
-import { House, User, ArrowLeft, ArrowRight, BicepsFlexed, Check } from 'lucide-react';
+import { House, User, ArrowLeft, ArrowRight, BicepsFlexed, Check, Star } from 'lucide-react';
 import { resetEmojiPool } from '@/lib/operations/emoji-pool';
 import { isOperationFullyCompleted } from '@/lib/engines/star-economy';
 import { STAR_CAPS } from '@/lib/engines/types';
@@ -129,8 +129,21 @@ export function OperationFlow({
     return { problems, quizzes };
   }, [activeDifficulty, genPractice, genQuiz, t]);
 
-  const practiceProblems: PracticeProblem[] = generatedContent?.problems ?? [];
-  const quizQuestions: QuizQuestion[] = generatedContent?.quizzes ?? [];
+  const practiceProblems: PracticeProblem[] = useMemo(
+    () => generatedContent?.problems ?? [],
+    [generatedContent]
+  );
+  const quizQuestions: QuizQuestion[] = useMemo(
+    () => generatedContent?.quizzes ?? [],
+    [generatedContent]
+  );
+
+  // Re-key only when the generated problem set actually changes, not on every
+  // unrelated state update (round taps, clip steps, answers).
+  const playKey = useMemo(
+    () => practiceProblems.map((p) => `${p.operand1}x${p.operand2}`).join('|'),
+    [practiceProblems]
+  );
 
   const [currentProblemIndex, setCurrentProblemIndex] = useState(0);
   const [practiceCorrectCount, setPracticeCorrectCount] = useState(0);
@@ -248,7 +261,6 @@ export function OperationFlow({
   // Keyed by problem signature so a regenerated problem set (difficulty /
   // language change) remounts with fresh round state instead of stale drops.
   if (urlStage === 'play') {
-    const playKey = practiceProblems.map((p) => `${p.operand1}x${p.operand2}`).join('|');
     const playground = (() => {
       switch (operation) {
         case 'addition':
@@ -276,29 +288,33 @@ export function OperationFlow({
   return (
     <Toast.Provider toastManager={practiceToastManager}>
     <div
-      className="font-body min-h-screen"
-      style={{ background: `linear-gradient(180deg, ${meta.color}1f 0%, var(--color-paper) 30%)` }}
+      className="app-ground font-body min-h-screen"
+      style={{ '--world': meta.color } as CSSProperties}
     >
-      <div className="bg-header text-white px-3 py-2 sm:px-4 sm:py-3 flex items-center justify-between gap-1 flex-wrap">
+      <div className="app-bar">
+        <div className="app-bar-inner">
         <div className="flex items-center gap-1">
           <button
             onClick={handleBackToMenu}
-            className="text-white/70 text-xl p-1.5 min-w-[44px] min-h-[44px] flex items-center justify-center hover:text-white transition-colors cursor-pointer"
+            className="app-bar-mark min-w-[44px] min-h-[44px] cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-paper"
             aria-label={t('common.aria.home', 'Home')}
           >
-            <House className="w-6 h-6 text-white/80" strokeWidth={2} />
+            <House className="w-6 h-6 text-paper/80" strokeWidth={2} />
           </button>
           <button
             onClick={() => router.push(`/${operation}/play`)}
-            className="font-display text-base text-white p-1.5 min-h-[44px] flex items-center gap-1 hover:text-white/80 transition-colors cursor-pointer"
+            className="app-bar-title min-h-[44px] px-1.5 cursor-pointer active:text-paper/80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-paper"
           >
-            <OperationIcon operation={operation} className="w-6 h-6 text-white" />
+            <OperationIcon operation={operation} className="w-6 h-6 text-paper" />
             {t(`operations.meta.${operation}.name`, meta.name)}
           </button>
         </div>
         <div className="flex items-center justify-end gap-1.5 flex-wrap">
           {engine.isEngineLoaded && (
-            <span className="font-display text-sm text-yellow-300">⭐{engine.engineState.stars}</span>
+            <span className="inline-flex items-center gap-1 font-display text-sm text-gold tabular-nums">
+              <Star className="w-4 h-4" strokeWidth={2.5} aria-hidden="true" />
+              {engine.engineState.stars}
+            </span>
           )}
           <Button
             onClick={() => router.push('/')}
@@ -313,6 +329,7 @@ export function OperationFlow({
               {sessionName || state.playerName || t('common.nav.addNameShort')}
             </span>
           </Button>
+        </div>
         </div>
       </div>
 
@@ -331,19 +348,19 @@ export function OperationFlow({
 
       {urlStage === 'practice' && !difficultyLoaded && (
         <div className="flex flex-col items-center p-4 sm:p-6" aria-busy="true">
-          <h2 className="font-display text-[20px] text-orange mb-2 flex items-center gap-1.5">
+          <h2 className="font-display text-[20px] text-ink mb-2 flex items-center gap-1.5">
             {t('operations.screen.timeToPractice')}
-            <BicepsFlexed className="w-5 h-5" />
+            <BicepsFlexed className="w-5 h-5 text-castle" aria-hidden="true" />
           </h2>
-          <div className="w-full max-w-[420px] bg-card rounded-2xl border-2 border-mist p-5 animate-pulse min-h-[280px]" />
+          <div className="w-full max-w-[420px] bg-card rounded-2xl border-2 border-mist p-5 animate-pulse motion-reduce:animate-none min-h-[280px]" aria-hidden="true" />
         </div>
       )}
 
       {urlStage === 'practice' && difficultyLoaded && !showSummary && currentProblem && (
         <div className="flex flex-col items-center p-4 sm:p-6">
-          <h2 className="font-display text-[20px] text-orange mb-2 flex items-center gap-1.5">
+          <h2 className="font-display text-[20px] text-ink mb-2 flex items-center gap-1.5">
             {t('operations.screen.timeToPractice')}
-            <BicepsFlexed className="w-5 h-5" />
+            <BicepsFlexed className="w-5 h-5 text-castle" aria-hidden="true" />
           </h2>
           <div className={`w-full max-w-[420px] transition-opacity duration-200 ${fadeOut ? 'opacity-0' : 'opacity-100'}`}>
             <PracticeProblemView

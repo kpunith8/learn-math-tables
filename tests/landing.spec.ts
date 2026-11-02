@@ -4,7 +4,7 @@ test.describe('landing page', () => {
   test('renders header, hero, stats, mission and trail', async ({ page }) => {
     await page.goto('/');
     await expect(page.getByRole('heading', { name: 'Welcome Number Explorer!' })).toBeVisible();
-    await expect(page.getByText('🌟 Math Adventure!')).toBeVisible();
+    await expect(page.getByText('Math Adventure!')).toBeVisible();
     await expect(page.getByText('The Number Trail')).toBeVisible();
     await expect(page.getByText("Today's Mission")).toBeVisible();
     await expect(page.getByText('Postcard from Nova')).toBeVisible();
@@ -30,7 +30,7 @@ test.describe('landing page', () => {
     const trigger = page.getByRole('combobox', { name: 'Difficulty:' });
     await expect(trigger).toContainText('Easy');
     await trigger.click();
-    await page.getByRole('option', { name: '⭐ Medium' }).click();
+    await page.getByRole('option', { name: 'Medium' }).click();
     await expect(trigger).toContainText('Medium');
     const stored = await page.evaluate(() => localStorage.getItem('mathAdvDifficulty'));
     expect(stored).toBe('medium');

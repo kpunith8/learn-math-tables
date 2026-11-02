@@ -20,7 +20,7 @@ const TOTAL_ROUNDS = 5;
 function Chip({ label, accent }: { label: string; accent: string }) {
   return (
     <span
-      className="inline-flex items-center justify-center min-w-[52px] min-h-[52px] px-2.5 rounded-xl font-display text-base text-white shadow-[0_2px_6px_rgba(27,20,71,0.2)]"
+      className="inline-flex items-center justify-center min-w-[52px] min-h-[52px] px-2.5 rounded-xl font-display text-base text-ink shadow-[var(--shadow-card)]"
       style={{ background: accent }}
     >
       {label}
@@ -247,7 +247,7 @@ export function ShowThenAnswerPlayground({ operation, problems, accent, symbol, 
     >
       {!done && problem && (
         <div className="w-full max-w-[480px] flex flex-col items-center gap-4">
-          <div className="font-display text-[clamp(22px,6vw,32px)] text-center" style={{ color: accent }} data-testid="play-equation">
+          <div className="equation-plate font-display text-[clamp(22px,6vw,32px)] text-center" data-testid="play-equation">
             {problem.operand1} {symbol} {problem.operand2} = ?
           </div>
 
@@ -277,7 +277,7 @@ export function ShowThenAnswerPlayground({ operation, problems, accent, symbol, 
                 </p>
               </DropZone>
               {lastWrong != null && (
-                <p className="font-body text-sm text-orange" role="alert">
+                <p className="font-body text-sm text-error" role="alert">
                   {t('playground.wrongBadge')}
                 </p>
               )}
@@ -295,15 +295,15 @@ export function ShowThenAnswerPlayground({ operation, problems, accent, symbol, 
               </div>
             </>
           ) : (
-            <div className="w-full bg-card rounded-2xl border-2 border-leaf/40 p-5 text-center animate-[pop-in_0.25s_ease-out]" role="status">
-              <p className="font-display text-lg text-leaf flex items-center justify-center gap-1.5">
+            <div className="w-full bg-card rounded-2xl border-2 border-leaf/40 p-5 text-center animate-[pop-in_0.25s_ease-out] motion-reduce:animate-none" role="status">
+              <p className="font-display text-lg text-growth-ink flex items-center justify-center gap-1.5">
                 <Check className="w-6 h-6" strokeWidth={2.5} />
                 {t('playground.correctRound')}
               </p>
-              <p className="font-display text-2xl mt-1" style={{ color: accent }}>
+              <p className="font-display text-2xl mt-1 text-ink">
                 {problem.operand1} {symbol} {problem.operand2} = {problem.result}
               </p>
-              <Button onClick={nextRound} variant="indigo" size="xl" className="mt-4" data-testid="play-next-round">
+              <Button onClick={nextRound} variant="indigo" size="xl" className="mt-4 focus-visible:ring-2 disabled:pointer-events-none disabled:opacity-50" data-testid="play-next-round">
                 {roundIndex + 1 >= TOTAL_ROUNDS ? t('playground.sessionDone') : t('common.buttons.next')}
                 <ArrowRight className="w-4 h-4" />
               </Button>
@@ -313,7 +313,7 @@ export function ShowThenAnswerPlayground({ operation, problems, accent, symbol, 
       )}
 
       {done && (
-        <div className="w-full max-w-[420px] bg-card rounded-2xl border-2 border-gold/50 p-6 text-center animate-[pop-in_0.3s_ease-out]" role="status">
+        <div className="w-full max-w-[420px] bg-card rounded-2xl border-2 border-gold/50 p-6 text-center animate-[pop-in_0.3s_ease-out] motion-reduce:animate-none" role="status">
           <p className="font-display text-lg text-ink">{t('playground.sessionDone')}</p>
           <p className="font-body text-sm text-text-secondary mt-1">{t('playground.tapHint')}</p>
         </div>

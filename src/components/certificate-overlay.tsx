@@ -50,8 +50,8 @@ function CertificateOverlayInner({
 
   return (
     <div className="fixed inset-0 z-[1200] bg-gradient-to-br from-surface to-mist/50 flex items-center justify-center p-6">
-      <div className="bg-card border-4 border-gold rounded-[24px] p-8 md:p-7 max-w-[480px] w-full text-center shadow-[0_16px_48px_rgba(0,0,0,0.12)] animate-[pop-in_0.4s_cubic-bezier(0.175,0.885,0.32,1.275)]">
-        <div className="font-display text-[clamp(28px,7vw,38px)] text-gold [text-shadow:1px_1px_0_rgba(0,0,0,0.2)]">
+      <div className="bg-card border-4 border-gold rounded-[24px] p-8 md:p-7 max-w-[480px] w-full text-center shadow-[var(--shadow-card)] animate-[pop-in_0.4s_cubic-bezier(0.175,0.885,0.32,1.275)] motion-reduce:animate-none">
+        <div className="font-display text-[clamp(28px,7vw,38px)] text-ink">
           {t('tables.certificateOverlay.title')}
         </div>
         <div className="font-body text-sm text-text-muted mt-1 mb-1">
@@ -112,7 +112,7 @@ function CertificateOverlayInner({
 
         <button
           onClick={onPlayAgain}
-          className="inline-flex items-center justify-center gap-2 font-display text-lg py-3.5 px-10 rounded-full border-none bg-coral text-white cursor-pointer mt-4 transition-all duration-150 shadow-[0_4px_16px_rgba(255,107,82,0.4)] hover:scale-105 hover:bg-coral-hover active:scale-95"
+          className="inline-flex items-center justify-center gap-2 font-display text-lg py-3.5 px-10 rounded-full border-none bg-coral text-ink cursor-pointer mt-4 transition-all duration-150 shadow-[var(--shadow-card)] hover:scale-105 hover:bg-coral-hover active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
         >
           <RefreshCcw className="w-5 h-5" strokeWidth={2.5} />
           {t('tables.certificateOverlay.playAgain')}

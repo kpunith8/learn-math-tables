@@ -1,0 +1,53 @@
+[
+ {
+  "date": "2026-11-01",
+  "mode": "redesign",
+  "depth": "full",
+  "scope": "page",
+  "shape": "Bento Grid",
+  "theme": "hum",
+  "axes": "light/rounded-sans/chromatic-coral · posture: full-palette",
+  "hero": "Counter",
+  "nav": "edge-aligned",
+  "footer": "letter close",
+  "entry": "the hero trail: the four operation lands open their play screen, tables opens the standalone playground",
+  "fingerprint": "Left-margin|Asymmetric spans|Bleed-colour block|Solid|None|None",
+  "sections": [
+   "Hero (head, star meter, five-land trail)",
+   "Today’s Mission",
+   "Your figures (stars, badges, streak)",
+   "Your Badges",
+   "Footer (letter close)"
+  ],
+  "signature": "the trail as five pressable cut-paper lands, each stamped Done when its quiz is cleared",
+  "imagery": "none — no photographs: the trail, the mission and the badges are the page’s pictures, set in the brand’s own cut-paper material",
+  "photos": [],
+  "waived": [
+   "39b",
+   "26b"
+  ],
+  "prompt": "/hallmark redesign ./src/app — the kids’ math landing page redesigned in full: copy, wiring and test hooks kept, the system and composition rebuilt"
+ },
+ {
+  "date": "2026-11-02",
+  "mode": "redesign",
+  "depth": "full",
+  "scope": "app",
+  "shape": "Bento Grid",
+  "theme": "hum",
+  "axes": "light/rounded-sans/chromatic-coral · posture: full-palette",
+  "entry": "the app screens wear the landing stock: ink bar, paper ground, equation plates, pressed controls",
+  "signature": "each route sets --world to its land colour; the equation sits on a paper plate so the wash never carries text",
+  "material": "the full 12-badge album (earned stamp vs dashed ghost, real N of M count) and a die-cut fringe under every trail tile",
+  "urls": [
+   "http://localhost:3000/addition/play",
+   "http://localhost:3000/addition/practice",
+   "http://localhost:3000/tables",
+   "http://localhost:3000/tables/play"
+  ],
+  "sloplint": "0 FAIL, 0 REFLEX, 0 WARN (scope app)",
+  "kept": "links 1/1, fields 1/1, handlers 21/21, headings 3/3, figures 1/1",
+  "tests": "59 passed",
+  "prompt": "carry the landing system across routes and pages, and deliver the material ask"
+ }
+]

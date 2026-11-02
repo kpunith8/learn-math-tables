@@ -1,87 +1,18 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
+@import "./tokens.css";
+@import "./base.css" layer(base);
 
 @custom-variant dark (&:is(.dark *));
 
+/* Every colour, face and scale step lives in tokens.css (:root + @theme).
+   This block only maps the shadcn radius steps onto the brand radius. */
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
   --font-sans: var(--font-nunito);
   --font-mono: var(--font-geist-mono);
   --font-heading: var(--font-baloo);
-  --font-display: var(--font-baloo);
-  --font-body: var(--font-nunito);
-  --color-ink: #1B1447;
-  --color-header: #1B1447;
-  --color-coral: #FF6B52;
-  --color-coral-soft: #F47C6B;
-  --color-coral-soft-hover: #E56A58;
-  --color-coral-light: #FF8A74;
-  --color-coral-hover: #E8572F;
-  --color-coral-active: #D14A26;
-  --color-indigo: #FF6B52;
-  --color-indigo-light: #FF8A74;
-  --color-indigo-hover: #E8572F;
-  --color-indigo-active: #D14A26;
-  --color-orange: #E8572F;
-  --color-green: #3FA664;
-  --color-leaf: #3FA664;
-  --color-gold: #FFB648;
-  --color-paper: #F7F1E8;
-  --color-surface: #F7F1E8;
-  --color-card: #FFFDF8;
-  --color-mist: #E4DDCB;
-  --color-border-card: #E4DDCB;
-  --color-text-primary: #2B2352;
-  --color-text-secondary: #4B4468;
-  --color-text-tertiary: #6A6476;
-  --color-text-muted: #5D5666;
-  --color-text-dim: #645D6E;
-  --color-card-hover: #FBF5EA;
-  --color-card-active: #F3EBDD;
-  --color-warm-bg: #FFF3E2;
-  --color-warm-border: #F4D9A8;
-  --color-lagoon: #4FA8F5;
-  --color-valley: #57C278;
-  --color-periwinkle: #7E8CD9;
-  --color-castle: #FF7A59;
-  --color-kingdom: #F5AB3C;
-  --color-quiz-correct-bg: #C8E6C9;
-  --color-quiz-correct-border: #4CAF50;
-  --color-quiz-correct-text: #2E7D32;
-  --color-quiz-wrong-bg: #FFCDD2;
-  --color-quiz-wrong-border: #E53935;
-  --color-quiz-wrong-text: #B71C1C;
-  --color-sidebar-ring: var(--sidebar-ring);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar: var(--sidebar);
-  --color-chart-5: var(--chart-5);
-  --color-chart-4: var(--chart-4);
-  --color-chart-3: var(--chart-3);
-  --color-chart-2: var(--chart-2);
-  --color-chart-1: var(--chart-1);
-  --color-ring: var(--ring);
-  --color-input: var(--input);
-  --color-border: var(--border);
-  --color-destructive: var(--destructive);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-accent: var(--accent);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-muted: var(--muted);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-secondary: var(--secondary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-primary: var(--primary);
-  --color-popover-foreground: var(--popover-foreground);
-  --color-popover: var(--popover);
-  --color-card-foreground: var(--card-foreground);
-  --color-card: var(--card);
+  --radius: 0.625rem;
   --radius-sm: calc(var(--radius) * 0.6);
   --radius-md: calc(var(--radius) * 0.8);
   --radius-lg: var(--radius);
@@ -89,75 +20,6 @@
   --radius-2xl: calc(var(--radius) * 1.8);
   --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.6);
-}
-
-:root {
-  --background: #F7F1E8;
-  --foreground: #2B2352;
-  --card: #FFFDF8;
-  --card-foreground: #2B2352;
-  --popover: #FFFDF8;
-  --popover-foreground: #2B2352;
-  --primary: #FF6B52;
-  --primary-foreground: #FFFFFF;
-  --secondary: #F0E8DA;
-  --secondary-foreground: #2B2352;
-  --muted: #F0E8DA;
-  --muted-foreground: #6A6476;
-  --accent: #F0E8DA;
-  --accent-foreground: #2B2352;
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: #E4DDCB;
-  --input: #E4DDCB;
-  --ring: #FF6B52;
-  --chart-1: #FF6B52;
-  --chart-2: #4FA8F5;
-  --chart-3: #57C278;
-  --chart-4: #FFB648;
-  --chart-5: #7E8CD9;
-  --radius: 0.625rem;
-  --sidebar: #F7F1E8;
-  --sidebar-foreground: #2B2352;
-  --sidebar-primary: #FF6B52;
-  --sidebar-primary-foreground: #FFFFFF;
-  --sidebar-accent: #F0E8DA;
-  --sidebar-accent-foreground: #2B2352;
-  --sidebar-border: #E4DDCB;
-  --sidebar-ring: #FF6B52;
-}
-
-.dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
 }
 
 @layer base {
@@ -176,13 +38,971 @@
   .font-display {
     font-weight: 700;
   }
+}
 
-  button:focus-visible,
-  a:focus-visible,
-  input:focus-visible,
-  [role="button"]:focus-visible {
-    outline: none;
-    box-shadow: 0 0 0 4px var(--color-coral-light);
+/* ── Landing: cut paper ────────────────────────────────────────────────
+   Cream stock with a visible grain, sheets torn along one edge so the pale
+   fibre shows, card-stock controls that press down, all lit from the top
+   left. Every colour and face comes from tokens.css. */
+@layer components {
+  .paper-page {
+    background-color: var(--color-paper);
+    background-image:
+      var(--grain),
+      radial-gradient(90% 55% at 12% 0%, var(--color-paper-lift), transparent 70%);
+  }
+
+  /* --- nav: wordmark one edge, controls the other --- */
+  .site-nav {
+    position: relative;
+    border-bottom: var(--rule-hair) solid var(--color-edge);
+  }
+  .nav-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-sm);
+    min-height: var(--nav-h);
+    padding-block: var(--space-xs);
+  }
+  .wordmark {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-sm);
+    margin-right: auto;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: calc(var(--text-lg) + var(--type-bump, 0px));
+    letter-spacing: -0.02em;
+    color: var(--color-ink);
+  }
+  .wordmark-mark {
+    display: grid;
+    place-items: center;
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    background-color: var(--color-ink);
+    color: var(--color-paper);
+    transform: rotate(-4deg);
+    box-shadow: 0 2px 0 var(--color-ink-2);
+  }
+  .nav-selects,
+  .nav-account {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-xs);
+  }
+  .nav-label {
+    display: inline;
+  }
+  .nav-name {
+    max-width: 148px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .session-chip {
+    display: inline-flex;
+    align-items: center;
+    max-width: 150px;
+    min-height: 44px;
+    padding-inline: var(--space-md);
+    overflow: hidden;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: calc(var(--text-sm) + var(--type-bump, 0px));
+    color: var(--color-ink);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    background-color: var(--color-paper-2);
+    border: 1px dashed var(--color-edge);
+    border-radius: var(--radius-pill);
+  }
+
+  /* --- the press: card stock that goes down when you push it --- */
+  .press {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-xs);
+    min-height: 44px;
+    padding: var(--space-xs) var(--space-md);
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: calc(var(--text-sm) + var(--type-bump, 0px));
+    text-decoration: none;
+    border: 1.5px solid transparent;
+    border-radius: var(--radius-pill);
+    cursor: pointer;
+    transition:
+      transform var(--dur-micro) var(--ease-out),
+      box-shadow var(--dur-micro) var(--ease-out),
+      background-color var(--dur-short) var(--ease-out);
+  }
+  .press-primary {
+    color: var(--color-accent-ink);
+    background-color: var(--color-accent);
+    border-color: var(--color-accent-deep);
+    box-shadow: 0 3px 0 var(--color-accent-deep);
+  }
+  .press-primary:hover {
+    background-color: var(--color-accent-light);
+  }
+  .press-primary:active {
+    transform: translateY(2px);
+    box-shadow: 0 1px 0 var(--color-accent-deep);
+  }
+  .press-quiet {
+    color: var(--color-ink);
+    background-color: var(--color-card);
+    border-color: var(--color-muted-ink);
+    box-shadow: 0 2px 0 var(--color-edge);
+  }
+  .press-quiet:hover {
+    background-color: var(--color-card-hover);
+  }
+  .press-quiet:active {
+    transform: translateY(2px);
+    box-shadow: 0 0 0 var(--color-edge);
+  }
+
+  /* --- the fold: welcome copy beside the trail --- */
+  .hero {
+    display: flex;
+    align-items: center;
+    min-height: calc(100dvh - var(--nav-h));
+    padding-block: var(--space-xl);
+  }
+  .fold-grid {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: var(--gap-columns);
+    align-items: stretch;
+  }
+  .welcome-copy {
+    grid-column: 1 / span 5;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: var(--space-xl);
+  }
+  .trail-col {
+    grid-column: 6 / span 7;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-lg);
+  }
+  .welcome-title {
+    font-size: var(--text-display);
+    color: var(--color-ink);
+  }
+  .welcome-lead {
+    max-width: 32ch;
+    font-size: calc(var(--text-lead) + var(--type-bump, 0px));
+    line-height: 1.45;
+    color: var(--color-text-secondary);
+  }
+  /* the head block sits at the top of the column, the counter at its foot,
+     so the copy and the trail start and finish on the same lines */
+  .welcome-head {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-lg);
+  }
+  /* the highlighter swipe: ink stays on top, so the words never lose contrast */
+  .mark {
+    padding-inline: 0.16em;
+    font-weight: 700;
+    color: var(--color-ink);
+    background-color: color-mix(in oklab, var(--color-accent) 26%, transparent);
+    border-radius: 4px;
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
+  }
+  /* the counter: stars still to go, pressed into a small card */
+  .star-meter {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: center;
+    gap: var(--space-2xs) var(--space-sm);
+    width: fit-content;
+    max-width: 100%;
+    padding: var(--space-md) var(--space-lg);
+    background-color: var(--color-card);
+    background-image: var(--grain);
+    border: var(--rule-hair) solid var(--color-edge);
+    border-radius: var(--radius-stock);
+    box-shadow: 0 2px 0 var(--color-paper-3);
+  }
+  .star-meter-figure {
+    grid-row: span 2;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-xs);
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: calc(var(--text-2xl) + var(--type-bump, 0px));
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+    color: var(--color-ink);
+  }
+  .star-meter-note {
+    font-size: calc(var(--text-xs) + var(--type-bump, 0px));
+    font-weight: 600;
+    color: var(--color-text-muted);
+  }
+  .star-meter .meter-track {
+    width: 100%;
+    min-width: 132px;
+  }
+  .meter-track {
+    display: block;
+    height: 8px;
+    overflow: hidden;
+    background-color: color-mix(in oklab, var(--color-ink) 26%, transparent);
+    border-radius: var(--radius-pill);
+  }
+  .meter-fill {
+    display: block;
+    height: 100%;
+    background-color: var(--color-ink);
+    border-radius: inherit;
+  }
+
+  /* --- the trail: five pressed destination cards --- */
+  .trail-head {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+  }
+  .trail-title {
+    font-size: var(--text-section);
+    color: var(--color-ink);
+  }
+  .trail-line {
+    font-size: calc(var(--text-lead) + var(--type-bump, 0px));
+    line-height: 1.4;
+    color: var(--color-text-secondary);
+  }
+  .trail-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-md);
+  }
+  .trail-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-2xs);
+    min-height: 0;
+    padding: var(--space-lg);
+    text-align: left;
+    background-color: color-mix(in oklab, var(--world) 8%, var(--color-card));
+    background-image: var(--grain);
+    border: var(--rule-hair) solid color-mix(in oklab, var(--world) 34%, var(--color-edge));
+    border-radius: var(--radius-stock);
+    box-shadow: var(--shadow-stock);
+    cursor: pointer;
+    transition:
+      transform var(--dur-short) var(--ease-out),
+      box-shadow var(--dur-short) var(--ease-out);
+  }
+  /* the first land is the lead tile: the journey starts here */
+  .trail-card:first-child {
+    grid-column: 1 / -1;
+    flex-direction: row;
+    align-items: center;
+    gap: var(--space-lg);
+    min-height: 132px;
+  }
+  .trail-card:first-child .trail-heading {
+    flex: 0 1 auto;
+  }
+  .trail-card:first-child .trail-mark {
+    width: 56px;
+    height: 56px;
+    border-radius: 15px;
+  }
+  .trail-card:first-child .trail-name {
+    font-size: calc(var(--text-xl) + var(--type-bump, 0px));
+  }
+  .trail-card:first-child .trail-go {
+    margin: 0 0 0 auto;
+    padding-top: 0;
+    text-align: right;
+  }
+  .trail-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-stock-hover);
+  }
+  .trail-card:active {
+    transform: translateY(2px);
+    box-shadow: var(--shadow-stock-press);
+  }
+  /* the tile is cut, not printed: a deckled fringe of the same stock hangs
+     from its bottom edge, so each land ends on a tear instead of a rule */
+  .trail-card::after {
+    content: '';
+    position: absolute;
+    inset-inline: 0;
+    top: 100%;
+    height: 9px;
+    background: inherit;
+    -webkit-mask-image: var(--tear-mask-sm);
+    mask-image: var(--tear-mask-sm);
+    -webkit-mask-repeat: repeat-x;
+    mask-repeat: repeat-x;
+    -webkit-mask-size: 64px 9px;
+    mask-size: 64px 9px;
+    pointer-events: none;
+  }
+  /* the mark rides beside the land name, so the tile reads as a trail
+     marker rather than an app-launcher icon chip */
+  .trail-heading {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    min-width: 0;
+  }
+  .trail-mark {
+    display: grid;
+    flex-shrink: 0;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    color: var(--color-ink);
+    background-color: color-mix(in oklab, var(--world) 62%, var(--color-card));
+    border: var(--rule-hair) solid color-mix(in oklab, var(--world) 78%, var(--color-edge));
+    border-radius: 11px;
+  }
+  .trail-name {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: calc(var(--text-title) + var(--type-bump, 0px));
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    color: var(--color-ink);
+  }
+  .trail-tag {
+    font-size: calc(var(--text-sm) + var(--type-bump, 0px));
+    color: var(--color-text-tertiary);
+  }
+  .trail-go {
+    margin-top: auto;
+    padding-top: var(--space-sm);
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: calc(var(--text-xs) + var(--type-bump, 0px));
+    color: var(--color-ink-2);
+  }
+  .trail-go::after {
+    content: '';
+    display: block;
+    width: 44px;
+    height: 2px;
+    margin-top: var(--space-2xs);
+    background-color: var(--color-edge);
+    transform: scaleX(0.64);
+    transform-origin: left center;
+    transition:
+      transform var(--dur-short) var(--ease-out),
+      background-color var(--dur-short) var(--ease-out);
+  }
+  .trail-card:hover .trail-go::after {
+    background-color: var(--color-accent);
+    transform: scaleX(1);
+  }
+  /* the lead tile sets its call to action beside the name, so the rule
+     under it would read as a stray mark rather than a link cue */
+  .trail-card:first-child .trail-go::after {
+    display: none;
+  }
+  .trail-stamp {
+    position: absolute;
+    top: var(--space-sm);
+    right: var(--space-sm);
+    padding: var(--space-2xs) var(--space-xs);
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: calc(var(--text-xs) + var(--type-bump, 0px));
+    color: var(--color-paper);
+    background-color: var(--color-growth-ink);
+    border: 1px solid var(--color-paper);
+    border-radius: 6px;
+    transform: rotate(-3deg);
+    box-shadow: 0 0 0 1px var(--color-growth-ink);
+  }
+
+  /* --- the day's postcard: one landscape sheet, tasks in three columns --- */
+  .mission-band {
+    position: relative;
+    padding-block: var(--section-gap-s);
+    background-color: var(--color-paper-2);
+    background-image: var(--grain);
+    border-bottom: var(--rule-hair) solid var(--color-edge);
+  }
+  /* the day's sheet is torn off the hero's sheet, fibre showing above it */
+  .mission-band::before,
+  .mission-band::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    bottom: 100%;
+    left: 0;
+    height: 18px;
+    -webkit-mask-image: var(--tear-mask);
+    mask-image: var(--tear-mask);
+    -webkit-mask-repeat: repeat-x;
+    mask-repeat: repeat-x;
+    -webkit-mask-size: 96px 18px;
+    mask-size: 96px 18px;
+  }
+  .mission-band::before {
+    background-color: var(--color-paper-2);
+  }
+  .mission-band::after {
+    background-color: var(--color-fringe);
+    transform: translateY(-3px);
+  }
+  .postcard {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-lg);
+    padding: var(--space-xl);
+    background-color: var(--color-card);
+    background-image: var(--grain);
+    border: var(--rule-hair) solid var(--color-edge);
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-postcard);
+  }
+  .postcard-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--space-md);
+  }
+  .postcard-title {
+    font-size: var(--text-section);
+    color: var(--color-ink);
+  }
+  .postcard-status {
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+    gap: var(--space-xs);
+    padding-top: var(--space-xs);
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: calc(var(--text-sm) + var(--type-bump, 0px));
+    color: var(--color-growth-ink);
+    white-space: nowrap;
+  }
+  .postcard-status-reward {
+    color: var(--color-ink-2);
+  }
+  /* the message on the left, the stamp and postmark owning the right third */
+  .postcard-body {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: var(--space-xl);
+    align-items: stretch;
+  }
+  .mission-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .mission-task {
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+    font-size: calc(var(--text-sm) + var(--type-bump, 0px));
+    color: var(--color-text-secondary);
+  }
+  .mission-task[data-done] {
+    color: var(--color-growth-ink);
+    text-decoration: line-through;
+    text-decoration-thickness: 1px;
+  }
+  .mission-mark {
+    display: inline-flex;
+    flex-shrink: 0;
+    color: var(--color-ink-2);
+  }
+  .mission-task[data-done] .mission-mark {
+    color: var(--color-growth-ink);
+  }
+  .mission-text {
+    flex: 0 1 auto;
+    min-width: 0;
+  }
+  .mission-count {
+    flex-shrink: 0;
+    font-size: calc(var(--text-xs) + var(--type-bump, 0px));
+    font-variant-numeric: tabular-nums;
+    color: var(--color-text-muted);
+  }
+  .postcard-stamp {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-sm);
+    padding-left: var(--space-xl);
+    border-left: 1px dashed var(--color-edge);
+  }
+  .postcard-from {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: calc(var(--text-sm) + var(--type-bump, 0px));
+    color: var(--color-ink-2);
+    text-align: center;
+  }
+  .postmark {
+    display: grid;
+    place-items: center;
+    width: 96px;
+    height: 96px;
+    color: var(--color-ink-2);
+    border: 1.5px solid var(--color-edge);
+    border-radius: 50%;
+    transform: rotate(-8deg);
+  }
+
+  /* --- the passport figures: three real numbers on a gold field --- */
+  .figures-band {
+    padding-block: var(--section-gap-s);
+    color: var(--color-ink);
+    background-color: var(--color-reward);
+    background-image: var(--grain);
+    border-block: var(--rule-hair) solid var(--color-reward-deep);
+  }
+  .figures-row {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    margin: 0;
+  }
+  .figure-cell {
+    display: flex;
+    flex-direction: column-reverse;
+    align-items: center;
+    gap: var(--space-xs);
+    padding-inline: var(--space-xl);
+    text-align: center;
+    border-left: 1px solid color-mix(in oklab, var(--color-ink) 24%, transparent);
+  }
+  .figure-cell:first-child {
+    padding-left: 0;
+    border-left: 0;
+  }
+  .figure-cell:last-child {
+    padding-right: 0;
+  }
+  .figure-label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-xs);
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: calc(var(--text-sm) + var(--type-bump, 0px));
+  }
+  .figure-value {
+    margin: 0;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: var(--text-display);
+    font-variant-numeric: tabular-nums;
+    line-height: 0.9;
+  }
+
+  /* --- badges, pinned on like stamps --- */
+  .stamps-band {
+    padding-block: var(--section-gap-s);
+  }
+  .stamps-title {
+    margin-bottom: var(--space-xl);
+    font-size: var(--text-section);
+    color: var(--color-ink);
+  }
+  /* the album shows the whole set the product ships with: won stamps are
+     inked and pressed on, unwon ones stay as dashed ghosts of the same
+     label, so a kid reads what is left to earn, not an empty box */
+  .stamps-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(158px, 1fr));
+    gap: var(--space-sm);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .stamp {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    padding: var(--space-xs) var(--space-md) var(--space-xs) var(--space-xs);
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: calc(var(--text-sm) + var(--type-bump, 0px));
+    line-height: 1.15;
+    color: var(--color-ink);
+    background-color: var(--color-card);
+    border: var(--rule-hair) solid var(--color-edge);
+    border-radius: 12px;
+    box-shadow: 0 2px 0 var(--color-paper-3);
+  }
+  .stamp-ring {
+    display: grid;
+    flex-shrink: 0;
+    place-items: center;
+    width: 30px;
+    height: 30px;
+    border: 2px solid currentColor;
+    border-radius: var(--radius-pill);
+  }
+  .stamp[data-earned] {
+    background-color: var(--color-paper-lift);
+  }
+  .stamp[data-earned] .stamp-ring {
+    color: var(--color-ink);
+    background-color: var(--color-reward);
+    border-color: var(--color-ink);
+  }
+  .stamp:not([data-earned]) {
+    color: var(--color-muted-ink);
+    background-color: transparent;
+    border-style: dashed;
+    box-shadow: none;
+  }
+  .stamp:not([data-earned]) .stamp-ring {
+    border-style: dashed;
+  }
+  .stamp:nth-child(odd) {
+    transform: rotate(-1.2deg);
+  }
+  .stamp:nth-child(even) {
+    transform: rotate(1.1deg);
+  }
+  .stamps-count {
+    margin-top: var(--space-lg);
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: calc(var(--text-sm) + var(--type-bump, 0px));
+    color: var(--color-muted-ink);
+    font-variant-numeric: tabular-nums;
+  }
+  /* the empty album is set as type between two dashed rules, not a box
+     drawn around nothing */
+  .stamps-empty {
+    display: flex;
+    align-items: center;
+    gap: var(--space-xl);
+    padding-block: var(--space-xl);
+    border-top: 1.5px dashed var(--color-edge);
+    border-bottom: 1.5px dashed var(--color-edge);
+  }
+  .stamps-empty svg {
+    flex-shrink: 0;
+    width: 72px;
+    height: 72px;
+    color: var(--color-muted-ink);
+  }
+  .stamps-empty p {
+    max-width: 28ch;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: calc(var(--text-display) + var(--type-bump, 0px));
+    line-height: 1.02;
+    letter-spacing: var(--tracking-display);
+    color: var(--color-ink);
+    text-wrap: balance;
+  }
+
+  /* --- the close: ink sheet, torn along its top edge --- */
+  .site-foot {
+    position: relative;
+    margin-top: var(--section-gap-s);
+    padding-block: var(--space-3xl) var(--space-2xl);
+    color: var(--color-paper);
+    background-color: var(--color-ink);
+    background-image: var(--grain);
+  }
+  .site-foot::before,
+  .site-foot::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    bottom: 100%;
+    left: 0;
+    height: 18px;
+    -webkit-mask-image: var(--tear-mask);
+    mask-image: var(--tear-mask);
+    -webkit-mask-repeat: repeat-x;
+    mask-repeat: repeat-x;
+    -webkit-mask-size: 96px 18px;
+    mask-size: 96px 18px;
+  }
+  .site-foot::before {
+    background-color: var(--color-ink);
+  }
+  .site-foot::after {
+    background-color: var(--color-fringe);
+    transform: translateY(-3px);
+  }
+  .foot-grid {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: var(--space-lg) var(--gap-columns);
+  }
+  .foot-close {
+    grid-column: 1 / span 6;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: var(--text-3xl);
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    color: var(--color-paper);
+  }
+  .foot-sign {
+    grid-column: 1 / span 6;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: calc(var(--text-lg) + var(--type-bump, 0px));
+    color: var(--color-paper-3);
+  }
+  .foot-links {
+    grid-column: 8 / span 5;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-xs) var(--space-lg);
+    align-content: start;
+  }
+  .foot-link {
+    font-size: calc(var(--text-sm) + var(--type-bump, 0px));
+    color: var(--color-paper-3);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.2em;
+    transition: color var(--dur-short) var(--ease-out);
+  }
+  .foot-link:hover {
+    color: var(--color-paper);
+    text-decoration-color: var(--color-accent);
+  }
+  .foot-note {
+    grid-column: 1 / -1;
+    margin-top: var(--space-lg);
+    padding-top: var(--space-md);
+    font-size: calc(var(--text-xs) + var(--type-bump, 0px));
+    color: var(--color-paper-3);
+    border-top: 1px solid color-mix(in oklab, var(--color-paper) 25%, transparent);
+  }
+
+  /* ── App screens: the same stock, no hero ──────────────────────────────
+     Practice, quiz, the playgrounds and the tables app keep their content,
+     wiring and test hooks; they wear the landing's paper, ink and pressed
+     controls. Each route sets --world to its land's colour. */
+  .app-ground {
+    background-color: var(--color-paper);
+    background-image:
+      linear-gradient(180deg, color-mix(in oklab, var(--world, var(--color-accent)) 15%, transparent) 0%, transparent 34%),
+      var(--grain);
+    background-repeat: no-repeat, repeat;
+    background-size: 100% 420px, 180px 180px;
+  }
+  .app-bar {
+    color: var(--color-paper);
+    background-color: var(--color-ink);
+    background-image: var(--grain);
+  }
+  .app-bar-inner {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-xs);
+    width: 100%;
+    max-width: var(--container);
+    margin-inline: auto;
+    padding: var(--space-xs) var(--gutter);
+  }
+  .app-bar-title {
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: calc(var(--text-md) + var(--type-bump, 0px));
+    color: var(--color-paper);
+  }
+  .app-bar-mark {
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border-radius: var(--radius-pill);
+    color: var(--color-paper);
+    transition: background-color var(--dur-micro) var(--ease-out);
+  }
+  .app-bar-mark:hover {
+    background-color: color-mix(in oklab, var(--color-paper) 16%, transparent);
+  }
+  /* the equation gets its own sheet, so a world colour never has to carry
+     text over the wash: the stock reads at any land's hue */
+  .equation-plate {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    max-width: 100%;
+    padding: 0.32em 0.8em;
+    color: var(--color-ink);
+    background-color: var(--color-card);
+    border: var(--rule-hair) solid var(--color-edge);
+    border-radius: var(--radius-stock);
+    box-shadow: 0 3px 0 var(--world, var(--color-accent));
+    font-variant-numeric: tabular-nums;
+  }
+  /* the same measure as the landing's shell: full-bleed colour, capped text */
+  .app-width {
+    width: 100%;
+    max-width: var(--container);
+    margin-inline: auto;
+    padding-inline: var(--gutter);
+  }
+  .app-card {
+    background-color: var(--color-card);
+    background-image: var(--grain);
+    border: var(--rule-hair) solid var(--color-edge);
+    border-radius: var(--radius-stock);
+    box-shadow: var(--shadow-card);
+  }
+}
+
+@media (max-width: 60rem) {
+  .hero {
+    min-height: 0;
+    padding-block: var(--space-2xl);
+  }
+  .fold-grid {
+    gap: var(--space-xl) 0;
+  }
+  .welcome-copy,
+  .trail-col,
+  .foot-close,
+  .foot-sign,
+  .foot-links {
+    grid-column: 1 / -1;
+  }
+  .foot-grid {
+    gap: var(--space-lg) 0;
+  }
+  .postcard-body {
+    grid-template-columns: 1fr;
+    gap: var(--space-lg);
+  }
+  .postcard-stamp {
+    flex-direction: row;
+    justify-content: flex-start;
+    padding-top: var(--space-md);
+    padding-left: 0;
+    border-top: 1px dashed var(--color-edge);
+    border-left: 0;
+  }
+  .postmark {
+    width: 64px;
+    height: 64px;
+  }
+  .figure-cell {
+    padding-inline: var(--space-lg);
+  }
+}
+
+@media (max-width: 40rem) {
+  /* brand and account on the first row, the two selects on the second */
+  .nav-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: var(--space-xs) var(--space-sm);
+    padding-block: var(--space-sm);
+  }
+  .wordmark {
+    grid-column: 1;
+    grid-row: 1;
+    margin-right: 0;
+  }
+  .nav-account {
+    grid-column: 2;
+    grid-row: 1;
+    justify-self: end;
+  }
+  .nav-selects {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    justify-content: center;
+  }
+  /* the account buttons keep their accessible names but show only the
+     mark on a phone, so the brand and the actions share one row */
+  .nav-account .nav-label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+  .nav-account .press {
+    padding-inline: var(--space-sm);
+  }
+  .session-chip {
+    max-width: 64px;
+  }
+  .trail-grid {
+    grid-template-columns: 1fr;
+  }
+  .trail-card,
+  .trail-card:first-child {
+    grid-column: 1 / -1;
+    min-height: 0;
+  }
+  .trail-card:first-child {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-2xs);
+  }
+  .trail-card:first-child .trail-mark {
+    width: 40px;
+    height: 40px;
+  }
+  .trail-card:first-child .trail-name {
+    font-size: calc(var(--text-title) + var(--type-bump, 0px));
+  }
+  .trail-card:first-child .trail-go {
+    margin: var(--space-sm) 0 0;
+    padding-top: var(--space-sm);
+    text-align: left;
+  }
+  .postcard {
+    padding: var(--space-lg);
+  }
+  .figures-row {
+    grid-template-columns: 1fr;
+  }
+  .figure-cell,
+  .figure-cell:last-child {
+    padding: var(--space-md) 0;
+    border-top: 1px solid color-mix(in oklab, var(--color-ink) 24%, transparent);
+    border-left: 0;
+  }
+  .figure-cell:first-child {
+    padding-top: 0;
+    border-top: 0;
   }
 }
 
@@ -223,8 +1043,8 @@
 }
 
 @keyframes play-glow {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(255, 107, 82, 0.35); }
-  50% { box-shadow: 0 0 0 8px rgba(255, 107, 82, 0); }
+  0%, 100% { box-shadow: 0 0 0 0 var(--glow-ring); }
+  50% { box-shadow: 0 0 0 8px var(--glow-clear); }
 }
 
 @keyframes play-shake {
@@ -245,7 +1065,7 @@
 }
 
 .play-dragging {
-  filter: drop-shadow(0 8px 14px rgba(27, 20, 71, 0.3));
+  filter: var(--filter-lift);
   will-change: transform;
 }
 
@@ -253,6 +1073,7 @@
    Kannada get a +2px bump. On mobile (where everything reads tiny) the
    bump applies to all languages; on desktop only hi/kn are bumped. */
 @media (max-width: 767px) {
+  html { --type-bump: 2px; }
   html .text-\[10px\] { font-size: 12px; }
   html .text-\[11px\] { font-size: 13px; }
   html .text-xs { font-size: 14px; }
@@ -274,6 +1095,7 @@
 }
 
 @media (min-width: 768px) {
+  :is(html[lang='hi'], html[lang='kn']) { --type-bump: 2px; }
   :is(html[lang='hi'], html[lang='kn']) .text-\[10px\] { font-size: 12px; }
   :is(html[lang='hi'], html[lang='kn']) .text-\[11px\] { font-size: 13px; }
   :is(html[lang='hi'], html[lang='kn']) .text-xs { font-size: 14px; }

@@ -28,7 +28,7 @@ export function CountBadge({ value, accent, disabled, wrongFlash, onDropToAnswer
         className="rounded-full"
       >
         <span
-          className="min-w-[56px] min-h-[56px] px-4 inline-flex items-center justify-center gap-1 rounded-full font-display text-xl text-white shadow-[0_4px_12px_rgba(27,20,71,0.25)]"
+          className="min-w-[48px] min-h-[48px] px-3 inline-flex items-center justify-center gap-1 rounded-full font-display text-xl text-ink shadow-[var(--shadow-card)]"
           style={{ background: accent }}
         >
           <GripVertical className="w-4 h-4 opacity-70" aria-hidden="true" />
