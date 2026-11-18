@@ -24,6 +24,10 @@ const nextConfig: NextConfig = {
   // direct module imports (Base UI is already imported via subpaths).
   experimental: {
     optimizePackageImports: ['lucide-react'],
+    // Keep upgrade reminders limited to security advisories (the default
+    // policy) so agents can flag vulnerable Next.js versions like the
+    // published advisory fixed in 16.4.6.
+    agentUpgrade: 'security',
   },
   logging: {
     // Forward only errors to the terminal. The dev server relays browser
