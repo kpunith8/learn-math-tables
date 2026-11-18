@@ -1,9 +1,13 @@
 import { Plus, Minus, X, Divide, type LucideIcon } from 'lucide-react';
+import type { TFunction } from 'i18next';
 
 export type Operation = 'addition' | 'subtraction' | 'multiplication' | 'division';
 export type DifficultyLevel = 'easy' | 'medium' | 'hard';
 
-export type Translate = (key: string, options?: Record<string, unknown>) => string;
+// i18next's `t` is an overloaded generic function; i18next 27 tightened its
+// options parameter so a hand-written `(key, options?) => string` shape no
+// longer accepts it. Alias the library type instead of restating it.
+export type Translate = TFunction;
 
 export interface PracticeProblem {
   operand1: number;
