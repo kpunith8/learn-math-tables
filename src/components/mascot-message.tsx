@@ -23,16 +23,16 @@ export function MascotMessage({ message, className = '' }: MascotMessageProps) {
         <p className="font-display text-sm text-ink font-semibold">
           {t('messages.mascot.speaksAs')}
         </p>
-        <p className="font-body text-sm text-text-secondary mt-0.5">{message}</p>
+        <p className="font-body text-sm text-text-secondary mt-0.5" data-testid="play-hint">{message}</p>
       </div>
     </div>
   );
 }
 
-export const getMascotHint = (t: TFunction, operation?: string): string => {
+export const getMascotHint = (t: TFunction, operation?: string, index?: number): string => {
   const pool = t(`messages.mascot.hints.${operation ?? 'general'}`, { returnObjects: true }) as unknown as string[];
   return pool && pool.length > 0
-    ? pool[Math.floor(Math.random() * pool.length)]
+    ? pool[(index ?? Math.floor(Math.random() * pool.length)) % pool.length]
     : 'You can do this! Every mistake helps you learn!';
 };
 

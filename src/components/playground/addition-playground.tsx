@@ -8,7 +8,7 @@ import { useAudio } from '@/lib/hooks/useAudio';
 import type { PracticeProblem } from '@/lib/operations/types';
 import { PlaygroundShell } from './PlaygroundShell';
 import { DropZone, flyClone } from './drag-core';
-import { Manipulative } from './Manipulative';
+import { Manipulative, TokenFace } from './Manipulative';
 import { CountBadge } from './CountBadge';
 import { buildTokens, makeAnswerOptions, type Token } from './playground-utils';
 import { getMascotHint } from '@/components/mascot-message';
@@ -28,6 +28,7 @@ export function AdditionPlayground({ problems, accent, onPractice, onHome }: Add
   const [roundIndex, setRoundIndex] = useState(0);
   const [droppedIds, setDroppedIds] = useState<Set<string>>(new Set());
   const [answered, setAnswered] = useState(false);
+  const [choosingAnswer, setChoosingAnswer] = useState(false);
   const [lastWrong, setLastWrong] = useState<number | null>(null);
   const [wrongCount, setWrongCount] = useState(0);
 
@@ -92,6 +93,7 @@ export function AdditionPlayground({ problems, accent, onPractice, onHome }: Add
   const nextRound = useCallback(() => {
     setRoundIndex((i) => i + 1);
     setDroppedIds(new Set());
+    setChoosingAnswer(false);
     setAnswered(false);
     setLastWrong(null);
     playSound('click');
@@ -101,6 +103,7 @@ export function AdditionPlayground({ problems, accent, onPractice, onHome }: Add
   const replay = useCallback(() => {
     setRoundIndex(0);
     setDroppedIds(new Set());
+    setChoosingAnswer(false);
     setAnswered(false);
     setLastWrong(null);
     playSound('click');
@@ -116,7 +119,7 @@ export function AdditionPlayground({ problems, accent, onPractice, onHome }: Add
       roundLabel={done ? t('playground.sessionDone') : t('playground.roundOf', { current: Math.min(roundIndex + 1, TOTAL_ROUNDS), total: TOTAL_ROUNDS })}
       currentRound={Math.min(roundIndex, TOTAL_ROUNDS - 1)}
       totalRounds={TOTAL_ROUNDS}
-      hint={getMascotHint(t, 'addition')}
+      hint={getMascotHint(t, 'addition', roundIndex * 2 + Number(choosingAnswer))}
       done={done}
       onReplay={replay}
       onPractice={onPractice}
@@ -128,7 +131,7 @@ export function AdditionPlayground({ problems, accent, onPractice, onHome }: Add
             {problem.operand1} + {problem.operand2} = ?
           </div>
 
-          {!manipulated ? (
+          {!choosingAnswer ? (
             <>
               <p className="font-body text-sm text-text-secondary text-center">{t('playground.dragHint')}</p>
               <div className="grid grid-cols-2 gap-3 w-full">
@@ -160,7 +163,17 @@ export function AdditionPlayground({ problems, accent, onPractice, onHome }: Add
                 <p key={droppedIds.size} className="font-display text-3xl mt-1 animate-[pop-in_0.25s_ease-out] motion-reduce:animate-none" aria-live="polite">
                   {droppedSum}
                 </p>
+                <div className="flex flex-wrap justify-center gap-1.5 mt-2" data-testid="play-result-items">
+                  {allTokens.filter((token) => droppedIds.has(token.id)).map((token) => (
+                    <TokenFace key={token.id} token={token} emoji={problem.emoji} accent={accent} small />
+                  ))}
+                </div>
               </DropZone>
+              {manipulated && (
+                <Button onClick={() => setChoosingAnswer(true)} variant="indigo" size="xl" data-testid="play-choose-answer">
+                  {t('common.buttons.next')} <ArrowRight className="w-4 h-4" aria-hidden="true" />
+                </Button>
+              )}
             </>
           ) : !answered ? (
             <>
@@ -190,19 +203,21 @@ export function AdditionPlayground({ problems, accent, onPractice, onHome }: Add
               </div>
             </>
           ) : (
-            <div className="w-full bg-card rounded-2xl border-2 border-leaf/40 p-5 text-center animate-[pop-in_0.25s_ease-out] motion-reduce:animate-none" role="status">
-              <p className="font-display text-lg text-growth-ink flex items-center justify-center gap-1.5">
-                <Check className="w-6 h-6" strokeWidth={2.5} />
-                {t('playground.correctRound')}
-              </p>
-              <p className="font-display text-2xl mt-1 text-ink">
-                {problem.operand1} + {problem.operand2} = {problem.result}
-              </p>
-              <Button onClick={nextRound} variant="indigo" size="xl" className="mt-4 h-auto min-h-11 max-w-full whitespace-normal px-5 py-2 text-center" data-testid="play-next-round">
+            <>
+              <div className="w-full bg-card rounded-2xl border-2 border-leaf/40 p-5 text-center animate-[pop-in_0.25s_ease-out] motion-reduce:animate-none" role="status">
+                <p className="font-display text-lg text-growth-ink flex items-center justify-center gap-1.5">
+                  <Check className="w-6 h-6" strokeWidth={2.5} />
+                  {t('playground.correctRound')}
+                </p>
+                <p className="font-display text-2xl mt-1 text-ink">
+                  {problem.operand1} + {problem.operand2} = {problem.result}
+                </p>
+              </div>
+              <Button onClick={nextRound} variant="indigo" size="xl" className="h-auto min-h-11 max-w-full whitespace-normal px-5 py-2 text-center" data-testid="play-next-round">
                 {roundIndex + 1 >= TOTAL_ROUNDS ? t('playground.sessionDone') : t('common.buttons.next')}
                 <ArrowRight className="w-4 h-4" />
               </Button>
-            </div>
+            </>
           )}
         </div>
       )}

@@ -63,11 +63,6 @@ interface OperationFlowProps {
   generateQuizQuestions: (d: DifficultyLevel, t: Translate) => QuizQuestion[];
 }
 
-function OperationIcon({ operation, className }: { operation: Operation; className?: string }) {
-  const Icon = OPERATION_META[operation].icon;
-  return <Icon className={className} strokeWidth={2.5} aria-hidden="true" />;
-}
-
 export function OperationFlow({
   operation,
   generatePracticeProblems: genPractice,
@@ -305,7 +300,6 @@ export function OperationFlow({
             onClick={() => router.push(`/${operation}/play`)}
             className="app-bar-title min-h-[44px] px-1.5 cursor-pointer active:text-paper/80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-paper"
           >
-            <OperationIcon operation={operation} className="w-6 h-6 text-paper" />
             {t(`operations.meta.${operation}.name`, meta.name)}
           </button>
         </div>

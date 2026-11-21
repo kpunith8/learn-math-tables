@@ -94,7 +94,7 @@ export function PlaygroundShell({
             </Button>
           )}
           {!done && allowSkip && (
-            <Button onClick={onPractice} variant="indigo" size="xl" className="h-auto min-h-11 max-w-full whitespace-normal px-4 py-2 text-center sm:px-8" data-testid="play-skip-practice">
+            <Button onClick={onPractice} variant="outline" size="xl" className="h-auto min-h-11 max-w-full whitespace-normal px-4 py-2 text-center sm:px-8" data-testid="play-skip-practice">
               {t('playground.skipPractice')}
               <BicepsFlexed className="w-4 h-4" />
             </Button>
