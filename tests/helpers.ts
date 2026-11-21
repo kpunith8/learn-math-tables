@@ -207,6 +207,10 @@ export async function drainPlayTokens(page: Page) {
     while ((await page.getByTestId(/^play-token-/).count()) > 0 && guard++ < 60) {
       await page.getByTestId(/^play-token-/).first().click();
     }
+    if (await page.getByTestId('play-choose-answer').isVisible()) {
+      await page.getByTestId('play-choose-answer').click();
+      return;
+    }
     if (await page.getByTestId('play-answer-slot').isVisible()) return;
   }
   await expect(page.getByTestId('play-answer-slot')).toBeVisible();
@@ -232,6 +236,10 @@ async function finishPlayRoundSetup(page: Page, op: Operation, fast = false) {
         let guard = 0;
         while ((await page.getByTestId(/^play-token-/).count()) > 0 && guard++ < 60) {
           await tapPlayToken(page, true);
+        }
+        if (await page.getByTestId('play-choose-answer').isVisible()) {
+          await page.getByTestId('play-choose-answer').click();
+          return;
         }
         if (await page.getByTestId('play-answer-slot').isVisible()) return;
       }

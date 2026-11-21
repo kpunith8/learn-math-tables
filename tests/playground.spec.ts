@@ -7,6 +7,49 @@ async function readMilestoneStars(page: Page) {
 }
 
 test.describe('playground', () => {
+  for (const op of ['addition', 'subtraction'] as const) {
+    test(`${op} shows the completed manipulation until Next is pressed`, async ({ page }) => {
+      await page.goto(`/${op}/play`);
+      await expect(page.getByTestId('play-equation')).toBeVisible();
+      const equation = parsePlayEquation(await page.getByTestId('play-equation').innerText());
+      const hint = page.getByTestId('play-hint');
+      const initialHint = await hint.innerText();
+      while (await page.getByTestId(/^play-token-/).count()) {
+        await page.getByTestId(/^play-token-/).first().click();
+        await expect(hint).toHaveText(initialHint);
+      }
+      await expect(page.getByTestId('play-answer-slot')).toBeHidden();
+      await expect(page.getByTestId('play-dropzone')).toBeVisible();
+      await expect(page.getByTestId('play-dropzone')).toContainText(String(op === 'addition' ? equation.a + equation.b : equation.b));
+      await expect(page.getByTestId('play-result-items')).toBeVisible();
+      await page.getByTestId('play-choose-answer').click();
+      await expect(page.getByTestId('play-answer-slot')).toBeVisible();
+      const answerHint = await hint.innerText();
+      const answer = computeAnswer(op, equation);
+      const wrong = page.getByTestId(/^play-badge-/).filter({ hasNot: page.getByText(String(answer), { exact: true }) }).first();
+      await wrong.click();
+      await expect(hint).toHaveText(answerHint);
+    });
+  }
+
+  for (const op of ['multiplication', 'division'] as const) {
+    test(`${op} keeps Nova's tip steady during the show and answer`, async ({ page }) => {
+      await page.goto(`/${op}/play`);
+      await expect(page.getByTestId('play-equation')).toBeVisible();
+      const hint = page.getByTestId('play-hint');
+      const showHint = await hint.innerText();
+      await page.getByTestId('clip-play').click();
+      await page.getByTestId('clip-next').click();
+      await expect(hint).toHaveText(showHint);
+      await page.getByTestId('clip-skip').click();
+      const answerHint = await hint.innerText();
+      const equation = parsePlayEquation(await page.getByTestId('play-equation').innerText());
+      const answer = computeAnswer(op, equation);
+      const wrong = page.getByTestId(/^play-badge-/).filter({ hasNot: page.getByText(String(answer), { exact: true }) }).first();
+      await wrong.click();
+      await expect(hint).toHaveText(answerHint);
+    });
+  }
   test('bare operation URL redirects to the playground', async ({ page }) => {
     await page.goto('/subtraction');
     await expect(page).toHaveURL(/\/subtraction\/play$/);
@@ -50,7 +93,11 @@ test.describe('playground', () => {
         await t.focus();
         await page.keyboard.press('Enter');
       }
-      if (await page.getByTestId('play-answer-slot').isVisible()) break;
+      if (await page.getByTestId('play-choose-answer').isVisible()) {
+        await page.getByTestId('play-choose-answer').focus();
+        await page.keyboard.press('Enter');
+        break;
+      }
     }
     await expect(page.getByTestId('play-answer-slot')).toBeVisible();
     const eqText = await page.getByTestId('play-equation').innerText();

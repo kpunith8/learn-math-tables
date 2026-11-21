@@ -28,6 +28,7 @@ export function SubtractionPlayground({ problems, accent, onPractice, onHome }: 
   const [roundIndex, setRoundIndex] = useState(0);
   const [removedIds, setRemovedIds] = useState<Set<string>>(new Set());
   const [answered, setAnswered] = useState(false);
+  const [choosingAnswer, setChoosingAnswer] = useState(false);
   const [lastWrong, setLastWrong] = useState<number | null>(null);
   const [wrongCount, setWrongCount] = useState(0);
 
@@ -99,6 +100,7 @@ export function SubtractionPlayground({ problems, accent, onPractice, onHome }: 
   const nextRound = useCallback(() => {
     setRoundIndex((i) => i + 1);
     setRemovedIds(new Set());
+    setChoosingAnswer(false);
     setAnswered(false);
     setLastWrong(null);
     playSound('click');
@@ -108,6 +110,7 @@ export function SubtractionPlayground({ problems, accent, onPractice, onHome }: 
   const replay = useCallback(() => {
     setRoundIndex(0);
     setRemovedIds(new Set());
+    setChoosingAnswer(false);
     setAnswered(false);
     setLastWrong(null);
     playSound('click');
@@ -121,7 +124,7 @@ export function SubtractionPlayground({ problems, accent, onPractice, onHome }: 
       roundLabel={done ? t('playground.sessionDone') : t('playground.roundOf', { current: Math.min(roundIndex + 1, TOTAL_ROUNDS), total: TOTAL_ROUNDS })}
       currentRound={Math.min(roundIndex, TOTAL_ROUNDS - 1)}
       totalRounds={TOTAL_ROUNDS}
-      hint={getMascotHint(t, 'subtraction')}
+      hint={getMascotHint(t, 'subtraction', roundIndex * 2 + Number(choosingAnswer))}
       done={done}
       onReplay={replay}
       onPractice={onPractice}
@@ -133,7 +136,7 @@ export function SubtractionPlayground({ problems, accent, onPractice, onHome }: 
             {problem.operand1} − {problem.operand2} = ?
           </div>
 
-          {!manipulated ? (
+          {!choosingAnswer ? (
             <>
               <p className="font-body text-sm text-text-secondary text-center">
                 {t('playground.removeHint', { count: problem.operand2 })}
@@ -143,7 +146,9 @@ export function SubtractionPlayground({ problems, accent, onPractice, onHome }: 
                   {t('playground.remaining', { count: remainingValue })}
                 </p>
                 <div className="flex flex-wrap gap-1.5 items-center justify-center min-h-[60px]">
-                  {tokensA
+                  {manipulated ? leftoverTokens.map((tok) => (
+                    <TokenFace key={tok.id} token={tok} emoji={problem.emoji} accent={accent} small />
+                  )) : tokensA
                     .filter((tok) => !removedIds.has(tok.id))
                     .map((tok) => (
                       <Manipulative key={tok.id} token={tok} emoji={problem.emoji} accent={accent} onDropToken={handleDropToken} onTapToken={removeToken} />
@@ -158,7 +163,17 @@ export function SubtractionPlayground({ problems, accent, onPractice, onHome }: 
                 <p key={removedIds.size} className="font-display text-3xl mt-1 animate-[pop-in_0.25s_ease-out] motion-reduce:animate-none" aria-live="polite">
                   {removedSum} / {problem.operand2}
                 </p>
+                <div className="flex flex-wrap justify-center gap-1.5 mt-2" data-testid="play-result-items">
+                  {tokensA.filter((token) => removedIds.has(token.id)).map((token) => (
+                    <TokenFace key={token.id} token={token} emoji={problem.emoji} accent={accent} small />
+                  ))}
+                </div>
               </DropZone>
+              {manipulated && (
+                <Button onClick={() => setChoosingAnswer(true)} variant="indigo" size="xl" data-testid="play-choose-answer">
+                  {t('common.buttons.next')} <ArrowRight className="w-4 h-4" aria-hidden="true" />
+                </Button>
+              )}
             </>
           ) : !answered ? (
             <>
@@ -198,19 +213,21 @@ export function SubtractionPlayground({ problems, accent, onPractice, onHome }: 
               </div>
             </>
           ) : (
-            <div className="w-full bg-card rounded-2xl border-2 border-leaf/40 p-5 text-center animate-[pop-in_0.25s_ease-out] motion-reduce:animate-none" role="status">
-              <p className="font-display text-lg text-growth-ink flex items-center justify-center gap-1.5">
-                <Check className="w-6 h-6" strokeWidth={2.5} />
-                {t('playground.correctRound')}
-              </p>
-              <p className="font-display text-2xl mt-1 text-ink">
-                {problem.operand1} − {problem.operand2} = {problem.result}
-              </p>
-              <Button onClick={nextRound} variant="indigo" size="xl" className="mt-4 h-auto min-h-11 max-w-full whitespace-normal px-5 py-2 text-center" data-testid="play-next-round">
+            <>
+              <div className="w-full bg-card rounded-2xl border-2 border-leaf/40 p-5 text-center animate-[pop-in_0.25s_ease-out] motion-reduce:animate-none" role="status">
+                <p className="font-display text-lg text-growth-ink flex items-center justify-center gap-1.5">
+                  <Check className="w-6 h-6" strokeWidth={2.5} />
+                  {t('playground.correctRound')}
+                </p>
+                <p className="font-display text-2xl mt-1 text-ink">
+                  {problem.operand1} − {problem.operand2} = {problem.result}
+                </p>
+              </div>
+              <Button onClick={nextRound} variant="indigo" size="xl" className="h-auto min-h-11 max-w-full whitespace-normal px-5 py-2 text-center" data-testid="play-next-round">
                 {roundIndex + 1 >= TOTAL_ROUNDS ? t('playground.sessionDone') : t('common.buttons.next')}
                 <ArrowRight className="w-4 h-4" />
               </Button>
-            </div>
+            </>
           )}
         </div>
       )}

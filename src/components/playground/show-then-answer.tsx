@@ -241,7 +241,7 @@ export function ShowThenAnswerPlayground({ operation, problems, accent, symbol, 
       roundLabel={done ? t('playground.sessionDone') : t('playground.roundOf', { current: Math.min(roundIndex + 1, TOTAL_ROUNDS), total: TOTAL_ROUNDS })}
       currentRound={Math.min(roundIndex, TOTAL_ROUNDS - 1)}
       totalRounds={TOTAL_ROUNDS}
-      hint={getMascotHint(t, operation)}
+      hint={getMascotHint(t, operation, roundIndex * 2 + Number(clipDone))}
       done={done}
       onReplay={replay}
       onPractice={onPractice}
@@ -297,19 +297,21 @@ export function ShowThenAnswerPlayground({ operation, problems, accent, symbol, 
               </div>
             </>
           ) : (
-            <div className="w-full bg-card rounded-2xl border-2 border-leaf/40 p-5 text-center animate-[pop-in_0.25s_ease-out] motion-reduce:animate-none" role="status">
-              <p className="font-display text-lg text-growth-ink flex items-center justify-center gap-1.5">
-                <Check className="w-6 h-6" strokeWidth={2.5} />
-                {t('playground.correctRound')}
-              </p>
-              <p className="font-display text-2xl mt-1 text-ink">
-                {problem.operand1} {symbol} {problem.operand2} = {problem.result}
-              </p>
-              <Button onClick={nextRound} variant="indigo" size="xl" className="mt-4 h-auto min-h-11 max-w-full whitespace-normal px-5 py-2 text-center focus-visible:ring-2 disabled:pointer-events-none disabled:opacity-50" data-testid="play-next-round">
+            <>
+              <div className="w-full bg-card rounded-2xl border-2 border-leaf/40 p-5 text-center animate-[pop-in_0.25s_ease-out] motion-reduce:animate-none" role="status">
+                <p className="font-display text-lg text-growth-ink flex items-center justify-center gap-1.5">
+                  <Check className="w-6 h-6" strokeWidth={2.5} />
+                  {t('playground.correctRound')}
+                </p>
+                <p className="font-display text-2xl mt-1 text-ink">
+                  {problem.operand1} {symbol} {problem.operand2} = {problem.result}
+                </p>
+              </div>
+              <Button onClick={nextRound} variant="indigo" size="xl" className="h-auto min-h-11 max-w-full whitespace-normal px-5 py-2 text-center focus-visible:ring-2 disabled:pointer-events-none disabled:opacity-50" data-testid="play-next-round">
                 {roundIndex + 1 >= TOTAL_ROUNDS ? t('playground.sessionDone') : t('common.buttons.next')}
                 <ArrowRight className="w-4 h-4" />
               </Button>
-            </div>
+            </>
           )}
         </div>
       )}

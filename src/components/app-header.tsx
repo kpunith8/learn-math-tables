@@ -22,7 +22,7 @@ interface AppHeaderProps {
   onHome?: () => void;
 }
 
-const btnBase = 'font-display text-xs py-1.5 px-3.5 rounded-full border-2 cursor-pointer transition-all duration-150 min-h-[44px] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus';
+const btnBase = 'font-display text-xs py-1.5 px-3.5 rounded-full border-2 cursor-pointer transition-[color,background-color,border-color,transform,box-shadow] duration-150 min-h-[44px] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus';
 
 export function AppHeader({
   currentTable,
@@ -106,7 +106,7 @@ export function AppHeader({
           </button>
           <button
             onClick={onShowLeaderboard}
-            className={`${btnBase} inline-flex items-center gap-1.5 px-2.5 md:px-3.5 border-gold bg-gold text-ink hover:bg-kingdom active:scale-95`}
+            className={`${btnBase} inline-flex items-center gap-1.5 px-2.5 md:px-3.5 border-mist bg-card text-ink hover:border-coral active:scale-95`}
           >
             <Trophy className="w-4 h-4" aria-hidden="true" />
             {t('header.scores')}
@@ -182,7 +182,7 @@ export function AppHeader({
             </button>
 <button
               onClick={onShowLeaderboard}
-              className={`drawer-scores ${btnBase} w-full text-center border-gold bg-gold text-ink hover:bg-kingdom`}
+              className={`drawer-scores ${btnBase} w-full text-center border-mist bg-card text-ink hover:border-coral`}
             >
               {t('header.scores')}
             </button>
